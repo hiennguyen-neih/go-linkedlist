@@ -64,6 +64,28 @@ func Append[T comparable](list LinkedList[T], values ...T) LinkedList[T] {
     return result
 }
 
+// Applying function to every elements in list
+func (list *LinkedList[T]) Map(fun func(T) T) {
+    current := list.Node
+    for current != nil {
+        current.data = fun(current.data)
+        current = current.next
+    }
+}
+
+// Applying function to every elements in list and return as new list
+func Map[T comparable](list LinkedList[T], fun func(T) T) LinkedList[T] {
+    result := LinkedList[T]{}
+
+    current := list.Node
+    for current != nil {
+        result.Append(fun(current.data))
+        current = current.next
+    }
+
+    return result
+}
+
 // Delete first node in list with value of input.
 func (list *LinkedList[T]) Delete(value T) {
     if list.Node == nil {
