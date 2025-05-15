@@ -1,8 +1,8 @@
-// Package golist contains methods and functions for singly linked list in Go
+// Package golist contains functions and methods for singly linked list in Go.
 package golist
 
 import (
-	"fmt"
+    "fmt"
     "strings"
 )
 
@@ -10,13 +10,13 @@ import (
  * Define data types
  */
 
-// Node in Linked List
+// Node in singly linked List.
 type node[T comparable] struct {
     data T
     next *node[T]
 }
 
-// Struct of singly linked list
+// Struct of singly linked list.
 type LinkedList[T comparable] struct {
     Node *node[T]
 }
@@ -25,14 +25,14 @@ type LinkedList[T comparable] struct {
  * Exported functions
  */
 
-// Create new linked list
+// Create new linked list.
 func ListOf[T comparable](values ...T) LinkedList[T] {
 	list := LinkedList[T]{}
     list.Append(values...)
 	return list
 }
 
-// Method add values into last of current list
+// Append all values into last of list.
 func (list *LinkedList[T]) Append(values ...T) {
     for _, value := range values {
         newNode := &node[T]{data: value}
@@ -50,7 +50,7 @@ func (list *LinkedList[T]) Append(values ...T) {
     }
 }
 
-// Function add values into last of current list and return as new list
+// Return new list is append of input list and values.
 func Append[T comparable](list LinkedList[T], values ...T) LinkedList[T] {
     result := LinkedList[T]{}
     
@@ -64,7 +64,7 @@ func Append[T comparable](list LinkedList[T], values ...T) LinkedList[T] {
     return result
 }
 
-// Method delete node in list by value
+// Delete first node in list with value of input.
 func (list *LinkedList[T]) Delete(value T) {
     if list.Node == nil {
         return
@@ -86,7 +86,7 @@ func (list *LinkedList[T]) Delete(value T) {
     }
 }
 
-// Function delete node in list by value and return new list
+// Delte first node in list with value of input and return as new list.
 func Delete[T comparable](list LinkedList[T], value T) LinkedList[T] {
     if list.Node == nil {
         return list
@@ -111,7 +111,7 @@ func Delete[T comparable](list LinkedList[T], value T) LinkedList[T] {
     return result
 }
 
-// Method ToString
+// Return a string representing singly linked list.
 func (list *LinkedList[T]) ToString() string {
     var builder strings.Builder
     current := list.Node
