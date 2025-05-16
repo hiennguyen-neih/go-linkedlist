@@ -134,7 +134,7 @@ func Delete[T comparable](list GoList[T], value T) GoList[T] {
 }
 
 // Return a string representing singly linked list.
-func (list *GoList[T]) ToString() string {
+func (list GoList[T]) String() string {
     var builder strings.Builder
     current := list.Head
     for current != nil {
