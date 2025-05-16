@@ -202,6 +202,40 @@ func Duplicate[T comparable](n int, element T) GoList[T] {
     return result
 }
 
+// Only keep elements in list that fun return true.
+func (list *GoList[T]) Filter(fun func(T) bool) {
+    if list.Head == nil {
+        return
+    }
+
+    if fun(list.Head.data) == false {
+        list.Head = list.Head.next
+    }
+
+    current := list.Head
+    for current.next != nil {
+        if fun(current.next.data) == false {
+            current.next = current.next.next
+        }
+        current = current.next
+    }
+}
+
+// Return new list contains elements in input that fun returns true.
+func Filter[T comparable](fun func(T) bool, list GoList[T]) (result GoList[T]) {
+    if list.Head == nil {
+        return
+    }
+    current := list.Head
+    for current != nil {
+        if fun(current.data) == true {
+            result.Append(current.data)
+        }
+        current = current.next
+    }
+    return
+}
+
 // Applying function to every elements in list.
 func (list *GoList[T]) Map(fun func(T) T) {
     current := list.Head

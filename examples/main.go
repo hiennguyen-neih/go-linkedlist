@@ -7,20 +7,20 @@ import (
 )
 
 func main() {
-    fmt.Println("Test golist ListOf")
+    fmt.Println("Example golist ListOf")
     int_list := golist.GoList[int]{}
     str_list := golist.ListOf("a", "b", "c")
     fmt.Printf("int_list:  %v\n", int_list)
     fmt.Printf("str_list:  %v\n", str_list)
 
-    fmt.Println("Test golist Append")
+    fmt.Println("Example golist Append")
     int_list.Append(1,2,3,4,3)
     str_list2 := golist.Append(str_list, "d", "e", "f")
     fmt.Printf("int_list:  %v\n", int_list)
     fmt.Printf("str_list:  %v\n", str_list)
     fmt.Printf("str_list2: %v\n", str_list2)
 
-    fmt.Println("Test golist All and Any")
+    fmt.Println("Example golist All and Any")
     int_list = golist.ListOf(1,2,3,4)
     str_list = golist.ListOf("a","b","c","d")
     int_bool := golist.All(func(i int) bool {
@@ -32,7 +32,7 @@ func main() {
     fmt.Printf("int_list All < 4: %v\n", int_bool)
     fmt.Printf("str_list Any = b: %v\n", str_bool)
 
-    fmt.Println("Test golist Delete")
+    fmt.Println("Example golist Delete")
     int_list = golist.ListOf(1,2,3,4,3)
     str_list = golist.ListOf("a","b","c","d","e")
     int_list.Delete(3)
@@ -41,7 +41,7 @@ func main() {
     fmt.Printf("str_list:  %v\n", str_list)
     fmt.Printf("str_list2: %v\n", str_list2)
 
-    fmt.Println("Test golist DropLast")
+    fmt.Println("Example golist DropLast")
     int_list = golist.ListOf(1,2,3,4)
     str_list = golist.ListOf("a","b","c","d")
     int_list.DropLast()
@@ -50,7 +50,7 @@ func main() {
     fmt.Printf("str_list:  %v\n", str_list)
     fmt.Printf("str_list2: %v\n", str_list2)
 
-    fmt.Println("Test golist DropWhile")
+    fmt.Println("Example golist DropWhile")
     int_list = golist.ListOf(1,2,3,4,5,4,3,2,1)
     str_list = golist.ListOf("a","b","c","d","c","b","a")
     int_list.DropWhile(func(n int) bool {
@@ -63,13 +63,26 @@ func main() {
     fmt.Printf("str_list:  %v\n", str_list)
     fmt.Printf("str_list2: %v\n", str_list2)
 
-    fmt.Println("Test golist Duplicate")
+    fmt.Println("Example golist Duplicate")
     int_list = golist.Duplicate(5, 0)
     str_list = golist.Duplicate(4, "X")
     fmt.Printf("int_list: %v\n", int_list)
     fmt.Printf("str_list: %v\n", str_list)
 
-    fmt.Println("Test golist Map")
+    fmt.Println("Example golist Filter")
+    int_list = golist.ListOf(1,2,3,4,5,6)
+    str_list = golist.ListOf("a","b","a","c","a","d")
+    int_list.Filter(func(n int) bool {
+        return (n % 2) == 0
+    })
+    str_list2 = golist.Filter(func(s string) bool {
+        return s != "a"
+    }, str_list)
+    fmt.Printf("int_list:  %v\n", int_list)
+    fmt.Printf("str_list:  %v\n", str_list)
+    fmt.Printf("str_list2: %v\n", str_list2)
+
+    fmt.Println("Example golist Map")
     int_list = golist.ListOf(1,2,3,4)
     str_list = golist.ListOf("a","b","c","d")
     int_list.Map(func(n int) int {
