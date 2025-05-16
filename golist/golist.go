@@ -88,28 +88,6 @@ func Append[T comparable](list GoList[T], values ...T) GoList[T] {
     return result
 }
 
-// Applying function to every elements in list
-func (list *GoList[T]) Map(fun func(T) T) {
-    current := list.Head
-    for current != nil {
-        current.data = fun(current.data)
-        current = current.next
-    }
-}
-
-// Applying function to every elements in list and return as new list
-func Map[T comparable](list GoList[T], fun func(T) T) GoList[T] {
-    result := GoList[T]{}
-
-    current := list.Head
-    for current != nil {
-        result.Append(fun(current.data))
-        current = current.next
-    }
-
-    return result
-}
-
 // Delete first node in list with value of input.
 func (list *GoList[T]) Delete(value T) {
     if list.Head == nil {
@@ -151,6 +129,28 @@ func Delete[T comparable](list GoList[T], value T) GoList[T] {
     }
     for current != nil {
         result.Append(current.data)
+        current = current.next
+    }
+
+    return result
+}
+
+// Applying function to every elements in list
+func (list *GoList[T]) Map(fun func(T) T) {
+    current := list.Head
+    for current != nil {
+        current.data = fun(current.data)
+        current = current.next
+    }
+}
+
+// Applying function to every elements in list and return as new list
+func Map[T comparable](fun func(T) T, list GoList[T]) GoList[T] {
+    result := GoList[T]{}
+
+    current := list.Head
+    for current != nil {
+        result.Append(fun(current.data))
         current = current.next
     }
 

@@ -41,9 +41,9 @@ func main() {
     int_list.Map(func(n int) int {
         return n * 2
     })
-    str_list2 = golist.Map(str_list, func(s string) string {
+    str_list2 = golist.Map(func(s string) string {
         return strings.ToUpper(s)
-    })
+    }, str_list)
     fmt.Printf("int_list:  %v\n", int_list)
     fmt.Printf("str_list:  %v\n", str_list)
     fmt.Printf("str_list2: %v\n", str_list2)
