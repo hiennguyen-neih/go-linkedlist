@@ -16,9 +16,9 @@ type node[T comparable] struct {
     next *node[T]
 }
 
-// Struct of singly linked list.
-type LinkedList[T comparable] struct {
-    Node *node[T]
+// Struct of Go singly linked list.
+type GoList[T comparable] struct {
+    Head *node[T]
 }
 
 /*
@@ -26,23 +26,23 @@ type LinkedList[T comparable] struct {
  */
 
 // Create new linked list.
-func ListOf[T comparable](values ...T) LinkedList[T] {
-	list := LinkedList[T]{}
+func ListOf[T comparable](values ...T) GoList[T] {
+	list := GoList[T]{}
     list.Append(values...)
 	return list
 }
 
 // Append all values into last of list.
-func (list *LinkedList[T]) Append(values ...T) {
+func (list *GoList[T]) Append(values ...T) {
     for _, value := range values {
         newNode := &node[T]{data: value}
 
-        if list.Node == nil {
-            list.Node = newNode
+        if list.Head == nil {
+            list.Head = newNode
             continue
         }
         
-        current := list.Node
+        current := list.Head
         for current.next != nil {
             current = current.next
         }
@@ -51,10 +51,10 @@ func (list *LinkedList[T]) Append(values ...T) {
 }
 
 // Return new list is append of input list and values.
-func Append[T comparable](list LinkedList[T], values ...T) LinkedList[T] {
-    result := LinkedList[T]{}
+func Append[T comparable](list GoList[T], values ...T) GoList[T] {
+    result := GoList[T]{}
     
-    current := list.Node
+    current := list.Head
     for current != nil {
         result.Append(current.data)
         current = current.next
@@ -65,8 +65,8 @@ func Append[T comparable](list LinkedList[T], values ...T) LinkedList[T] {
 }
 
 // Applying function to every elements in list
-func (list *LinkedList[T]) Map(fun func(T) T) {
-    current := list.Node
+func (list *GoList[T]) Map(fun func(T) T) {
+    current := list.Head
     for current != nil {
         current.data = fun(current.data)
         current = current.next
@@ -74,10 +74,10 @@ func (list *LinkedList[T]) Map(fun func(T) T) {
 }
 
 // Applying function to every elements in list and return as new list
-func Map[T comparable](list LinkedList[T], fun func(T) T) LinkedList[T] {
-    result := LinkedList[T]{}
+func Map[T comparable](list GoList[T], fun func(T) T) GoList[T] {
+    result := GoList[T]{}
 
-    current := list.Node
+    current := list.Head
     for current != nil {
         result.Append(fun(current.data))
         current = current.next
@@ -87,18 +87,18 @@ func Map[T comparable](list LinkedList[T], fun func(T) T) LinkedList[T] {
 }
 
 // Delete first node in list with value of input.
-func (list *LinkedList[T]) Delete(value T) {
-    if list.Node == nil {
+func (list *GoList[T]) Delete(value T) {
+    if list.Head == nil {
         return
     }
 
     // Ignore if it's first node
-    if list.Node.data == value {
-        list.Node = list.Node.next
+    if list.Head.data == value {
+        list.Head = list.Head.next
         return
     }
 
-    current := list.Node
+    current := list.Head
     for current.next != nil {
         if current.next.data == value {
             current.next = current.next.next
@@ -109,13 +109,13 @@ func (list *LinkedList[T]) Delete(value T) {
 }
 
 // Delte first node in list with value of input and return as new list.
-func Delete[T comparable](list LinkedList[T], value T) LinkedList[T] {
-    if list.Node == nil {
+func Delete[T comparable](list GoList[T], value T) GoList[T] {
+    if list.Head == nil {
         return list
     }
 
-    result := LinkedList[T]{}
-    current := list.Node
+    result := GoList[T]{}
+    current := list.Head
     for current != nil {
         if current.data != value {
             result.Append(current.data)
@@ -134,9 +134,9 @@ func Delete[T comparable](list LinkedList[T], value T) LinkedList[T] {
 }
 
 // Return a string representing singly linked list.
-func (list *LinkedList[T]) ToString() string {
+func (list *GoList[T]) ToString() string {
     var builder strings.Builder
-    current := list.Node
+    current := list.Head
     for current != nil {
         fmt.Fprintf(&builder, "%v", current.data)
         builder.WriteString(" -> ")
