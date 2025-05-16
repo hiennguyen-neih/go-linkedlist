@@ -50,6 +50,25 @@ func main() {
     fmt.Printf("str_list:  %v\n", str_list)
     fmt.Printf("str_list2: %v\n", str_list2)
 
+    fmt.Println("Test golist DropWhile")
+    int_list = golist.ListOf(1,2,3,4,5,4,3,2,1)
+    str_list = golist.ListOf("a","b","c","d","c","b","a")
+    int_list.DropWhile(func(n int) bool {
+        return n < 5
+    })
+    str_list2 = golist.DropWhile(func(s string) bool {
+        return s != "d"
+    }, str_list)
+    fmt.Printf("int_list:  %v\n", int_list)
+    fmt.Printf("str_list:  %v\n", str_list)
+    fmt.Printf("str_list2: %v\n", str_list2)
+
+    fmt.Println("Test golist Duplicate")
+    int_list = golist.Duplicate(5, 0)
+    str_list = golist.Duplicate(4, "X")
+    fmt.Printf("int_list: %v\n", int_list)
+    fmt.Printf("str_list: %v\n", str_list)
+
     fmt.Println("Test golist Map")
     int_list = golist.ListOf(1,2,3,4)
     str_list = golist.ListOf("a","b","c","d")

@@ -162,7 +162,47 @@ func DropLast[T comparable](list GoList[T]) GoList[T] {
     return result
 }
 
-// Applying function to every elements in list
+// Drop elements in list while fun returns true.
+func (list *GoList[T]) DropWhile(fun func(T) bool) {
+    current := list.Head
+    for current != nil {
+        if fun(current.data) == true {
+            list.Head = current.next
+            current = current.next
+        } else {
+            break
+        }
+    }
+}
+
+// Drop elements in list while fun returns true, and return as new list.
+func DropWhile[T comparable](fun func(T) bool, list GoList[T]) GoList[T] {
+    result := GoList[T]{}
+
+    current := list.Head
+    for current != nil {
+        if fun(current.data) == false {
+            break
+        }
+        current = current.next
+    }
+    for current != nil {
+        result.Append(current.data)
+        current = current.next
+    }
+    return result
+}
+
+// Returns a list containing n copies of term element.
+func Duplicate[T comparable](n int, element T) GoList[T] {
+    result := GoList[T]{}
+    for i := 0; i < n; i++ {
+        result.Append(element)
+    }
+    return result
+}
+
+// Applying function to every elements in list.
 func (list *GoList[T]) Map(fun func(T) T) {
     current := list.Head
     for current != nil {
@@ -171,7 +211,7 @@ func (list *GoList[T]) Map(fun func(T) T) {
     }
 }
 
-// Applying function to every elements in list and return as new list
+// Applying function to every elements in list and return as new list.
 func Map[T comparable](fun func(T) T, list GoList[T]) GoList[T] {
     result := GoList[T]{}
 
