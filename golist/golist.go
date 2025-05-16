@@ -25,11 +25,10 @@ type GoList[T comparable] struct {
  * Exported functions
  */
 
-// Create new linked list.
-func ListOf[T comparable](values ...T) GoList[T] {
-	list := GoList[T]{}
+// Create new singly linked list.
+func ListOf[T comparable](values ...T) (list GoList[T]) {
     list.Append(values...)
-	return list
+	return
 }
 
 // Return true if fun returns true for all elements in list, otherwise return false.
@@ -56,67 +55,22 @@ func Any[T comparable](fun func(T) bool, list GoList[T]) bool {
     return false
 }
 
-// Append all values into last of list.
-func (list *GoList[T]) Append(values ...T) {
-    for _, value := range values {
-        newNode := &node[T]{data: value}
-
-        if list.Head == nil {
-            list.Head = newNode
-            continue
-        }
-        
-        current := list.Head
-        for current.next != nil {
-            current = current.next
-        }
-        current.next = newNode
-    }
-}
-
 // Return new list is append of input list and values.
-func Append[T comparable](list GoList[T], values ...T) GoList[T] {
-    result := GoList[T]{}
-    
+func Append[T comparable](list GoList[T], values ...T) (result GoList[T]) {    
     current := list.Head
     for current != nil {
         result.Append(current.data)
         current = current.next
     }
-
     result.Append(values...)
-    return result
-}
-
-// Delete first node in list with value of input.
-func (list *GoList[T]) Delete(value T) {
-    if list.Head == nil {
-        return
-    }
-
-    // Ignore if it's first node
-    if list.Head.data == value {
-        list.Head = list.Head.next
-        return
-    }
-
-    current := list.Head
-    for current.next != nil {
-        if current.next.data == value {
-            current.next = current.next.next
-            return
-        }
-        current = current.next
-    }
+    return
 }
 
 // Delte first node in list with value of input and return as new list.
-func Delete[T comparable](list GoList[T], value T) GoList[T] {
+func Delete[T comparable](list GoList[T], value T) (result GoList[T]) {
     if list.Head == nil {
-        return list
+        return
     }
-
-    result := GoList[T]{}
     current := list.Head
     for current != nil {
         if current.data != value {
@@ -131,54 +85,25 @@ func Delete[T comparable](list GoList[T], value T) GoList[T] {
         result.Append(current.data)
         current = current.next
     }
-
-    return result
-}
-
-// Drop the last element in list.
-func (list *GoList[T]) DropLast() {
-    current := list.Head
-    for current != nil {
-        if current.next.next == nil {
-            current.next = nil
-            break
-        }
-        current = current.next
-    }
+    return
 }
 
 // Drop the last element in list and return as new list.
-func DropLast[T comparable](list GoList[T]) GoList[T] {
-    result := GoList[T]{}
+func DropLast[T comparable](list GoList[T]) (result GoList[T]) {
     current := list.Head
     for current != nil {
         if current.next.next == nil {
             result.Append(current.data)
-            return result
+            return
         }
         result.Append(current.data)
         current = current.next
     }
-    return result
-}
-
-// Drop elements in list while fun returns true.
-func (list *GoList[T]) DropWhile(fun func(T) bool) {
-    current := list.Head
-    for current != nil {
-        if fun(current.data) == true {
-            list.Head = current.next
-            current = current.next
-        } else {
-            break
-        }
-    }
+    return
 }
 
 // Drop elements in list while fun returns true, and return as new list.
-func DropWhile[T comparable](fun func(T) bool, list GoList[T]) GoList[T] {
-    result := GoList[T]{}
-
+func DropWhile[T comparable](fun func(T) bool, list GoList[T]) (result GoList[T]) {
     current := list.Head
     for current != nil {
         if fun(current.data) == false {
@@ -190,35 +115,15 @@ func DropWhile[T comparable](fun func(T) bool, list GoList[T]) GoList[T] {
         result.Append(current.data)
         current = current.next
     }
-    return result
+    return
 }
 
 // Returns a list containing n copies of term element.
-func Duplicate[T comparable](n int, element T) GoList[T] {
-    result := GoList[T]{}
+func Duplicate[T comparable](n int, element T) (result GoList[T]) {
     for i := 0; i < n; i++ {
         result.Append(element)
     }
-    return result
-}
-
-// Only keep elements in list that fun return true.
-func (list *GoList[T]) Filter(fun func(T) bool) {
-    if list.Head == nil {
-        return
-    }
-
-    if fun(list.Head.data) == false {
-        list.Head = list.Head.next
-    }
-
-    current := list.Head
-    for current.next != nil {
-        if fun(current.next.data) == false {
-            current.next = current.next.next
-        }
-        current = current.next
-    }
+    return
 }
 
 // Return new list contains elements in input that fun returns true.
@@ -236,6 +141,98 @@ func Filter[T comparable](fun func(T) bool, list GoList[T]) (result GoList[T]) {
     return
 }
 
+// Applying function to every elements in list and return as new list.
+func Map[T comparable](fun func(T) T, list GoList[T]) (result GoList[T]) {
+    current := list.Head
+    for current != nil {
+        result.Append(fun(current.data))
+        current = current.next
+    }
+    return
+}
+
+/*
+ * Exported methods
+ */
+
+ // Append all values into last of list.
+func (list *GoList[T]) Append(values ...T) {
+    for _, value := range values {
+        newNode := &node[T]{data: value}
+        if list.Head == nil {
+            list.Head = newNode
+            continue
+        }
+        current := list.Head
+        for current.next != nil {
+            current = current.next
+        }
+        current.next = newNode
+    }
+}
+
+// Delete first node in list with value of input.
+func (list *GoList[T]) Delete(value T) {
+    if list.Head == nil {
+        return
+    }
+    // Ignore if it's first node
+    if list.Head.data == value {
+        list.Head = list.Head.next
+        return
+    }
+    current := list.Head
+    for current.next != nil {
+        if current.next.data == value {
+            current.next = current.next.next
+            return
+        }
+        current = current.next
+    }
+}
+
+// Drop the last element in list.
+func (list *GoList[T]) DropLast() {
+    current := list.Head
+    for current != nil {
+        if current.next.next == nil {
+            current.next = nil
+            break
+        }
+        current = current.next
+    }
+}
+
+// Drop elements in list while fun returns true.
+func (list *GoList[T]) DropWhile(fun func(T) bool) {
+    current := list.Head
+    for current != nil {
+        if fun(current.data) == true {
+            list.Head = current.next
+            current = current.next
+        } else {
+            break
+        }
+    }
+}
+
+// Only keep elements in list that fun return true.
+func (list *GoList[T]) Filter(fun func(T) bool) {
+    if list.Head == nil {
+        return
+    }
+    if fun(list.Head.data) == false {
+        list.Head = list.Head.next
+    }
+    current := list.Head
+    for current.next != nil {
+        if fun(current.next.data) == false {
+            current.next = current.next.next
+        }
+        current = current.next
+    }
+}
+
 // Applying function to every elements in list.
 func (list *GoList[T]) Map(fun func(T) T) {
     current := list.Head
@@ -243,19 +240,6 @@ func (list *GoList[T]) Map(fun func(T) T) {
         current.data = fun(current.data)
         current = current.next
     }
-}
-
-// Applying function to every elements in list and return as new list.
-func Map[T comparable](fun func(T) T, list GoList[T]) GoList[T] {
-    result := GoList[T]{}
-
-    current := list.Head
-    for current != nil {
-        result.Append(fun(current.data))
-        current = current.next
-    }
-
-    return result
 }
 
 // Return a string representing singly linked list.
