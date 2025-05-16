@@ -20,6 +20,16 @@ func main() {
     fmt.Printf("str_list:  %v\n", str_list)
     fmt.Printf("str_list2: %v\n", str_list2)
 
+    fmt.Println("Test golist All and Any")
+    int_bool := golist.All(func(i int) bool {
+        return i < 4
+    }, int_list)
+    str_bool := golist.Any(func(s string) bool {
+        return s == "b"
+    }, str_list)
+    fmt.Printf("int_list All < 4: %v\n", int_bool)
+    fmt.Printf("str_list Any = b: %v\n", str_bool)
+
     fmt.Println("Test golist Delete")
     int_list.Delete(3)
     str_list2 = golist.Delete(str_list, "c")

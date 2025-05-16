@@ -32,6 +32,30 @@ func ListOf[T comparable](values ...T) GoList[T] {
 	return list
 }
 
+// Return true if fun returns true for all elements in list, otherwise return false.
+func All[T comparable](fun func(T) bool, list GoList[T]) bool {
+    current := list.Head
+    for current != nil {
+        if fun(current.data) == false {
+            return false
+        }
+        current = current.next
+    }
+    return true
+}
+
+// Return true if fun returns true for at least 1 element in list, otherwise return false.
+func Any[T comparable](fun func(T) bool, list GoList[T]) bool {
+    current := list.Head
+    for current != nil {
+        if fun(current.data) == true {
+            return true
+        }
+        current = current.next
+    }
+    return false
+}
+
 // Append all values into last of list.
 func (list *GoList[T]) Append(values ...T) {
     for _, value := range values {
