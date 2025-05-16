@@ -135,6 +135,33 @@ func Delete[T comparable](list GoList[T], value T) GoList[T] {
     return result
 }
 
+// Drop the last element in list.
+func (list *GoList[T]) DropLast() {
+    current := list.Head
+    for current != nil {
+        if current.next.next == nil {
+            current.next = nil
+            break
+        }
+        current = current.next
+    }
+}
+
+// Drop the last element in list and return as new list.
+func DropLast[T comparable](list GoList[T]) GoList[T] {
+    result := GoList[T]{}
+    current := list.Head
+    for current != nil {
+        if current.next.next == nil {
+            current.next = nil
+            break
+        }
+        result.Append(current.data)
+        current = current.next
+    }
+    return result
+}
+
 // Applying function to every elements in list
 func (list *GoList[T]) Map(fun func(T) T) {
     current := list.Head
