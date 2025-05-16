@@ -46,8 +46,9 @@ func main() {
     str_list = golist.ListOf("a","b","c","d")
     int_list.DropLast()
     str_list2 = golist.DropLast(str_list)
-    fmt.Printf("int_list: %v\n", int_list)
-    fmt.Printf("str_list: %v\n", str_list)
+    fmt.Printf("int_list:  %v\n", int_list)
+    fmt.Printf("str_list:  %v\n", str_list)
+    fmt.Printf("str_list2: %v\n", str_list2)
 
     fmt.Println("Test golist Map")
     int_list = golist.ListOf(1,2,3,4)

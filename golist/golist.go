@@ -153,8 +153,8 @@ func DropLast[T comparable](list GoList[T]) GoList[T] {
     current := list.Head
     for current != nil {
         if current.next.next == nil {
-            current.next = nil
-            break
+            result.Append(current.data)
+            return result
         }
         result.Append(current.data)
         current = current.next
