@@ -82,6 +82,32 @@ func main() {
     fmt.Printf("str_list:  %v\n", str_list)
     fmt.Printf("str_list2: %v\n", str_list2)
 
+    fmt.Println("Example golist Foldl, Foldr and ForEach")
+    int_list = golist.ListOf(1,2,3,4,5)
+    sum := golist.Foldl(func(n, s int) int {
+        fmt.Printf("%v ", n)
+        return n + s
+    }, 0, int_list)
+    fmt.Printf("sum:  %v\n", sum)
+    prod := golist.Foldr(func(n, p int) int {
+        fmt.Printf("%v ", n)
+        return n * p
+    }, 1, int_list)
+    fmt.Printf("prod: %v\n", prod)
+    golist.ForEach(func(n int) {
+        fmt.Printf("%v ", n * 2)
+    }, int_list)
+    fmt.Println()
+
+    fmt.Println("Example golist Join")
+    int_list = golist.ListOf(1,2,3,4)
+    int_list.Join(0)
+    str_list = golist.ListOf("a","b","c","d")
+    str_list2 = golist.Join("X", str_list)
+    fmt.Printf("int_list:  %v\n", int_list)
+    fmt.Printf("str_list:  %v\n", str_list)
+    fmt.Printf("str_list2: %v\n", str_list2)
+
     fmt.Println("Example golist Map")
     int_list = golist.ListOf(1,2,3,4)
     str_list = golist.ListOf("a","b","c","d")
@@ -91,6 +117,17 @@ func main() {
     str_list2 = golist.Map(func(s string) string {
         return strings.ToUpper(s)
     }, str_list)
+    str_last := golist.Last(str_list)
+    fmt.Printf("int_list:  %v\n", int_list)
+    fmt.Printf("str_list:  %v\n", str_list)
+    fmt.Printf("str_list2: %v\n", str_list2)
+    fmt.Printf("str_last:  %v\n", str_last)
+
+    fmt.Println("Example golist Reverse")
+    int_list = golist.ListOf(1,2,3,4,5)
+    str_list = golist.ListOf("a","b","c","d")
+    str_list2 = golist.Reverse(str_list)
+    int_list.Reverse()
     fmt.Printf("int_list:  %v\n", int_list)
     fmt.Printf("str_list:  %v\n", str_list)
     fmt.Printf("str_list2: %v\n", str_list2)

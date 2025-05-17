@@ -141,6 +141,68 @@ func Filter[T comparable](fun func(T) bool, list GoList[T]) (result GoList[T]) {
     return
 }
 
+// Execute fun with input is elements in list from left to right and acc0,
+// fun return new acc and it's used as input for next execution,
+// return the acc of the last execution.
+func Foldl[T1, T2 comparable](fun func(T1, T2) T2, acc0 T2, list GoList[T1]) T2 {
+    current := list.Head
+    for current != nil {
+        acc0 = fun(current.data, acc0)
+        current = current.next
+    }
+    return acc0
+}
+
+// Execute fun with input is elements in list from right to left and acc0,
+// fun return new acc and it's used as input for next execution,
+// return the acc of the last execution.
+func Foldr[T1, T2 comparable](fun func(T1, T2) T2, acc0 T2, list GoList[T1]) T2 {
+    reverse := Reverse(list)
+    current := reverse.Head
+    for current != nil {
+        acc0 = fun(current.data, acc0)
+        current = current.next
+    }
+    return acc0
+}
+
+// Applying function for each element in list.
+func ForEach[T comparable](fun func(T), list GoList[T]) {
+    current := list.Head
+    for current != nil {
+        fun(current.data)
+        current = current.next
+    }
+}
+
+// Insert sep between each element in list and return as new list.
+func Join[T comparable](sep T, list GoList[T]) (result GoList[T]) {
+    current := list.Head
+    for current != nil {
+        result.Append(current.data)
+        if current.next != nil {
+            result.Append(sep)
+        }
+        current = current.next
+    }
+    return
+}
+
+// Return the last element in list.
+func Last[T comparable](list GoList[T]) (last T) {
+    // last = nil
+    current := list.Head
+    for current != nil {
+        if current.next == nil {
+            last = current.data
+            return
+        } else {
+            current = current.next
+        }
+    }
+    return
+}
+
 // Applying function to every elements in list and return as new list.
 func Map[T comparable](fun func(T) T, list GoList[T]) (result GoList[T]) {
     current := list.Head
@@ -148,6 +210,19 @@ func Map[T comparable](fun func(T) T, list GoList[T]) (result GoList[T]) {
         result.Append(fun(current.data))
         current = current.next
     }
+    return
+}
+
+// Return result is reverse of input list
+func Reverse[T comparable](list GoList[T]) (result GoList[T]) {
+    var head *node[T]
+    current := list.Head
+    for current != nil {
+        node := &node[T]{data: current.data, next: head}
+        head = node
+        current = current.next
+    }
+    result = GoList[T]{Head: head}
     return
 }
 
@@ -233,6 +308,20 @@ func (list *GoList[T]) Filter(fun func(T) bool) {
     }
 }
 
+// Insert sep between each element in list.
+func (list *GoList[T]) Join(sep T) {
+    current := list.Head
+    for current != nil {
+        if current.next != nil {
+            node := &node[T]{data: sep, next: current.next}
+            current.next = node
+            current = node.next
+        } else {
+            current = nil
+        }
+    }
+}
+
 // Applying function to every elements in list.
 func (list *GoList[T]) Map(fun func(T) T) {
     current := list.Head
@@ -242,15 +331,29 @@ func (list *GoList[T]) Map(fun func(T) T) {
     }
 }
 
+// Reverse the input list
+func (list *GoList[T]) Reverse() {
+    var prev *node[T]
+    current := list.Head
+    for current != nil {
+        next := current.next
+        current.next = prev
+        prev = current
+        current = next
+    }
+    list.Head = prev
+}
+
 // Return a string representing singly linked list.
 func (list GoList[T]) String() string {
     var builder strings.Builder
+    builder.WriteString("[ ")
     current := list.Head
     for current != nil {
         fmt.Fprintf(&builder, "%v", current.data)
         builder.WriteString(" -> ")
         current = current.next
     }
-    builder.WriteString("nil")
+    builder.WriteString("nil ]")
     return builder.String()
 }
