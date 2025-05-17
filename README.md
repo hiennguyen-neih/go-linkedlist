@@ -8,6 +8,11 @@ Linked list library for Go programming language (golang).
 $ github.com/hiennguyen-neih/go-linkedlist
 ```
 
+## Document
+```Go
+$ go doc -all github.com/hiennguyen-neih/go-linkedlist/golist
+```
+
 ## Import
 ```Go
 import "github.com/hiennguyen-neih/go-linkedlist/golist"
