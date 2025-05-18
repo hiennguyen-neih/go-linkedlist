@@ -88,12 +88,12 @@ func main() {
         fmt.Printf("%v ", n)
         return n + s
     }, 0, int_list)
-    fmt.Printf("sum:  %v\n", sum)
-    prod := golist.Foldr(func(n, p int) int {
+    fmt.Printf("sum: %v\n", sum)
+    fac := golist.Foldr(func(n, p int) int {
         fmt.Printf("%v ", n)
         return n * p
     }, 1, int_list)
-    fmt.Printf("prod: %v\n", prod)
+    fmt.Printf("fac: %v\n", fac)
     golist.ForEach(func(n int) {
         fmt.Printf("%v ", n * 2)
     }, int_list)
@@ -142,7 +142,6 @@ func main() {
     str_list3 := golist.Merge(str_list, str_list2)
     int_list.Merge(int_list2)
     fmt.Printf("int_list:  %v\n", int_list)
-    fmt.Printf("int_list2: %v\n", int_list2)
     fmt.Printf("str_list:  %v\n", str_list)
     fmt.Printf("str_list2: %v\n", str_list2)
     fmt.Printf("str_list3: %v\n", str_list3)
