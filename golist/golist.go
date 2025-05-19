@@ -7,7 +7,9 @@ import (
 )
 
 /*
+ *******************************************************************************
  * Define structs and interfaces
+ *******************************************************************************
  */
 
 // Node in singly linked List.
@@ -22,14 +24,19 @@ type GoList[T comparable] struct {
 }
 
 type ordered interface {
+    number | ~string
+}
+
+type number interface {
     ~int | ~int8 | ~int16 | ~int32 | ~int64 |
     ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr |
-    ~float32 | ~float64 |
-    ~string
+    ~float32 | ~float64
 }
 
 /*
+ *******************************************************************************
  * Exported functions
+ *******************************************************************************
  */
 
 // Create new singly linked list.
@@ -41,7 +48,7 @@ func ListOf[T comparable](values ...T) (list GoList[T]) {
 // Return true if fun returns true for all elements in list, otherwise return false.
 func All[T comparable](fun func(T) bool, list GoList[T]) bool {
     for curr := list.Head; curr != nil; curr = curr.next {
-        if fun(curr.data) == false {
+        if !fun(curr.data) {
             return false
         }
     }
@@ -51,7 +58,7 @@ func All[T comparable](fun func(T) bool, list GoList[T]) bool {
 // Return true if fun returns true for at least 1 element in list, otherwise return false.
 func Any[T comparable](fun func(T) bool, list GoList[T]) bool {
     for curr := list.Head; curr != nil; curr = curr.next {
-        if fun(curr.data) == true {
+        if fun(curr.data) {
             return true
         }
     }
@@ -59,7 +66,7 @@ func Any[T comparable](fun func(T) bool, list GoList[T]) bool {
 }
 
 // Return new list is append of input list and values.
-func Append[T comparable](list GoList[T], values ...T) (result GoList[T]) {    
+func Append[T comparable](list GoList[T], values ...T) (result GoList[T]) {
     for curr := list.Head; curr != nil; curr = curr.next {
         result.Append(curr.data)
     }
@@ -105,7 +112,7 @@ func DropLast[T comparable](list GoList[T]) (result GoList[T]) {
 func DropWhile[T comparable](fun func(T) bool, list GoList[T]) (result GoList[T]) {
     curr := list.Head
     for curr != nil {
-        if fun(curr.data) == false {
+        if !fun(curr.data) {
             break
         }
         curr = curr.next
@@ -131,7 +138,7 @@ func Filter[T comparable](fun func(T) bool, list GoList[T]) (result GoList[T]) {
         return
     }
     for curr := list.Head; curr != nil; curr = curr.next {
-        if fun(curr.data) == true {
+        if fun(curr.data) {
             result.Append(curr.data)
         }
     }
@@ -184,6 +191,15 @@ func Last[T comparable](list GoList[T]) (last T) {
             last = curr.data
             return
         }
+    }
+    return
+}
+
+// Return length of list.
+func Length[T comparable](list GoList[T]) (len int) {
+    len = 0
+    for curr := list.Head; curr != nil; curr = curr.next {
+        len += 1
     }
     return
 }
@@ -272,6 +288,20 @@ func NthTail[T comparable](n int, list GoList[T]) (result GoList[T]) {
     return
 }
 
+// Return true if list1 is prefix of list2, otherwise return false.
+func Prefix[T comparable](list1 GoList[T], list2 GoList[T]) bool {
+    curr1 := list1.Head
+    curr2 := list2.Head
+    for curr1 != nil {
+        if curr2 == nil || curr1.data != curr2.data {
+            return false
+        }
+        curr1 = curr1.next
+        curr2 = curr2.next
+    }
+    return true
+}
+
 // Return result is reverse of input list
 func Reverse[T comparable](list GoList[T]) (result GoList[T]) {
     var head *node[T]
@@ -283,8 +313,105 @@ func Reverse[T comparable](list GoList[T]) (result GoList[T]) {
     return
 }
 
+// Return position and value of first element that func returns true.
+// If every fun execution return false, return pos is -1.
+func Search[T comparable](fun func(T) bool, list GoList[T]) (pos int, val T) {
+    pos = -1
+    i := 0
+    for curr := list.Head; curr != nil; curr = curr.next {
+        if fun(curr.data) {
+            pos = i
+            val = curr.data
+            return
+        }
+        i++
+    }
+    return
+}
+
+// Return sequence of numbers that starts with from and contains the successive
+// result of adding incr to the previous element, until to is reached or passed.
+func Seq[T number](from, to, incr T) (result GoList[T]) {
+    result = GoList[T]{}
+    for i := from; i <= to; i += incr {
+        result.Append(i)
+    }
+    return
+}
+
+// Split list into list1 and list2, list1 contains n first elements and list2
+// contains the remaining elements.
+func Split[T comparable](n int, list GoList[T]) (list1, list2 GoList[T]) {
+    curr := list.Head
+    for i := 0; i < n; i++ {
+        list1.Append(curr.data)
+        curr = curr.next
+    }
+    for curr != nil {
+        list2.Append(curr.data)
+        curr = curr.next
+    }
+    return
+}
+
+// Split list into list1 and list2, list1 contains elements which fun returns
+// true, list2 contains elements which fun returns false.
+func SplitWith[T comparable](fun func(T) bool, list GoList[T]) (list1, list2 GoList[T]) {
+    for curr := list.Head; curr != nil; curr = curr.next {
+        if fun(curr.data) {
+            list1.Append(curr.data)
+        } else {
+            list2.Append(curr.data)
+        }
+    }
+    return
+}
+
+// Return sublist of input list as new list, starting at start and has maximum
+// len elements.
+func Sublist[T comparable](list GoList[T], start, len int) (result GoList[T]) {
+    curr := list.Head
+    for i := 0; curr != nil && i < start; i++ {
+        curr = curr.next
+    }
+    for j := 0; curr != nil && j < len; j++ {
+        result.Append(curr.data)
+        curr = curr.next
+    }
+    return
+}
+
+// Return a new list that is a copy of list1 which is for each element in list2,
+// its first occurrence in list1 is deleted.
+func Subtract[T comparable](list1, list2 GoList[T]) (result GoList[T]) {
+    for curr1 := list1.Head; curr1 != nil; curr1 = curr1.next {
+        result.Append(curr1.data)
+    }
+    for curr2 := list2.Head; curr2 != nil; curr2 = curr2.next {
+        result.Delete(curr2.data)
+    }
+    return
+}
+
+// Returns true if list1 is a suffix of list2, otherwise false.
+func Suffix[T comparable](list1, list2 GoList[T]) bool {
+    reverse1 := Reverse(list1)
+    reverse2 := Reverse(list2)
+    return Prefix(reverse1, reverse2)
+}
+
+// Returns sum of elements in list.
+func Sum[T ordered](list GoList[T]) (sum T) {
+    for curr := list.Head; curr != nil; curr = curr.next {
+        sum += curr.data
+    }
+    return
+}
+
 /*
+ *******************************************************************************
  * Exported methods
+ *******************************************************************************
  */
 
  // Append all values into last of list.
@@ -338,7 +465,7 @@ func (list *GoList[T]) DropLast() {
 // Drop elements in list while fun returns true.
 func (list *GoList[T]) DropWhile(fun func(T) bool) {
     for curr := list.Head; curr != nil; curr = curr.next {
-        if fun(curr.data) == true {
+        if fun(curr.data) {
             list.Head = curr.next
         } else {
             break
@@ -351,11 +478,11 @@ func (list *GoList[T]) Filter(fun func(T) bool) {
     if list.Head == nil {
         return
     }
-    if fun(list.Head.data) == false {
+    if !fun(list.Head.data) {
         list.Head = list.Head.next
     }
     for curr := list.Head; curr.next != nil; curr = curr.next {
-        if fun(curr.next.data) == false {
+        if !fun(curr.next.data) {
             curr.next = curr.next.next
         }
     }
@@ -414,6 +541,29 @@ func (list *GoList[T]) Reverse() {
     list.Head = prev
 }
 
+// Return sublist that starting at start and has maximum len elements.
+func (list *GoList[T]) Sublist(start, len int) {
+    curr := list.Head
+    for i := 0; curr != nil && i < start; i++ {
+        curr = curr.next
+    }
+    list.Head = curr
+    for j := 0; curr != nil && curr.next != nil && j < len - 1; j++ {
+        curr = curr.next
+    }
+    if curr != nil {
+        curr.next = nil
+    }
+    return
+}
+
+// Delete elements in list1 that is its first occurrence to each element in list2.
+func (list1 *GoList[T]) Subtract(list2 GoList[T]) {
+    for curr := list2.Head; curr != nil; curr = curr.next {
+        list1.Delete(curr.data)
+    }
+}
+
 // Return a string representing singly linked list.
 func (list GoList[T]) String() string {
     var builder strings.Builder
@@ -427,3 +577,10 @@ func (list GoList[T]) String() string {
     builder.WriteString(" ]")
     return builder.String()
 }
+
+/*
+ *******************************************************************************
+ * Internal functions and methods
+ *******************************************************************************
+ */
+
