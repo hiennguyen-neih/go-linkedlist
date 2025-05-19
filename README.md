@@ -5,7 +5,7 @@ Linked list library for Go programming language (golang).
 
 ## Install
 ```Go
-$ github.com/hiennguyen-neih/go-linkedlist
+$ go get github.com/hiennguyen-neih/go-linkedlist
 ```
 
 ## Document
