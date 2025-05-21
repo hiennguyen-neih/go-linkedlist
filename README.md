@@ -19,7 +19,14 @@ import "github.com/hiennguyen-neih/go-linkedlist/golist"
 ```
 
 ## Usage
+### Declare variables
 ```Go
 list1 := golist.GoList[int]{}
-list2 := golist.ListOf("a", "b", "c", "d")
+list2 := golist.New("a", "b", "c", "d")
+```
+### For loop
+```Go
+for node := list.Head; node != nil; node = node.Next {
+    // do-somethings
+}
 ```
