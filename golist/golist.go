@@ -4,6 +4,8 @@ package golist
 import (
     "fmt"
     "strings"
+    "github.com/hiennguyen-neih/go-linkedlist/node"
+    "github.com/hiennguyen-neih/go-linkedlist/constraints"
 )
 
 /*
@@ -12,25 +14,9 @@ import (
  *******************************************************************************
  */
 
-// Node in singly linked List.
-type Node[T comparable] struct {
-    Data T
-    Next *Node[T]
-}
-
 // Struct of Go singly linked list.
 type GoList[T comparable] struct {
-    Head *Node[T]
-}
-
-type ordered interface {
-    number | ~string
-}
-
-type number interface {
-    ~int | ~int8 | ~int16 | ~int32 | ~int64 |
-    ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr |
-    ~float32 | ~float64
+    Head *node.Node[T]
 }
 
 /*
@@ -220,7 +206,7 @@ func Map[T comparable](fun func(T) T, list GoList[T]) (result GoList[T]) {
 
 // Return maximum element in list.
 // This function only works with list of numbers or strings.
-func Max[T ordered](list GoList[T]) (max T) {
+func Max[T constaints.Ordered](list GoList[T]) (max T) {
     node := list.Head
     max = node.Data
     for node != nil {
@@ -255,7 +241,7 @@ func Merge[T comparable](list1 GoList[T], list2 GoList[T]) (result GoList[T]) {
 
 // Return minimum element in list.
 // This functions only works with list of numbers or strings.
-func Min[T ordered](list GoList[T]) (min T) {
+func Min[T constaints.Ordered](list GoList[T]) (min T) {
     node := list.Head
     min = node.Data
     for node != nil {
@@ -306,9 +292,9 @@ func Prefix[T comparable](list1 GoList[T], list2 GoList[T]) bool {
 
 // Return result is reverse of input list
 func Reverse[T comparable](list GoList[T]) (result GoList[T]) {
-    var head *Node[T]
+    var head *node.Node[T]
     for curr := list.Head; curr != nil; curr = curr.Next {
-        node := &Node[T]{Data: curr.Data, Next: head}
+        node := &node.Node[T]{Data: curr.Data, Next: head}
         head = node
     }
     result = GoList[T]{Head: head}
@@ -333,7 +319,7 @@ func Search[T comparable](fun func(T) bool, list GoList[T]) (pos int, val T) {
 
 // Return sequence of numbers that starts with from and contains the successive
 // result of adding incr to the previous element, until to is reached or passed.
-func Seq[T number](from, to, incr T) (result GoList[T]) {
+func Seq[T constaints.Numeric](from, to, incr T) (result GoList[T]) {
     result = GoList[T]{}
     for i := from; i <= to; i += incr {
         result.Append(i)
@@ -403,7 +389,7 @@ func Suffix[T comparable](list1, list2 GoList[T]) bool {
 }
 
 // Returns sum of elements in list.
-func Sum[T ordered](list GoList[T]) (sum T) {
+func Sum[T constaints.Ordered](list GoList[T]) (sum T) {
     for node := list.Head; node != nil; node = node.Next {
         sum += node.Data
     }
@@ -419,7 +405,7 @@ func Sum[T ordered](list GoList[T]) (sum T) {
  // Append all values into last of list.
 func (list *GoList[T]) Append(values ...T) {
     for _, value := range values {
-        newNode := &Node[T]{Data: value}
+        newNode := &node.Node[T]{Data: value}
         if list.Head == nil {
             list.Head = newNode
             continue
@@ -495,7 +481,7 @@ func (list *GoList[T]) Join(sep T) {
     curr := list.Head
     for curr != nil {
         if curr.Next != nil {
-            node := &Node[T]{Data: sep, Next: curr.Next}
+            node := &node.Node[T]{Data: sep, Next: curr.Next}
             curr.Next = node
             curr = node.Next
         } else {
@@ -532,7 +518,7 @@ func (list *GoList[T]) NthTail(n int) {
 
 // Reverse the input list
 func (list *GoList[T]) Reverse() {
-    var prev *Node[T]
+    var prev *node.Node[T]
     node := list.Head
     for node != nil {
         next := node.Next
