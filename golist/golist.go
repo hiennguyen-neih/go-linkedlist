@@ -40,6 +40,12 @@ type number interface {
  */
 
 // Create new singly linked list.
+func New[T comparable](values ...T) (list GoList[T]) {
+    list.Append(values...)
+    return
+}
+
+// Deprecated: Use golist.New instead.
 func ListOf[T comparable](values ...T) (list GoList[T]) {
     list.Append(values...)
     return
