@@ -20,11 +20,15 @@ func main() {
     fmt.Printf("int_list1: %v\n", int_list1)
     fmt.Printf("str_list1: %v\n", str_list1)
 
-    fmt.Println("Example golist Append")
+    fmt.Println("Example golist Append, AppendHead")
     int_list1.Append(1,2,3,4,3)
+    int_list2.AppendHead(5,4,3,2,1)
     str_list2 = golist.Append(str_list1, "d", "e", "f")
+    str_list3 = golist.AppendHead(str_list1, "x", "y", "z")
     fmt.Printf("int_list1: %v\n", int_list1)
+    fmt.Printf("int_list2: %v\n", int_list2)
     fmt.Printf("str_list2: %v\n", str_list2)
+    fmt.Printf("str_list3: %v\n", str_list3)
 
     fmt.Println("Example golist All and Any")
     int_list1 = golist.New(1,2,3,4)

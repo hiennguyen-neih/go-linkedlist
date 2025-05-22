@@ -66,6 +66,18 @@ func Append[T comparable](list GoList[T], values ...T) (result GoList[T]) {
     return
 }
 
+// Return new list is input list that append values into head of it.
+func AppendHead[T comparable](list GoList[T], values ...T) (result GoList[T]) {
+    for _, value := range values {
+        result.doAppendHead(value)
+    }
+    for node := list.Head; node != nil; node = node.Next {
+        result.doAppendHead(node.Data)
+    }
+    result.Reverse()
+    return
+}
+
 // Delte first node in list with value of input and return as new list.
 func Delete[T comparable](list GoList[T], value T) (result GoList[T]) {
     if list.Head == nil {
@@ -418,6 +430,13 @@ func (list *GoList[T]) Append(values ...T) {
     }
 }
 
+// Append all values into head of list.
+func (list *GoList[T]) AppendHead(values ...T) {
+    for i := len(values) - 1; i >= 0; i-- {
+        list.doAppendHead(values[i])
+    }
+}
+
 // Delete first node in list with value of input.
 func (list *GoList[T]) Delete(value T) {
     if list.Head == nil {
@@ -572,3 +591,7 @@ func (list GoList[T]) String() string {
  *******************************************************************************
  */
 
+func (list *GoList[T]) doAppendHead(value T) {
+    node := &node.Node[T]{Data: value, Next: list.Head}
+    list.Head = node
+}
