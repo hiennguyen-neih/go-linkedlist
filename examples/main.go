@@ -58,17 +58,26 @@ func main() {
     fmt.Printf("int_list1: %v\n", int_list1)
     fmt.Printf("str_list2: %v\n", str_list2)
 
-    fmt.Println("Example golist DropWhile")
+    fmt.Println("Example golist DropWhile, TakeWhile")
     int_list1 = golist.New(1,2,3,4,5,4,3,2,1)
+    int_list2 = golist.New(9,8,7,6,5,4,3,2,1)
     str_list1 = golist.New("a","b","c","d","c","b","a")
     int_list1.DropWhile(func(n int) bool {
         return n < 5
     })
+    int_list2.TakeWhile(func(n int) bool {
+        return n >= 5
+    })
     str_list2 = golist.DropWhile(func(s string) bool {
         return s != "d"
     }, str_list1)
+    str_list3 = golist.TakeWhile(func(s string) bool {
+        return s != "d"
+    }, str_list1)
     fmt.Printf("int_list1: %v\n", int_list1)
+    fmt.Printf("int_list2: %v\n", int_list2)
     fmt.Printf("str_list2: %v\n", str_list2)
+    fmt.Printf("str_list3: %v\n", str_list3)
 
     fmt.Println("Example golist Duplicate, Seq, Sum")
     int_list1 = golist.Duplicate(5, 0)

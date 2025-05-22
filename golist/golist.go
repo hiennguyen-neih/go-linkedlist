@@ -429,6 +429,19 @@ func Sum[T constaints.Ordered](list GoList[T]) (sum T) {
     return
 }
 
+// Take elements in list while fun returns true, and return as new list.
+func TakeWhile[T comparable](fun func(T) bool, list GoList[T]) (result GoList[T]) {
+    for node := list.Head; node != nil; node = node.Next {
+        if fun(node.Data) {
+            result.doAppendHead(node.Data)
+        } else {
+            break
+        }
+    }
+    result.Reverse()
+    return
+}
+
 /*
  *******************************************************************************
  * Exported methods
@@ -582,6 +595,19 @@ func (list *GoList[T]) Sublist(start, len int) {
 func (list1 *GoList[T]) Subtract(list2 GoList[T]) {
     for node := list2.Head; node != nil; node = node.Next {
         list1.Delete(node.Data)
+    }
+}
+
+// Take elements in list while fun returns true.
+func (list *GoList[T]) TakeWhile(fun func(T) bool) {
+    if !fun(list.Head.Data) {
+        list.Head = nil
+        return
+    }
+    for node := list.Head; node != nil; node = node.Next {
+        if !fun(node.Next.Data) {
+            node.Next = nil
+        }
     }
 }
 
