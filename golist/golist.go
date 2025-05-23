@@ -230,7 +230,7 @@ func Map[T comparable](fun func(T) T, list GoList[T]) (result GoList[T]) {
 
 // Return maximum element in list.
 // This function only works with list of numbers or strings.
-func Max[T constaints.Ordered](list GoList[T]) (max T) {
+func Max[T constraints.Ordered](list GoList[T]) (max T) {
     node := list.Head
     max = node.Data
     for node != nil {
@@ -266,7 +266,7 @@ func Merge[T comparable](list1 GoList[T], list2 GoList[T]) (result GoList[T]) {
 
 // Return minimum element in list.
 // This functions only works with list of numbers or strings.
-func Min[T constaints.Ordered](list GoList[T]) (min T) {
+func Min[T constraints.Ordered](list GoList[T]) (min T) {
     node := list.Head
     min = node.Data
     for node != nil {
@@ -345,7 +345,7 @@ func Search[T comparable](fun func(T) bool, list GoList[T]) (pos int, val T) {
 
 // Return sequence of numbers that starts with from and contains the successive
 // result of adding incr to the previous element, until to is reached or passed.
-func Seq[T constaints.Numeric](from, to, incr T) (result GoList[T]) {
+func Seq[T constraints.Numeric](from, to, incr T) (result GoList[T]) {
     result = GoList[T]{}
     for i := from; i <= to; i += incr {
         result.doAppendHead(i)
@@ -422,7 +422,7 @@ func Suffix[T comparable](list1, list2 GoList[T]) bool {
 }
 
 // Returns sum of elements in list.
-func Sum[T constaints.Ordered](list GoList[T]) (sum T) {
+func Sum[T constraints.Ordered](list GoList[T]) (sum T) {
     for node := list.Head; node != nil; node = node.Next {
         sum += node.Data
     }

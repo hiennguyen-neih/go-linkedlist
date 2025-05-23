@@ -1,5 +1,5 @@
 // Package constraints contains custom type contraints in go-linkedlist.
-package constaints
+package constraints
 
 type Ordered interface {
     Numeric | ~string
