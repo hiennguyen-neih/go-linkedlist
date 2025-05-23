@@ -250,6 +250,16 @@ func main() {
     fmt.Printf("str_list3: %v\n", str_list3)    // [ e -> f ]
     fmt.Println()
 
+    // Sort
+    fmt.Println("Example golist Sort")
+    int_list1 = golist.New(2,3,1,5,4,6,9,7,1,8)
+    int_list2 = golist.Sort(int_list1)
+    fmt.Printf("int_list1: %v\n", int_list1)                            // [ 2 -> 3 -> 1 -> 5 -> 4 -> 6 -> 9 -> 7 -> 1 -> 8 ]
+    fmt.Printf("Head: %v - Tail: %v\n", int_list1.Head, int_list1.Tail) // 2 - 8
+    fmt.Printf("int_list2: %v\n", int_list2)                            // [ 1 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 ]
+    fmt.Printf("Head: %v - Tail: %v\n", int_list2.Head, int_list2.Tail) // 1 - 9
+    fmt.Println()
+
     // Sublist
     fmt.Println("Example golist Sublist")
     int_list1 = golist.New(1,2,3,4,5)
