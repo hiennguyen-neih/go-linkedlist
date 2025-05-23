@@ -79,6 +79,17 @@ func AppendHead[T comparable](list GoList[T], values ...T) (result GoList[T]) {
     return
 }
 
+// Return a list that is concatenated of list1 and list2
+func Concat[T comparable](list1, list2 GoList[T]) (result GoList[T]) {
+    for node1 := list1.Head; node1 != nil; node1 = node1.Next {
+        result.doAppend(node1.Data)
+    }
+    for node2 := list2.Head; node2 != nil; node2 = node2.Next {
+        result.doAppend(node2.Data)
+    }
+    return
+}
+
 // Delte first node in list with value of input and return as new list.
 func Delete[T comparable](list GoList[T], value T) (result GoList[T]) {
     if list.Head == nil {
@@ -251,14 +262,10 @@ func Member[T comparable](elem T, list GoList[T]) bool {
     return false
 }
 
-// Return a list that is merged of list1 and list2
-func Merge[T comparable](list1 GoList[T], list2 GoList[T]) (result GoList[T]) {
-    for node1 := list1.Head; node1 != nil; node1 = node1.Next {
-        result.doAppend(node1.Data)
-    }
-    for node2 := list2.Head; node2 != nil; node2 = node2.Next {
-        result.doAppend(node2.Data)
-    }
+// Return a sorted list forming by merging list1 and list2.
+func Merge[T constraints.Ordered](list1, list2 GoList[T]) (result GoList[T]) {
+    result = Concat(list1, list2)
+    result = Sort(result)
     return
 }
 
@@ -300,7 +307,7 @@ func NthTail[T comparable](n int, list GoList[T]) (result GoList[T]) {
 }
 
 // Return true if list1 is prefix of list2, otherwise return false.
-func Prefix[T comparable](list1 GoList[T], list2 GoList[T]) bool {
+func Prefix[T comparable](list1, list2 GoList[T]) bool {
     node1 := list1.Head
     node2 := list2.Head
     for node1 != nil {
@@ -462,6 +469,13 @@ func (list *GoList[T]) AppendHead(values ...T) {
     }
 }
 
+// Concatenates list2 into last of list1. This method won't remove list2, so every
+// change made to list2 after this method execution might affect list1 as well.
+func (list1 *GoList[T]) Concat(list2 GoList[T]) {
+    list1.Tail.Next = list2.Head
+    list1.Tail = list2.Tail
+}
+
 // Delete first node in list with value of input.
 func (list *GoList[T]) Delete(value T) {
     if list.Head == nil {
@@ -540,13 +554,6 @@ func (list *GoList[T]) Map(fun func(T) T) {
     for node := list.Head; node != nil; node = node.Next {
         node.Data = fun(node.Data)
     }
-}
-
-// Merge list2 into last of list1. This method won't remove list2, so every
-// change made to list2 after this method execution might affect list1 as well.
-func (list1 *GoList[T]) Merge(list2 GoList[T]) {
-    list1.Tail.Next = list2.Head
-    list1.Tail = list2.Tail
 }
 
 // Return sublist from the nth element.
@@ -668,9 +675,9 @@ func quickSort[T constraints.Ordered](list GoList[T]) GoList[T] {
     sortedLess := quickSort(less)
     sortedGreater := quickSort(greater)
 
-    // Merge 3 list: sortedLess + equal + sortedGreater
-    result := Merge(sortedLess, equal)
-    result = Merge(result, sortedGreater)
+    // Concatenates 3 list: sortedLess + equal + sortedGreater
+    result := Concat(sortedLess, equal)
+    result = Concat(result, sortedGreater)
 
     return result
 }

@@ -52,6 +52,26 @@ func main() {
     fmt.Printf("str_list1 Any = b: %v\n", str_bool)     // true
     fmt.Println()
 
+    // Concat
+    fmt.Println("Example golist Concat and Merge")
+    int_list1 = golist.New(1,3,5,7)
+    int_list2 = golist.New(2,4,6,8)
+    int_list3 = golist.Merge(int_list1, int_list2)
+    str_list1 = golist.New("a","b","c")
+    str_list2 = golist.New("d","e","f")
+    str_list3 = golist.Concat(str_list1, str_list2)
+    int_list1.Concat(int_list2)
+    fmt.Println("Before Map:")
+    fmt.Printf("int_list1: %v\n", int_list1)    // [ 1 -> 3 -> 5 -> 7 -> 2 -> 4 -> 6 -> 8 ]
+    fmt.Printf("int_list2: %v\n", int_list2)    // [ 2 -> 4 -> 6 -> 8 ]
+    fmt.Printf("int_list3: %v\n", int_list3)    // [ 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 ]
+    fmt.Printf("str_list3: %v\n", str_list3)    // [ a -> b -> c -> d -> e -> f ]
+    int_list2.Map(func(n int) int { return n * n })
+    fmt.Println("After Map:")
+    fmt.Printf("int_list1: %v\n", int_list1)    // [ 1 -> 3 -> 5 -> 7 -> 4 -> 16 -> 36 -> 64 ]
+    fmt.Printf("int_list2: %v\n", int_list2)    // [ 4 -> 16 -> 36 -> 64 ]
+    fmt.Println()
+
     // Delete
     fmt.Println("Example golist Delete")
     int_list1 = golist.New(1,2,3,4,3)
@@ -194,24 +214,6 @@ func main() {
     fmt.Printf("str_pre:  %v\n", str_pre)           // true
     fmt.Printf("str_suf:  %v\n", str_suf)           // true
     fmt.Printf("pos: %v - val: %v\n", pos, val)     // 3 - d
-    fmt.Println()
-
-    // Merge
-    fmt.Println("Example golist Merge")
-    int_list1 = golist.New(1,2,3,4)
-    int_list2 = golist.New(5,6,7,8)
-    str_list1 = golist.New("a","b","c")
-    str_list2 = golist.New("d","e","f")
-    str_list3 = golist.Merge(str_list1, str_list2)
-    int_list1.Merge(int_list2)
-    fmt.Println("Before Map:")
-    fmt.Printf("int_list1: %v\n", int_list1)    // [ 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 ]
-    fmt.Printf("int_list2: %v\n", int_list2)
-    fmt.Printf("str_list3: %v\n", str_list3)    // [ a -> b -> c -> d -> e -> f ]
-    int_list2.Map(func(n int) int { return n * n })
-    fmt.Println("After Map:")
-    fmt.Printf("int_list1: %v\n", int_list1)
-    fmt.Printf("int_list2: %v\n", int_list2)
     fmt.Println()
 
     // NthTail
