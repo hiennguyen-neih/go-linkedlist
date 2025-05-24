@@ -258,6 +258,13 @@ func Member[T comparable](elem T, list GoList[T]) bool {
     return false
 }
 
+// Return a sorted list forming by merging list1 and list2.
+func Merge[T constraints.Ordered](list1, list2 GoList[T]) (result GoList[T]) {
+    result = Concat(list1, list2)
+    result = Sort(result)
+    return
+}
+
 // Return minimum element in list.
 // This functions only works with list of numbers or strings.
 func Min[T constraints.Ordered](list GoList[T]) (min T) {
