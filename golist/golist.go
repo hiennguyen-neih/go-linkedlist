@@ -31,12 +31,6 @@ func New[T comparable](values ...T) (list GoList[T]) {
     return
 }
 
-// Deprecated: Use golist.New instead.
-func ListOf[T comparable](values ...T) (list GoList[T]) {
-    list = New(values...)
-    return
-}
-
 // Return true if fun returns true for all elements in list, otherwise return
 // false.
 func All[T comparable](fun func(T) bool, list GoList[T]) bool {
