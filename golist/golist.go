@@ -348,6 +348,12 @@ func Seq[T constraints.Numeric](from, to, incr T) (result GoList[T]) {
     return
 }
 
+// Sort input list and returns as new list.
+func Sort[T constraints.Ordered](list GoList[T]) (result GoList[T]) {
+    result = quickSort(list)
+    return
+}
+
 // Split list into list1 and list2, list1 contains n first elements and list2
 // contains the remaining elements.
 func Split[T comparable](n int, list GoList[T]) (list1, list2 GoList[T]) {
@@ -626,7 +632,40 @@ func (list GoList[T]) String() string {
  *******************************************************************************
  */
 
+// Do append value into head of list.
 func (list *GoList[T]) doAppendHead(value T) {
     node := &node.Node[T]{Data: value, Next: list.Head}
     list.Head = node
+}
+
+// Do quick sort input list and returns as new list.
+func quickSort[T constraints.Ordered](list GoList[T]) GoList[T] {
+    if list.Head == nil || list.Head.Next == nil {
+        return list
+    }
+
+    pivot := list.Head.Data
+    var less, equal, greater GoList[T]
+
+    // Partitioning
+    for node := list.Head; node != nil; node = node.Next {
+        switch {
+        case node.Data < pivot:
+            less.doAppendHead(node.Data)
+        case node.Data == pivot:
+            equal.doAppendHead(node.Data)
+        case node.Data > pivot:
+            greater.doAppendHead(node.Data)
+        }
+    }
+
+    // Recursive sort
+    sortedLess := quickSort(less)
+    sortedGreater := quickSort(greater)
+
+    // Concatenates 3 lists: sortedLess + equal + sortedGreater
+    result := Concat(sortedLess, equal)
+    result = Concat(result, sortedGreater)
+
+    return result
 }

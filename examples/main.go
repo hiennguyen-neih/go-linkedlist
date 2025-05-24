@@ -226,6 +226,14 @@ func main() {
     fmt.Printf("str_list2: %v\n", str_list2)    // [ d -> c -> b -> a ]
     fmt.Println()
 
+    // Sort
+    fmt.Println("Example golist Sort")
+    int_list1 = golist.New(2,5,1,2,7,3,9,4,8,6,4)
+    int_list2 = golist.Sort(int_list1)
+    fmt.Printf("int_list1: %v\n", int_list1)    // [ 2 -> 5 -> 1 -> 2 -> 7 -> 3 -> 9 -> 4 -> 8 -> 6 -> 4 ]
+    fmt.Printf("int_list2: %v\n", int_list2)    // [ 1 -> 2 -> 2 -> 3 -> 4 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 ]
+    fmt.Println()
+
     // Split - SplitWith
     fmt.Println("Example golist Split and SplitWith")
     int_list1 = golist.New(0,1,2,3,4,5,6,7,8,9)
