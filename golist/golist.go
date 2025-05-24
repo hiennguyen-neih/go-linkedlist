@@ -217,7 +217,7 @@ func Last[T comparable](list GoList[T]) (last T) {
 }
 
 // Return length of list.
-func Length[T comparable](list GoList[T]) (len int) {
+func Len[T comparable](list GoList[T]) (len int) {
     len = 0
     for node := list.Head; node != nil; node = node.Next {
         len += 1
