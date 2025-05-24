@@ -77,6 +77,18 @@ func AppendHead[T comparable](list GoList[T], values ...T) (result GoList[T]) {
     return
 }
 
+// Return a list that is concatenated of list1 and list2.
+func Concat[T comparable](list1, list2 GoList[T]) (result GoList[T]) {
+    for node1 := list1.Head; node1 != nil; node1 = node1.Next {
+        result.doAppendHead(node1.Data)
+    }
+    for node2 := list2.Head; node2 != nil; node2 = node2.Next {
+        result.doAppendHead(node2.Data)
+    }
+    result.Reverse()
+    return
+}
+
 // Delte first node in list with value of input and return as new list.
 func Delete[T comparable](list GoList[T], value T) (result GoList[T]) {
     if list.Head == nil {
@@ -246,18 +258,6 @@ func Member[T comparable](elem T, list GoList[T]) bool {
     return false
 }
 
-// Return a list that is merged of list1 and list2
-func Merge[T comparable](list1 GoList[T], list2 GoList[T]) (result GoList[T]) {
-    for node1 := list1.Head; node1 != nil; node1 = node1.Next {
-        result.doAppendHead(node1.Data)
-    }
-    for node2 := list2.Head; node2 != nil; node2 = node2.Next {
-        result.doAppendHead(node2.Data)
-    }
-    result.Reverse()
-    return
-}
-
 // Return minimum element in list.
 // This functions only works with list of numbers or strings.
 func Min[T constraints.Ordered](list GoList[T]) (min T) {
@@ -297,7 +297,7 @@ func NthTail[T comparable](n int, list GoList[T]) (result GoList[T]) {
 }
 
 // Return true if list1 is prefix of list2, otherwise return false.
-func Prefix[T comparable](list1 GoList[T], list2 GoList[T]) bool {
+func Prefix[T comparable](list1, list2 GoList[T]) bool {
     node1 := list1.Head
     node2 := list2.Head
     for node1 != nil {
@@ -458,6 +458,17 @@ func (list *GoList[T]) AppendHead(values ...T) {
     }
 }
 
+// Concatenates list2 into last of list1. This method won't remove list2, so
+// changes made to list2 after this method executed might affect list1 as well.
+func (list1 *GoList[T]) Concat(list2 GoList[T]) {
+    for node1 := list1.Head; node1 != nil; node1 = node1.Next {
+        if node1.Next == nil {
+            node1.Next = list2.Head
+            return
+        }
+    }
+}
+
 // Delete first node in list with value of input.
 func (list *GoList[T]) Delete(value T) {
     if list.Head == nil {
@@ -534,16 +545,6 @@ func (list *GoList[T]) Join(sep T) {
 func (list *GoList[T]) Map(fun func(T) T) {
     for node := list.Head; node != nil; node = node.Next {
         node.Data = fun(node.Data)
-    }
-}
-
-// Merge list2 into last of list1
-func (list1 *GoList[T]) Merge(list2 GoList[T]) {
-    for node1 := list1.Head; node1 != nil; node1 = node1.Next {
-        if node1.Next == nil {
-            node1.Next = list2.Head
-            return
-        }
     }
 }
 
