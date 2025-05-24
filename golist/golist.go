@@ -449,54 +449,59 @@ func TakeWhile[T comparable](fun func(T) bool, list GoList[T]) (result GoList[T]
  */
 
 // Append all values into last of list.
-func (list *GoList[T]) Append(values ...T) {
+func (list *GoList[T]) Append(values ...T) *GoList[T] {
     list.Reverse()
     for _, value := range values {
         list.doAppendHead(value)
     }
     list.Reverse()
+    return list
 }
 
 // Append all values into head of list.
-func (list *GoList[T]) AppendHead(values ...T) {
+func (list *GoList[T]) AppendHead(values ...T) *GoList[T] {
     for i := len(values) - 1; i >= 0; i-- {
         list.doAppendHead(values[i])
     }
+    return list
 }
 
 // Concatenates list2 into last of list1. This method won't remove list2, so
-// changes made to list2 after this method executed might affect list1 as well.
-func (list1 *GoList[T]) Concat(list2 GoList[T]) {
+// after this method executed, changes made to list2 might affect list1 and
+// changes made to list1 might affect list2 as well.
+func (list1 *GoList[T]) Concat(list2 GoList[T]) *GoList[T] {
     for node1 := list1.Head; node1 != nil; node1 = node1.Next {
         if node1.Next == nil {
             node1.Next = list2.Head
-            return
+            return list1
         }
     }
+    return list1
 }
 
 // Delete first node in list with value of input.
-func (list *GoList[T]) Delete(value T) {
+func (list *GoList[T]) Delete(value T) *GoList[T] {
     if list.Head == nil {
-        return
+        return list
     }
     // Ignore if it's first node
     if list.Head.Data == value {
         list.Head = list.Head.Next
-        return
+        return list
     }
     node := list.Head
     for node.Next != nil {
         if node.Next.Data == value {
             node.Next = node.Next.Next
-            return
+            return list
         }
         node = node.Next
     }
+    return list
 }
 
 // Drop the last element in list.
-func (list *GoList[T]) DropLast() {
+func (list *GoList[T]) DropLast() *GoList[T] {
     node := list.Head
     for node != nil {
         if node.Next.Next == nil {
@@ -505,10 +510,11 @@ func (list *GoList[T]) DropLast() {
         }
         node = node.Next
     }
+    return list
 }
 
 // Drop elements in list while fun returns true.
-func (list *GoList[T]) DropWhile(fun func(T) bool) {
+func (list *GoList[T]) DropWhile(fun func(T) bool) *GoList[T] {
     for node := list.Head; node != nil; node = node.Next {
         if fun(node.Data) {
             list.Head = node.Next
@@ -516,12 +522,13 @@ func (list *GoList[T]) DropWhile(fun func(T) bool) {
             break
         }
     }
+    return list
 }
 
 // Only keep elements in list that fun return true.
-func (list *GoList[T]) Filter(fun func(T) bool) {
+func (list *GoList[T]) Filter(fun func(T) bool) *GoList[T] {
     if list.Head == nil {
-        return
+        return list
     }
     if !fun(list.Head.Data) {
         list.Head = list.Head.Next
@@ -531,10 +538,11 @@ func (list *GoList[T]) Filter(fun func(T) bool) {
             node.Next = node.Next.Next
         }
     }
+    return list
 }
 
 // Insert sep between each element in list.
-func (list *GoList[T]) Join(sep T) {
+func (list *GoList[T]) Join(sep T) *GoList[T] {
     curr := list.Head
     for curr != nil {
         if curr.Next != nil {
@@ -545,26 +553,29 @@ func (list *GoList[T]) Join(sep T) {
             curr = nil
         }
     }
+    return list
 }
 
 // Applying function to every elements in list.
-func (list *GoList[T]) Map(fun func(T) T) {
+func (list *GoList[T]) Map(fun func(T) T) *GoList[T] {
     for node := list.Head; node != nil; node = node.Next {
         node.Data = fun(node.Data)
     }
+    return list
 }
 
 // Return sublist from the nth element.
-func (list *GoList[T]) NthTail(n int) {
+func (list *GoList[T]) NthTail(n int) *GoList[T] {
     node := list.Head
     for i := 0; i < n; i++ {
         node = node.Next
     }
     list.Head = node
+    return list
 }
 
 // Reverse the input list
-func (list *GoList[T]) Reverse() {
+func (list *GoList[T]) Reverse() *GoList[T] {
     var prev *node.Node[T]
     node := list.Head
     for node != nil {
@@ -574,10 +585,11 @@ func (list *GoList[T]) Reverse() {
         node = next
     }
     list.Head = prev
+    return list
 }
 
 // Return sublist that starting at start and has maximum len elements.
-func (list *GoList[T]) Sublist(start, len int) {
+func (list *GoList[T]) Sublist(start, len int) *GoList[T] {
     node := list.Head
     for i := 0; node != nil && i < start; i++ {
         node = node.Next
@@ -589,27 +601,29 @@ func (list *GoList[T]) Sublist(start, len int) {
     if node != nil {
         node.Next = nil
     }
-    return
+    return list
 }
 
 // Delete elements in list1 that is its first occurrence to each element in list2.
-func (list1 *GoList[T]) Subtract(list2 GoList[T]) {
+func (list1 *GoList[T]) Subtract(list2 GoList[T]) *GoList[T] {
     for node := list2.Head; node != nil; node = node.Next {
         list1.Delete(node.Data)
     }
+    return list1
 }
 
 // Take elements in list while fun returns true.
-func (list *GoList[T]) TakeWhile(fun func(T) bool) {
+func (list *GoList[T]) TakeWhile(fun func(T) bool) *GoList[T] {
     if !fun(list.Head.Data) {
         list.Head = nil
-        return
+        return list
     }
     for node := list.Head; node != nil; node = node.Next {
         if !fun(node.Next.Data) {
             node.Next = nil
         }
     }
+    return list
 }
 
 // Return a string representing singly linked list.

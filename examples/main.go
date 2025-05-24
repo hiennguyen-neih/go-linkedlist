@@ -269,4 +269,11 @@ func main() {
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 3 -> 1 -> 2 ]
     fmt.Printf("str_list3: %v\n", str_list3)    // [ c -> a -> b ]
     fmt.Println()
+
+    // Method chaining
+    fmt.Println("Example golist method chaining")
+    int_list1 = golist.New(1,2,3,4)
+    int_list1.Join(8).Map(func(n int) int { return n * 2 }).Concat(golist.New(1,2,3)).Reverse()
+    fmt.Printf("int_list1: %v\n", int_list1)    // [ 3 -> 2 -> 1 -> 8 -> 16 -> 6 -> 16 -> 4 -> 16 -> 2 ]
+    fmt.Println()
 }
