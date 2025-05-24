@@ -169,13 +169,13 @@ func main() {
     fmt.Printf("str_list2: %v\n", str_list2)    // [ A -> B -> C -> D ]
     fmt.Println()
 
-    // Last - Len - Max - Min - Member - Nth - Prefix - Suffix - Search
-    fmt.Println("Example golist Last, Len, Max, Min, Member, Nth, Prefix, Suffix and Search")
+    // Last - Length - Max - Min - Member - Nth - Prefix - Suffix - Search
+    fmt.Println("Example golist Last, Length, Max, Min, Member, Nth, Prefix, Suffix and Search")
     str_list1 = golist.New("a","b","c","d","c","b")
     str_list2 = golist.New("a","b","c")
     str_list3 = golist.New("d","c","b")
     str_last := golist.Last(str_list1)
-    str_len := golist.Len(str_list1)
+    str_len := golist.Length(str_list1)
     str_max := golist.Max(str_list1)
     str_min := golist.Min(str_list1)
     str_mem := golist.Member("d", str_list1)

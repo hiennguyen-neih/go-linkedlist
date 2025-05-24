@@ -191,26 +191,11 @@ func Join[T comparable](sep T, list GoList[T]) (result GoList[T]) {
 
 // Return the last element in list.
 func Last[T comparable](list GoList[T]) (last T) {
-    for node := list.Head; node != nil; node = node.Next {
-        if node.Next == nil {
-            list.Tail = node
-            break
-        }
-    }
     last = list.Tail.Data
     return
 }
 
 // Return length of list.
-func Len[T comparable](list GoList[T]) (len int) {
-    len = 0
-    for node := list.Head; node != nil; node = node.Next {
-        len += 1
-    }
-    return
-}
-
-// Deprecated: Use golist.Len instead.
 func Length[T comparable](list GoList[T]) (len int) {
     len = 0
     for node := list.Head; node != nil; node = node.Next {
