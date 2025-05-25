@@ -165,6 +165,22 @@ func Filter[T comparable](fun func(T) bool, list GoList[T]) (result GoList[T]) {
     return
 }
 
+// Calls fun on successive elements of list. fun must return (bool, value).
+// The function returns a new list of elements for which fun returns
+// a new value, where a value of true is synonymous with (true, value).
+func FilterMap[T comparable](fun func(T) (bool, T), list GoList[T]) (result GoList[T]) {
+    if list.Head == nil {
+        return
+    }
+    for node := list.Head; node != nil; node = node.Next {
+        if keep, value := fun(node.Data); keep {
+            result.doAppendHead(value)
+        }
+    }
+    result.Reverse()
+    return
+}
+
 // Execute fun with input is elements in list from left to right and acc0,
 // fun return new acc and it's used as input for next execution.
 // Return the acc of the last execution.
@@ -545,6 +561,26 @@ func (list *GoList[T]) Filter(fun func(T) bool) *GoList[T] {
             node.Next = node.Next.Next
         }
     }
+    return list
+}
+
+// Calls fun on successive elements of list. fun must return (bool, value).
+// The function returns the list of elements for which fun returns
+// a new value, where a value of true is synonymous with (true, value).
+func (list *GoList[T]) FilterMap(fun func(T) (bool, T)) *GoList[T] {
+    dummy := &node.Node[T]{Next: list.Head}
+    prev := dummy
+
+    for node := list.Head; node != nil; node = node.Next {
+        if keep, value := fun(node.Data); keep {
+            node.Data = value
+            prev = node
+        } else {
+            prev.Next = node.Next
+        }
+    }
+
+    list.Head = dummy.Next
     return list
 }
 

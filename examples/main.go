@@ -125,18 +125,27 @@ func main() {
     fmt.Printf("str_sum: %v\n", str_sum)        // XXXX
     fmt.Println()
 
-    // Filter
-    fmt.Println("Example golist Filter")
+    // Filter - FilterMap
+    fmt.Println("Example golist Filter and FilterMap")
     int_list1 = golist.New(1,2,3,4,5,6)
+    int_list2 = golist.New(1,2,3,4,5,6)
     str_list1 = golist.New("a","b","a","c","a","d")
     int_list1.Filter(func(n int) bool {
         return (n % 2) == 0
     })
+    int_list2.FilterMap(func(n int) (bool, int) {
+        return (n % 2) != 0, n * 2
+    })
     str_list2 = golist.Filter(func(s string) bool {
         return s != "a"
     }, str_list1)
+    str_list3 = golist.FilterMap(func (s string) (bool, string) {
+        return s != "a", strings.ToUpper(s)
+    }, str_list1)
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 2 -> 4 -> 6 ]
+    fmt.Printf("int_list2: %v\n", int_list2)    // [ 2 -> 6 -> 10 ]
     fmt.Printf("str_list2: %v\n", str_list2)    // [ b -> c -> d ]
+    fmt.Printf("str_list3: %v\n", str_list3)    // [ B -> C -> D ]
     fmt.Println()
 
     // Foldl - Foldr - ForEach
