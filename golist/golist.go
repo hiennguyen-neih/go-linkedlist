@@ -250,6 +250,31 @@ func Map[T comparable](fun func(T) T, list GoList[T]) (result GoList[T]) {
     return
 }
 
+// Combines the operations of Map function and Foldl function into one pass.
+func MapFoldl[T1, T2 comparable](fun func(T1, T2) (T1, T2), acc0 T2, list GoList[T1]) (GoList[T1], T2) {
+    var value T1
+    var result GoList[T1]
+    for node := list.Head; node != nil; node = node.Next {
+        value, acc0 = fun(node.Data, acc0)
+        result.doAppendHead(value)
+    }
+    result.Reverse()
+    return result, acc0
+}
+
+// Combines the operations of Map function and Foldr function into one pass.
+func MapFoldr[T1, T2 comparable](fun func(T1, T2) (T1, T2), acc0 T2, list GoList[T1]) (GoList[T1], T2) {
+    var value T1
+    var result GoList[T1]
+    reverse := Reverse(list)
+    for node := reverse.Head; node != nil; node = node.Next {
+        value, acc0 = fun(node.Data, acc0)
+        result.doAppendHead(value)
+    }
+    result.Reverse()
+    return result, acc0
+}
+
 // Return maximum element in list.
 // This function only works with list of numbers or strings.
 func Max[T constraints.Ordered](list GoList[T]) (max T) {

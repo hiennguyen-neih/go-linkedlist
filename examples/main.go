@@ -155,12 +155,12 @@ func main() {
         fmt.Printf("%v ", n)                    // 1 2 3 4 5
         return n + s
     }, 0, int_list1)
-    fmt.Printf("sum: %v\n", sum)                // 15
-    fac := golist.Foldr(func(n, p int) int {
+    fmt.Printf("| sum: %v\n", sum)                // 15
+    fac := golist.Foldr(func(n, f int) int {
         fmt.Printf("%v ", n)                    // 5 4 3 2 1
-        return n * p
+        return n * f
     }, 1, int_list1)
-    fmt.Printf("fac: %v\n", fac)                // 120
+    fmt.Printf("| fac: %v\n", fac)                // 120
     golist.ForEach(func(n int) {
         fmt.Printf("%v ", n * 2)                // 2 4 6 8 10
     }, int_list1)
@@ -176,8 +176,8 @@ func main() {
     fmt.Printf("str_list2: %v\n", str_list2)    // [ a -> X -> b -> X -> c -> X -> d ]
     fmt.Println()
 
-    // Map
-    fmt.Println("Example golist Map")
+    // Map - MapFoldl - MapFoldr
+    fmt.Println("Example golist Map, MapFoldl and MapFoldr")
     int_list1 = golist.New(1,2,3,4)
     str_list1 = golist.New("a","b","c","d")
     int_list1.Map(func(n int) int {
@@ -187,6 +187,18 @@ func main() {
         return strings.ToUpper(s)
     }, str_list1)
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 2 -> 4 -> 6 -> 8 ]
+    int_list2, sum = golist.MapFoldl(func(n, s int) (int, int) {
+        fmt.Printf("%v ", n)                    // 2 4 6 8
+        return n * 2, s + n
+    }, 0, int_list1)
+    fmt.Printf("| sum: %v\n", sum)              // 20
+    fmt.Printf("int_list2: %v\n", int_list2)    // [ 4 -> 8 -> 12 -> 16 ]
+    int_list3, fac = golist.MapFoldr(func(n, f int) (int, int) {
+        fmt.Printf("%v ", n)                    // 8 6 4 2
+        return n * n, f * n
+    }, 1, int_list1)
+    fmt.Printf("| fac: %v\n", fac)              // 384
+    fmt.Printf("int_list3: %v\n", int_list3)    // [ 64 -> 36 -> 16 -> 4 ]
     fmt.Printf("str_list2: %v\n", str_list2)    // [ A -> B -> C -> D ]
     fmt.Println()
 
