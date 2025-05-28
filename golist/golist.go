@@ -181,6 +181,21 @@ func FilterMap[T comparable](fun func(T) (bool, T), list GoList[T]) (result GoLi
     return
 }
 
+// Return position of first element in list that match with value. If there is
+// no matching element, return -1.
+func Find[T comparable](list GoList[T], value T) (pos int) {
+    pos = -1
+    i := 0
+    for node := list.Head; node != nil; node = node.Next {
+        if node.Data == value {
+            pos = i
+            return
+        }
+        i++
+    }
+    return
+}
+
 // Execute fun with input is elements in list from left to right and acc0,
 // fun return new acc and it's used as input for next execution.
 // Return the acc of the last execution.

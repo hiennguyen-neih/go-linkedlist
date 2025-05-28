@@ -205,11 +205,12 @@ func main() {
     fmt.Printf("str_list2: %v\n", str_list2)    // [ A -> B -> C -> D ]
     fmt.Println()
 
-    // Last - Len - Max - Min - Member - Nth - Prefix - Suffix - Search
-    fmt.Println("Example golist Last, Len, Max, Min, Member, Nth, Prefix, Suffix and Search")
+    // Find - Last - Len - Max - Min - Member - Nth - Prefix - Suffix - Search
+    fmt.Println("Example golist Find, Last, Len, Max, Min, Member, Nth, Prefix, Suffix and Search")
     str_list1 = golist.New("a","b","c","d","c","b")
     str_list2 = golist.New("a","b","c")
     str_list3 = golist.New("d","c","b")
+    str_find := golist.Find(str_list1, "c")
     str_last := golist.Last(str_list1)
     str_len := golist.Len(str_list1)
     str_max := golist.Max(str_list1)
@@ -221,6 +222,7 @@ func main() {
     pos, val := golist.Search(func(s string) bool {
         return s > "c"
     }, str_list1)
+    fmt.Printf("str_find: %v\n", str_find)      // 2
     fmt.Printf("str_last: %v\n", str_last)      // b
     fmt.Printf("str_len:  %v\n", str_len)       // 6
     fmt.Printf("str_max:  %v\n", str_max)       // d
