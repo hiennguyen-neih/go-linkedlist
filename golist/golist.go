@@ -511,6 +511,20 @@ func TakeWhile[T comparable](fun func(T) bool, list GoList[T]) (result GoList[T]
     return
 }
 
+// Return a unique sorted list forming by merging list1 and list2, then remove
+// all duplicated elements.
+func UMerge[T constraints.Ordered](list1, list2 GoList[T]) (result GoList[T]) {
+    result = Concat(list1, list2)
+    result = uniqueQuickSort(result)
+    return
+}
+
+// Sort input list and remove all duplicated elements, then returns as new list.
+func USort[T constraints.Ordered](list GoList[T]) (result GoList[T]) {
+    result = uniqueQuickSort(list)
+    return
+}
+
 /*
  *******************************************************************************
  * Exported methods
@@ -768,6 +782,44 @@ func quickSort[T constraints.Ordered](list GoList[T]) GoList[T] {
     sortedGreater := quickSort(greater)
 
     // Concatenates 3 lists: sortedLess + equal + sortedGreater
+    result := Concat(sortedLess, equal)
+    result = Concat(result, sortedGreater)
+
+    return result
+}
+
+// Do quick sort input list and returns as new list.
+func uniqueQuickSort[T constraints.Ordered](list GoList[T]) GoList[T] {
+    if list.Head == nil || list.Head.Next == nil {
+        return list
+    }
+
+    pivot := list.Head.Data
+    var less, equal, greater GoList[T]
+    seen := make(map[T]bool) // store already seen node data into map
+
+    // Partitioning and remove seen node
+    for node := list.Head; node != nil; node = node.Next {
+        if seen[node.Data] {
+            continue
+        }
+        seen[node.Data] = true
+
+        switch {
+        case node.Data < pivot:
+            less.doAppendHead(node.Data)
+        case node.Data == pivot:
+            equal.doAppendHead(node.Data)
+        case node.Data > pivot:
+            greater.doAppendHead(node.Data)
+        }
+    }
+
+    // Recursive sort
+    sortedLess := uniqueQuickSort(less)
+    sortedGreater := uniqueQuickSort(greater)
+
+    // Concatenate: sortedLess + equal + sortedGreater
     result := Concat(sortedLess, equal)
     result = Concat(result, sortedGreater)
 

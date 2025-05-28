@@ -48,25 +48,28 @@ func main() {
     fmt.Printf("str_list1 Any = b: %v\n", str_bool) // true
     fmt.Println()
 
-    // Concat - Merge
-    fmt.Println("Example golist Concat and Merge")
-    int_list1 = golist.New(2,4,6,8)
-    int_list2 = golist.New(1,3,5,7)
-    int_list3 = golist.Merge(int_list1, int_list2)
+    // Concat - Merge - UMerge
+    fmt.Println("Example golist Concat, Merge and UMerge")
+    int_list1 = golist.New(2,8,6,8)
+    int_list2 = golist.New(1,3,3,7)
     str_list1 = golist.New("a","b","c")
     str_list2 = golist.New("d","e","f")
+    fmt.Println("Merge:")
+    int_list3 = golist.Merge(int_list1, int_list2)
+    fmt.Printf("int_list3: %v\n", int_list3)        // [ 1 -> 2 -> 3 -> 3 -> 6 -> 7 -> 8 -> 8 ]
+    fmt.Println("UMerge:")
+    int_list3 = golist.UMerge(int_list1, int_list2)
+    fmt.Printf("int_list3: %v\n", int_list3)        // [ 1 -> 2 -> 3 -> 6 -> 7 -> 8 ]
+    fmt.Println("Concat before int_list2 Map:")
     str_list3 = golist.Concat(str_list1, str_list2)
     int_list1.Concat(int_list2)
-    fmt.Println("Before Map:")
-    fmt.Printf("int_list1: %v\n", int_list1)    // [ 2 -> 4 -> 6 -> 8 -> 1 -> 3 -> 5 -> 7 ]
-    fmt.Printf("int_list2: %v\n", int_list2)    // [ 1 -> 3 -> 5 -> 7 ]
-    fmt.Printf("int_list3: %v\n", int_list3)    // [ 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 ]
-    fmt.Printf("str_list3: %v\n", str_list3)    // [ a -> b -> c -> d -> e -> f ]
+    fmt.Printf("int_list1: %v\n", int_list1)        // [ 2 -> 8 -> 6 -> 8 -> 1 -> 3 -> 3 -> 7 ]
+    fmt.Printf("int_list2: %v\n", int_list2)        // [ 1 -> 3 -> 3 -> 7 ]
+    fmt.Printf("str_list3: %v\n", str_list3)        // [ a -> b -> c -> d -> e -> f ]
+    fmt.Println("Concat after int_list2 Map:")
     int_list2.Map(func(n int) int { return n * n })
-    fmt.Println("After Map:")
-    fmt.Printf("int_list1: %v\n", int_list1)    // [ 2 -> 4 -> 6 -> 8 -> 1 -> 9 -> 25 -> 49 ]
-    fmt.Printf("int_list2: %v\n", int_list2)    // [ 1 -> 9 -> 25 -> 49 ]
-    fmt.Println()
+    fmt.Printf("int_list1: %v\n", int_list1)        // [ 2 -> 8 -> 6 -> 8 -> 1 -> 9 -> 9 -> 49 ]
+    fmt.Printf("int_list2: %v\n", int_list2)        // [ 1 -> 9 -> 9 -> 49 ]
 
     // Delete
     fmt.Println("Example golist Delete")
@@ -249,12 +252,14 @@ func main() {
     fmt.Printf("str_list2: %v\n", str_list2)    // [ d -> c -> b -> a ]
     fmt.Println()
 
-    // Sort
-    fmt.Println("Example golist Sort")
+    // Sort - USort
+    fmt.Println("Example golist Sort and USort")
     int_list1 = golist.New(2,5,1,2,7,3,9,4,8,6,4)
     int_list2 = golist.Sort(int_list1)
+    int_list3 = golist.USort(int_list1)
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 2 -> 5 -> 1 -> 2 -> 7 -> 3 -> 9 -> 4 -> 8 -> 6 -> 4 ]
     fmt.Printf("int_list2: %v\n", int_list2)    // [ 1 -> 2 -> 2 -> 3 -> 4 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 ]
+    fmt.Printf("int_list3: %v\n", int_list3)    // [ 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 ]
     fmt.Println()
 
     // Split - SplitWith - Partition
