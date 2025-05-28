@@ -736,9 +736,10 @@ func (list GoList[T]) String() string {
  */
 
 // Do append value into head of list.
-func (list *GoList[T]) doAppendHead(value T) {
+func (list *GoList[T]) doAppendHead(value T) *GoList[T] {
     node := &node.Node[T]{Data: value, Next: list.Head}
     list.Head = node
+    return list
 }
 
 // Do quick sort input list and returns as new list.
