@@ -419,15 +419,21 @@ func Split[T comparable](n int, list GoList[T]) (list1, list2 GoList[T]) {
     return
 }
 
-// Split list into list1 and list2, list1 contains elements which fun returns
-// true, list2 contains elements which fun returns false.
+// Split input list into list1 and list2, where list1 behave as
+// TakeWhile(fun, list) and list2 behave as DropWhile(fun, list).
 func SplitWith[T comparable](fun func(T) bool, list GoList[T]) (list1, list2 GoList[T]) {
-    for node := list.Head; node != nil; node = node.Next {
+    node := list.Head
+    for node != nil {
         if fun(node.Data) {
             list1.doAppendHead(node.Data)
         } else {
-            list2.doAppendHead(node.Data)
+            break
         }
+        node = node.Next
+    }
+    for node != nil {
+        list2.doAppendHead(node.Data)
+        node = node.Next
     }
     list1.Reverse()
     list2.Reverse()

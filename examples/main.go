@@ -261,12 +261,12 @@ func main() {
     fmt.Println("Example golist Split and SplitWith")
     int_list1 = golist.New(0,1,2,3,4,5,6,7,8,9)
     int_list2, int_list3 = golist.SplitWith(func(n int) bool {
-        return n % 2 == 0
+        return n < 5
     }, int_list1)
     str_list1 = golist.New("a","b","c","d","e","f")
     str_list2, str_list3 = golist.Split(4, str_list1)
-    fmt.Printf("int_list2: %v\n", int_list2)    // [ 0 -> 2 -> 4 -> 6 -> 8 ]
-    fmt.Printf("int_list3: %v\n", int_list3)    // [ 1 -> 3 -> 5 -> 7 -> 9 ]
+    fmt.Printf("int_list2: %v\n", int_list2)    // [ 0 -> 1 -> 2 -> 3 -> 4 ]
+    fmt.Printf("int_list3: %v\n", int_list3)    // [ 5 -> 6 -> 7 -> 8 -> 9 ]
     fmt.Printf("str_list2: %v\n", str_list2)    // [ a -> b -> c -> d ]
     fmt.Printf("str_list3: %v\n", str_list3)    // [ e -> f ]
     fmt.Println()
