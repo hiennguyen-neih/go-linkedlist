@@ -344,6 +344,21 @@ func NthTail[T comparable](n int, list GoList[T]) (result GoList[T]) {
     return
 }
 
+// Split list into list1 and list2, where list1 contains elements which fun
+// returns true and list2 contains elements which fun returns false.
+func Partition[T comparable](fun func(T) bool, list GoList[T]) (list1, list2 GoList[T]) {
+    for node := list.Head; node != nil; node = node.Next {
+        if fun(node.Data) {
+            list1.doAppendHead(node.Data)
+        } else {
+            list2.doAppendHead(node.Data)
+        }
+    }
+    list1.Reverse()
+    list2.Reverse()
+    return
+}
+
 // Return true if list1 is prefix of list2, otherwise return false.
 func Prefix[T comparable](list1, list2 GoList[T]) bool {
     node1 := list1.Head
