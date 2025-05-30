@@ -80,11 +80,11 @@ func main() {
     int_list1.Delete(3)
     int_list2.DeleteAt(3)
     str_list2 = golist.Delete(str_list1, "c")
-    str_list3 = golist.DeleteAt(str_list1, 3)
+    str_list3 = golist.DeleteAt(str_list1, -2)
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 1 -> 2 -> 4 -> 3 ]
-    fmt.Printf("int_list2: %v\n", int_list2)
+    fmt.Printf("int_list2: %v\n", int_list2)    // [ 5 -> 4 -> 3 -> 1 ]
     fmt.Printf("str_list2: %v\n", str_list2)    // [ "a" -> "b" -> "d" -> "e" ]
-    fmt.Printf("str_list3: %v\n", str_list3)
+    fmt.Printf("str_list3: %v\n", str_list3)    // [ "a" -> "b" -> "c" -> "e" ]
     fmt.Println()
 
     // DropLast

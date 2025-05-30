@@ -112,21 +112,36 @@ func Delete[T comparable](list GoList[T], value T) GoList[T] {
     return *result.Reverse()
 }
 
-// Delete nth node in list and return as new list.
-func DeleteAt[T comparable](list GoList[T], n int) GoList[T] {
+// Delete node at the specific index in list and return as new list. Negative
+// index indicate an offset from the end of list.
+func DeleteAt[T comparable](list GoList[T], index int) GoList[T] {
     var result GoList[T]
+    len := Len(list)
+
     if list.Head == nil {
         return result
     }
-    i := 0
-    for node := list.Head; node != nil; node = node.Next {
-        if i == n {
-            i++
-            continue
-        }
-        i++
-        result.doAppendHead(node.Data)
+
+    if index < 0 {
+        index = len + index // same as len - abs(index)
     }
+
+    if index < 0 || index > len {
+        for node := list.Head; node != nil; node = node.Next {
+            result.doAppendHead(node.Data)
+        }
+    } else {
+        i := 0
+        for node := list.Head; node != nil; node = node.Next {
+            if i == index {
+                i++
+                continue
+            }
+            i++
+            result.doAppendHead(node.Data)
+        }
+    }
+
     return *result.Reverse()
 }
 
@@ -620,23 +635,33 @@ func (list *GoList[T]) Delete(value T) *GoList[T] {
     return list
 }
 
-// Delete nth node in list.
-func (list *GoList[T]) DeleteAt(n int) *GoList[T] {
+// Delete node at specific index in list. Negative index indicate offset from
+// the end of list.
+func (list *GoList[T]) DeleteAt(index int) *GoList[T] {
+    var len int = Len(*list)
+
     if list.Head == nil {
         return list
     }
-    if n == 0 {
+
+    if index == 0 {
         list.Head = list.Head.Next
         return list
+    } else if index < 0 {
+        index = len + index // same as len - abs(index)
     }
-    i := 1
-    for node := list.Head; node.Next != nil; node = node.Next {
-        if i == n {
-            node.Next = node.Next.Next
-            return list
+
+    if index > 0 && index < len {
+        i := 1
+        for node := list.Head; node.Next != nil; node = node.Next {
+            if i == index {
+                node.Next = node.Next.Next
+                return list
+            }
+            i++
         }
-        i++
     }
+
     return list
 }
 
