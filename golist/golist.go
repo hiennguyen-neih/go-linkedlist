@@ -26,9 +26,9 @@ type GoList[T comparable] struct {
  */
 
 // Create new singly linked list.
-func New[T comparable](values ...T) (list GoList[T]) {
-    list.AppendHead(values...)
-    return
+func New[T comparable](values ...T) GoList[T] {
+    var list GoList[T]
+    return *list.AppendHead(values...)
 }
 
 // Return true if fun returns true for all elements in list, otherwise return
@@ -54,45 +54,46 @@ func Any[T comparable](list GoList[T], fun func(T) bool) bool {
 }
 
 // Return new list is append of input list and values.
-func Append[T comparable](list GoList[T], values ...T) (result GoList[T]) {
+func Append[T comparable](list GoList[T], values ...T) GoList[T] {
+    var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
         result.doAppendHead(node.Data)
     }
     for _, value := range values {
         result.doAppendHead(value)
     }
-    result.Reverse()
-    return
+    return *result.Reverse()
 }
 
 // Return new list is input list that append values into head of it.
-func AppendHead[T comparable](list GoList[T], values ...T) (result GoList[T]) {
+func AppendHead[T comparable](list GoList[T], values ...T) GoList[T] {
+    var result GoList[T]
     for _, value := range values {
         result.doAppendHead(value)
     }
     for node := list.Head; node != nil; node = node.Next {
         result.doAppendHead(node.Data)
     }
-    result.Reverse()
-    return
+    return *result.Reverse()
 }
 
 // Return a list that is concatenated of list1 and list2.
-func Concat[T comparable](list1, list2 GoList[T]) (result GoList[T]) {
+func Concat[T comparable](list1, list2 GoList[T]) GoList[T] {
+    var result GoList[T]
     for node1 := list1.Head; node1 != nil; node1 = node1.Next {
         result.doAppendHead(node1.Data)
     }
     for node2 := list2.Head; node2 != nil; node2 = node2.Next {
         result.doAppendHead(node2.Data)
     }
-    result.Reverse()
-    return
+    return *result.Reverse()
 }
 
 // Delte first node in list with value of input and return as new list.
-func Delete[T comparable](list GoList[T], value T) (result GoList[T]) {
+func Delete[T comparable](list GoList[T], value T) GoList[T] {
+    var result GoList[T]
     if list.Head == nil {
-        return
+        return result
     }
     node := list.Head
     for node != nil {
@@ -108,26 +109,25 @@ func Delete[T comparable](list GoList[T], value T) (result GoList[T]) {
         result.doAppendHead(node.Data)
         node = node.Next
     }
-    result.Reverse()
-    return
+    return *result.Reverse()
 }
 
 // Drop the last element in list and return as new list.
-func DropLast[T comparable](list GoList[T]) (result GoList[T]) {
+func DropLast[T comparable](list GoList[T]) GoList[T] {
+    var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
         if node.Next.Next == nil {
             result.doAppendHead(node.Data)
-            result.Reverse()
-            return
+            return *result.Reverse()
         }
         result.doAppendHead(node.Data)
     }
-    result.Reverse()
-    return
+    return *result.Reverse()
 }
 
 // Drop elements in list while fun returns true, and return as new list.
-func DropWhile[T comparable](list GoList[T], fun func(T) bool) (result GoList[T]) {
+func DropWhile[T comparable](list GoList[T], fun func(T) bool) GoList[T] {
+    var result GoList[T]
     node := list.Head
     for node != nil {
         if !fun(node.Data) {
@@ -139,61 +139,59 @@ func DropWhile[T comparable](list GoList[T], fun func(T) bool) (result GoList[T]
         result.doAppendHead(node.Data)
         node = node.Next
     }
-    result.Reverse()
-    return
+    return *result.Reverse()
 }
 
 // Returns a list containing n copies of term element.
-func Duplicate[T comparable](n int, elem T) (result GoList[T]) {
+func Duplicate[T comparable](n int, elem T) GoList[T] {
+    var result GoList[T]
     for i := 0; i < n; i++ {
         result.doAppendHead(elem)
     }
-    return
+    return result
 }
 
 // Return new list contains elements in input that fun returns true.
-func Filter[T comparable](list GoList[T], fun func(T) bool) (result GoList[T]) {
+func Filter[T comparable](list GoList[T], fun func(T) bool) GoList[T] {
+    var result GoList[T]
     if list.Head == nil {
-        return
+        return result
     }
     for node := list.Head; node != nil; node = node.Next {
         if fun(node.Data) {
             result.doAppendHead(node.Data)
         }
     }
-    result.Reverse()
-    return
+    return *result.Reverse()
 }
 
 // Calls fun on successive elements of list. fun must return (bool, value).
 // The function returns a new list of elements for which fun returns
 // a new value, where a value of true is synonymous with (true, value).
-func FilterMap[T comparable](list GoList[T], fun func(T) (bool, T)) (result GoList[T]) {
+func FilterMap[T comparable](list GoList[T], fun func(T) (bool, T)) GoList[T] {
+    var result GoList[T]
     if list.Head == nil {
-        return
+        return result
     }
     for node := list.Head; node != nil; node = node.Next {
         if keep, value := fun(node.Data); keep {
             result.doAppendHead(value)
         }
     }
-    result.Reverse()
-    return
+    return *result.Reverse()
 }
 
 // Return position of first element in list that match with value. If there is
 // no matching element, return -1.
-func Find[T comparable](list GoList[T], value T) (pos int) {
-    pos = -1
+func Find[T comparable](list GoList[T], value T) int {
     i := 0
     for node := list.Head; node != nil; node = node.Next {
         if node.Data == value {
-            pos = i
-            return
+            return i
         }
         i++
     }
-    return
+    return -1
 }
 
 // Execute fun with input is elements in list from left to right and acc0,
@@ -225,44 +223,45 @@ func ForEach[T comparable](list GoList[T], fun func(T)) {
 }
 
 // Insert sep between each element in list and return as new list.
-func Join[T comparable](list GoList[T], sep T) (result GoList[T]) {
+func Join[T comparable](list GoList[T], sep T) GoList[T] {
+    var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
         result.doAppendHead(node.Data)
         if node.Next != nil {
             result.doAppendHead(sep)
         }
     }
-    result.Reverse()
-    return
+    return *result.Reverse()
 }
 
-// Return the last element in list.
-func Last[T comparable](list GoList[T]) (last T) {
-    for node := list.Head; node != nil; node = node.Next {
-        if node.Next == nil {
-            last = node.Data
-            return
-        }
+// Return data of last node in list.
+func Last[T comparable](list GoList[T]) T {
+    if list.Head == nil || list.Head.Next == nil {
+        return list.Head.Data
     }
-    return
+    node := list.Head
+    for node.Next != nil {
+        node = node.Next
+    }
+    return node.Data
 }
 
 // Return length of list.
-func Len[T comparable](list GoList[T]) (len int) {
-    len = 0
+func Len[T comparable](list GoList[T]) int {
+    len := 0
     for node := list.Head; node != nil; node = node.Next {
         len += 1
     }
-    return
+    return len
 }
 
 // Applying function to every elements in list and return as new list.
-func Map[T comparable](list GoList[T], fun func(T) T) (result GoList[T]) {
+func Map[T comparable](list GoList[T], fun func(T) T) GoList[T] {
+    var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
         result.doAppendHead(fun(node.Data))
     }
-    result.Reverse()
-    return
+    return *result.Reverse()
 }
 
 // Combines the operations of Map function and Foldl function into one pass.
@@ -273,8 +272,7 @@ func MapFoldl[T1, T2 comparable](list GoList[T1], acc0 T2, fun func(T1, T2) (T1,
         value, acc0 = fun(node.Data, acc0)
         result.doAppendHead(value)
     }
-    result.Reverse()
-    return result, acc0
+    return *result.Reverse(), acc0
 }
 
 // Combines the operations of Map function and Foldr function into one pass.
@@ -286,22 +284,21 @@ func MapFoldr[T1, T2 comparable](list GoList[T1], acc0 T2, fun func(T1, T2) (T1,
         value, acc0 = fun(node.Data, acc0)
         result.doAppendHead(value)
     }
-    result.Reverse()
-    return result, acc0
+    return *result.Reverse(), acc0
 }
 
 // Return maximum element in list.
 // This function only works with list of numbers or strings.
-func Max[T constraints.Ordered](list GoList[T]) (max T) {
+func Max[T constraints.Ordered](list GoList[T]) T {
     node := list.Head
-    max = node.Data
+    max := node.Data
     for node != nil {
         if node.Data > max {
             max = node.Data
         }
         node = node.Next
     }
-    return
+    return max
 }
 
 // Return true if elem in list, otherwise return false.
@@ -315,38 +312,37 @@ func Member[T comparable](list GoList[T], elem T) bool {
 }
 
 // Return a sorted list forming by merging list1 and list2.
-func Merge[T constraints.Ordered](list1, list2 GoList[T]) (result GoList[T]) {
-    result = Concat(list1, list2)
-    result = Sort(result)
-    return
+func Merge[T constraints.Ordered](list1, list2 GoList[T]) GoList[T] {
+    result := Concat(list1, list2)
+    return Sort(result)
 }
 
 // Return minimum element in list.
 // This functions only works with list of numbers or strings.
-func Min[T constraints.Ordered](list GoList[T]) (min T) {
+func Min[T constraints.Ordered](list GoList[T]) T {
     node := list.Head
-    min = node.Data
+    min := node.Data
     for node != nil {
         if node.Data < min {
             min = node.Data
         }
         node = node.Next
     }
-    return
+    return min
 }
 
 // Return the nth element in list. Note that list index count from 0.
-func Nth[T comparable](list GoList[T], n int) (elem T) {
+func Nth[T comparable](list GoList[T], n int) T {
     node := list.Head
     for i := 0; i < n; i++ {
         node = node.Next
     }
-    elem = node.Data
-    return
+    return node.Data
 }
 
 // Return sublist from the nth element as new list.
-func NthTail[T comparable](list GoList[T], n int) (result GoList[T]) {
+func NthTail[T comparable](list GoList[T], n int) GoList[T] {
+    var result GoList[T]
     node := list.Head
     for i := 0; i < n; i++ {
         node = node.Next
@@ -355,13 +351,14 @@ func NthTail[T comparable](list GoList[T], n int) (result GoList[T]) {
         result.doAppendHead(node.Data)
         node = node.Next
     }
-    result.Reverse()
-    return
+    return *result.Reverse()
 }
 
 // Split list into list1 and list2, where list1 contains elements which fun
 // returns true and list2 contains elements which fun returns false.
-func Partition[T comparable](list GoList[T], fun func(T) bool) (list1, list2 GoList[T]) {
+func Partition[T comparable](list GoList[T], fun func(T) bool) (GoList[T], GoList[T]) {
+    var list1 GoList[T]
+    var list2 GoList[T]
     for node := list.Head; node != nil; node = node.Next {
         if fun(node.Data) {
             list1.doAppendHead(node.Data)
@@ -369,9 +366,7 @@ func Partition[T comparable](list GoList[T], fun func(T) bool) (list1, list2 GoL
             list2.doAppendHead(node.Data)
         }
     }
-    list1.Reverse()
-    list2.Reverse()
-    return
+    return *list1.Reverse(), *list2.Reverse()
 }
 
 // Return true if list1 is prefix of list2, otherwise return false.
@@ -389,52 +384,53 @@ func Prefix[T comparable](list1, list2 GoList[T]) bool {
 }
 
 // Return result is reverse of input list
-func Reverse[T comparable](list GoList[T]) (result GoList[T]) {
+func Reverse[T comparable](list GoList[T]) GoList[T] {
+    // var result GoList[T]
     var head *node.Node[T]
     for curr := list.Head; curr != nil; curr = curr.Next {
         node := &node.Node[T]{Data: curr.Data, Next: head}
         head = node
     }
-    result = GoList[T]{Head: head}
-    return
+    // result = GoList[T]{Head: head}
+    // return
+    return GoList[T]{Head: head}
 }
 
-// Return position and value of first element that func returns true.
-// If every fun execution return false, return pos is -1.
-func Search[T comparable](list GoList[T], fun func(T) bool) (pos int, val T) {
-    pos = -1
+// Return position and value of first element in list that fun returns true. If
+// every fun execution returns false, this function will returns -1 and zero
+// value of T.
+func Search[T comparable](list GoList[T], fun func(T) bool) (int, T) {
+    var zero T
     i := 0
     for node := list.Head; node != nil; node = node.Next {
         if fun(node.Data) {
-            pos = i
-            val = node.Data
-            return
+            return i, node.Data
         }
         i++
     }
-    return
+    return -1, zero
 }
 
 // Return sequence of numbers that starts with from and contains the successive
 // result of adding incr to the previous element, until to is reached or passed.
-func Seq[T constraints.Numeric](from, to, incr T) (result GoList[T]) {
-    result = GoList[T]{}
+func Seq[T constraints.Numeric](from, to, incr T) GoList[T] {
+    var result GoList[T]
     for i := from; i <= to; i += incr {
         result.doAppendHead(i)
     }
-    result.Reverse()
-    return
+    return *result.Reverse()
 }
 
 // Sort input list and returns as new list.
-func Sort[T constraints.Ordered](list GoList[T]) (result GoList[T]) {
-    result = quickSort(list)
-    return
+func Sort[T constraints.Ordered](list GoList[T]) GoList[T] {
+    return quickSort(list)
 }
 
 // Split list into list1 and list2, list1 contains n first elements and list2
 // contains the remaining elements.
-func Split[T comparable](list GoList[T], n int) (list1, list2 GoList[T]) {
+func Split[T comparable](list GoList[T], n int) (GoList[T], GoList[T]) {
+    var list1 GoList[T]
+    var list2 GoList[T]
     node := list.Head
     for i := 0; i < n; i++ {
         list1.doAppendHead(node.Data)
@@ -444,14 +440,14 @@ func Split[T comparable](list GoList[T], n int) (list1, list2 GoList[T]) {
         list2.doAppendHead(node.Data)
         node = node.Next
     }
-    list1.Reverse()
-    list2.Reverse()
-    return
+    return *list1.Reverse(), *list2.Reverse()
 }
 
 // Split input list into list1 and list2, where list1 behave as
 // TakeWhile(fun, list) and list2 behave as DropWhile(fun, list).
-func SplitWith[T comparable](list GoList[T], fun func(T) bool) (list1, list2 GoList[T]) {
+func SplitWith[T comparable](list GoList[T], fun func(T) bool) (GoList[T], GoList[T]) {
+    var list1 GoList[T]
+    var list2 GoList[T]
     node := list.Head
     for node != nil {
         if fun(node.Data) {
@@ -465,14 +461,13 @@ func SplitWith[T comparable](list GoList[T], fun func(T) bool) (list1, list2 GoL
         list2.doAppendHead(node.Data)
         node = node.Next
     }
-    list1.Reverse()
-    list2.Reverse()
-    return
+    return *list1.Reverse(), *list2.Reverse()
 }
 
 // Return sublist of input list as new list, starting at start and has maximum
 // len elements.
-func Sublist[T comparable](list GoList[T], start, len int) (result GoList[T]) {
+func Sublist[T comparable](list GoList[T], start, len int) GoList[T] {
+    var result GoList[T]
     node := list.Head
     for i := 0; node != nil && i < start; i++ {
         node = node.Next
@@ -481,13 +476,13 @@ func Sublist[T comparable](list GoList[T], start, len int) (result GoList[T]) {
         result.doAppendHead(node.Data)
         node = node.Next
     }
-    result.Reverse()
-    return
+    return *result.Reverse()
 }
 
 // Return a new list that is a copy of list1 which is for each element in list2,
 // its first occurrence in list1 is deleted.
-func Subtract[T comparable](list1, list2 GoList[T]) (result GoList[T]) {
+func Subtract[T comparable](list1, list2 GoList[T]) GoList[T] {
+    var result GoList[T]
     for node1 := list1.Head; node1 != nil; node1 = node1.Next {
         result.doAppendHead(node1.Data)
     }
@@ -495,7 +490,7 @@ func Subtract[T comparable](list1, list2 GoList[T]) (result GoList[T]) {
     for node2 := list2.Head; node2 != nil; node2 = node2.Next {
         result.Delete(node2.Data)
     }
-    return
+    return result
 }
 
 // Returns true if list1 is a suffix of list2, otherwise false.
@@ -506,15 +501,17 @@ func Suffix[T comparable](list1, list2 GoList[T]) bool {
 }
 
 // Returns sum of elements in list.
-func Sum[T constraints.Ordered](list GoList[T]) (sum T) {
+func Sum[T constraints.Ordered](list GoList[T]) T {
+    var sum T
     for node := list.Head; node != nil; node = node.Next {
         sum += node.Data
     }
-    return
+    return sum
 }
 
 // Take elements in list while fun returns true, and return as new list.
-func TakeWhile[T comparable](list GoList[T], fun func(T) bool) (result GoList[T]) {
+func TakeWhile[T comparable](list GoList[T], fun func(T) bool) GoList[T] {
+    var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
         if fun(node.Data) {
             result.doAppendHead(node.Data)
@@ -522,22 +519,19 @@ func TakeWhile[T comparable](list GoList[T], fun func(T) bool) (result GoList[T]
             break
         }
     }
-    result.Reverse()
-    return
+    return *result.Reverse()
 }
 
 // Return a unique sorted list forming by merging list1 and list2, then remove
 // all duplicated elements.
-func UMerge[T constraints.Ordered](list1, list2 GoList[T]) (result GoList[T]) {
-    result = Concat(list1, list2)
-    result = uniqueQuickSort(result)
-    return
+func UMerge[T constraints.Ordered](list1, list2 GoList[T]) GoList[T] {
+    result := Concat(list1, list2)
+    return uniqueQuickSort(result)
 }
 
 // Sort input list and remove all duplicated elements, then returns as new list.
-func USort[T constraints.Ordered](list GoList[T]) (result GoList[T]) {
-    result = uniqueQuickSort(list)
-    return
+func USort[T constraints.Ordered](list GoList[T]) GoList[T] {
+    return uniqueQuickSort(list)
 }
 
 /*
@@ -803,7 +797,7 @@ func quickSort[T constraints.Ordered](list GoList[T]) GoList[T] {
     return result
 }
 
-// Do quick sort input list and returns as new list.
+// Do quick sort input list and remove duplicate nodes and returns as new list.
 func uniqueQuickSort[T constraints.Ordered](list GoList[T]) GoList[T] {
     if list.Head == nil || list.Head.Next == nil {
         return list

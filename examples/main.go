@@ -70,6 +70,7 @@ func main() {
     int_list2.Map(func(n int) int { return n * n })
     fmt.Printf("int_list1: %v\n", int_list1)        // [ 2 -> 8 -> 6 -> 8 -> 1 -> 9 -> 9 -> 49 ]
     fmt.Printf("int_list2: %v\n", int_list2)        // [ 1 -> 9 -> 9 -> 49 ]
+    fmt.Println()
 
     // Delete
     fmt.Println("Example golist Delete")
