@@ -112,6 +112,24 @@ func Delete[T comparable](list GoList[T], value T) GoList[T] {
     return *result.Reverse()
 }
 
+// Delete nth node in list and return as new list.
+func DeleteAt[T comparable](list GoList[T], n int) GoList[T] {
+    var result GoList[T]
+    if list.Head == nil {
+        return result
+    }
+    i := 0
+    for node := list.Head; node != nil; node = node.Next {
+        if i == n {
+            i++
+            continue
+        }
+        i++
+        result.doAppendHead(node.Data)
+    }
+    return *result.Reverse()
+}
+
 // Drop the last element in list and return as new list.
 func DropLast[T comparable](list GoList[T]) GoList[T] {
     var result GoList[T]
@@ -598,6 +616,26 @@ func (list *GoList[T]) Delete(value T) *GoList[T] {
             return list
         }
         node = node.Next
+    }
+    return list
+}
+
+// Delete nth node in list.
+func (list *GoList[T]) DeleteAt(n int) *GoList[T] {
+    if list.Head == nil {
+        return list
+    }
+    if n == 0 {
+        list.Head = list.Head.Next
+        return list
+    }
+    i := 1
+    for node := list.Head; node.Next != nil; node = node.Next {
+        if i == n {
+            node.Next = node.Next.Next
+            return list
+        }
+        i++
     }
     return list
 }
