@@ -142,7 +142,8 @@ func DropWhile[T comparable](list GoList[T], fun func(T) bool) GoList[T] {
     return *result.Reverse()
 }
 
-// Returns a list containing n copies of term element.
+// Return a list containing n copies of term element. If n is negative or equal
+// 0, return empty list.
 func Duplicate[T comparable](n int, elem T) GoList[T] {
     var result GoList[T]
     for i := 0; i < n; i++ {
@@ -333,6 +334,9 @@ func Min[T constraints.Ordered](list GoList[T]) T {
 
 // Return the nth element in list. Note that list index count from 0.
 func Nth[T comparable](list GoList[T], n int) T {
+    if n < 0 {
+        panic("Nth: input n must not be negative!")
+    }
     node := list.Head
     for i := 0; i < n; i++ {
         node = node.Next
@@ -342,6 +346,9 @@ func Nth[T comparable](list GoList[T], n int) T {
 
 // Return sublist from the nth element as new list.
 func NthTail[T comparable](list GoList[T], n int) GoList[T] {
+    if n < 0 {
+        panic("NthTail: input n must not be negative!")
+    }
     var result GoList[T]
     node := list.Head
     for i := 0; i < n; i++ {
@@ -385,14 +392,11 @@ func Prefix[T comparable](list1, list2 GoList[T]) bool {
 
 // Return result is reverse of input list
 func Reverse[T comparable](list GoList[T]) GoList[T] {
-    // var result GoList[T]
     var head *node.Node[T]
     for curr := list.Head; curr != nil; curr = curr.Next {
         node := &node.Node[T]{Data: curr.Data, Next: head}
         head = node
     }
-    // result = GoList[T]{Head: head}
-    // return
     return GoList[T]{Head: head}
 }
 
@@ -429,6 +433,9 @@ func Sort[T constraints.Ordered](list GoList[T]) GoList[T] {
 // Split list into list1 and list2, list1 contains n first elements and list2
 // contains the remaining elements.
 func Split[T comparable](list GoList[T], n int) (GoList[T], GoList[T]) {
+    if n < 0 {
+        panic("Split: input n must not be negative!")
+    }
     var list1 GoList[T]
     var list2 GoList[T]
     node := list.Head
@@ -467,6 +474,9 @@ func SplitWith[T comparable](list GoList[T], fun func(T) bool) (GoList[T], GoLis
 // Return sublist of input list as new list, starting at start and has maximum
 // len elements.
 func Sublist[T comparable](list GoList[T], start, len int) GoList[T] {
+    if start < 0 || len < 0 {
+        panic("Sublist: input start and len must not be negative!")
+    }
     var result GoList[T]
     node := list.Head
     for i := 0; node != nil && i < start; i++ {
@@ -678,6 +688,9 @@ func (list *GoList[T]) Map(fun func(T) T) *GoList[T] {
 
 // Return sublist from the nth element.
 func (list *GoList[T]) NthTail(n int) *GoList[T] {
+    if n < 0 {
+        panic("NthTail: input n must not be negative!")
+    }
     node := list.Head
     for i := 0; i < n; i++ {
         node = node.Next
@@ -702,6 +715,9 @@ func (list *GoList[T]) Reverse() *GoList[T] {
 
 // Return sublist that starting at start and has maximum len elements.
 func (list *GoList[T]) Sublist(start, len int) *GoList[T] {
+    if start < 0 || len < 0 {
+        panic("Sublist: input start and len must not be negative!")
+    }
     node := list.Head
     for i := 0; node != nil && i < start; i++ {
         node = node.Next
