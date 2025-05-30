@@ -38,12 +38,12 @@ func main() {
     fmt.Println("Example golist All and Any")
     int_list1 = golist.New(1,2,3,4)
     str_list1 = golist.New("a","b","c","d")
-    int_bool := golist.All(func(i int) bool {
+    int_bool := golist.All(int_list1, func(i int) bool {
         return i < 4
-    }, int_list1)
-    str_bool := golist.Any(func(s string) bool {
+    })
+    str_bool := golist.Any(str_list1, func(s string) bool {
         return s == "b"
-    }, str_list1)
+    })
     fmt.Printf("int_list1 All < 4: %v\n", int_bool) // false
     fmt.Printf("str_list1 Any = b: %v\n", str_bool) // true
     fmt.Println()
@@ -102,12 +102,12 @@ func main() {
     int_list2.TakeWhile(func(n int) bool {
         return n >= 5
     })
-    str_list2 = golist.DropWhile(func(s string) bool {
+    str_list2 = golist.DropWhile(str_list1, func(s string) bool {
         return s != "d"
-    }, str_list1)
-    str_list3 = golist.TakeWhile(func(s string) bool {
+    })
+    str_list3 = golist.TakeWhile(str_list1, func(s string) bool {
         return s != "d"
-    }, str_list1)
+    })
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 5 -> 4 -> 3 -> 2 -> 1 ]
     fmt.Printf("int_list2: %v\n", int_list2)    // [ 9 -> 8 -> 7 -> 6 -> 5 ]
     fmt.Printf("str_list2: %v\n", str_list2)    // [ d -> c -> b -> a ]
@@ -139,12 +139,12 @@ func main() {
     int_list2.FilterMap(func(n int) (bool, int) {
         return (n % 2) != 0, n * 2
     })
-    str_list2 = golist.Filter(func(s string) bool {
+    str_list2 = golist.Filter(str_list1, func(s string) bool {
         return s != "a"
-    }, str_list1)
-    str_list3 = golist.FilterMap(func (s string) (bool, string) {
+    })
+    str_list3 = golist.FilterMap(str_list1, func (s string) (bool, string) {
         return s != "a", strings.ToUpper(s)
-    }, str_list1)
+    })
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 2 -> 4 -> 6 ]
     fmt.Printf("int_list2: %v\n", int_list2)    // [ 2 -> 6 -> 10 ]
     fmt.Printf("str_list2: %v\n", str_list2)    // [ b -> c -> d ]
@@ -154,19 +154,19 @@ func main() {
     // Foldl - Foldr - ForEach
     fmt.Println("Example golist Foldl, Foldr and ForEach")
     int_list1 = golist.New(1,2,3,4,5)
-    sum := golist.Foldl(func(n, s int) int {
+    sum := golist.Foldl(int_list1, 0, func(n, s int) int {
         fmt.Printf("%v ", n)                    // 1 2 3 4 5
         return n + s
-    }, 0, int_list1)
+    })
     fmt.Printf("| sum: %v\n", sum)                // 15
-    fac := golist.Foldr(func(n, f int) int {
+    fac := golist.Foldr(int_list1, 1, func(n, f int) int {
         fmt.Printf("%v ", n)                    // 5 4 3 2 1
         return n * f
-    }, 1, int_list1)
+    })
     fmt.Printf("| fac: %v\n", fac)                // 120
-    golist.ForEach(func(n int) {
+    golist.ForEach(int_list1, func(n int) {
         fmt.Printf("%v ", n * 2)                // 2 4 6 8 10
-    }, int_list1)
+    })
     fmt.Println("\n")
 
     // Join
@@ -174,7 +174,7 @@ func main() {
     int_list1 = golist.New(1,2,3,4)
     int_list1.Join(0)
     str_list1 = golist.New("a","b","c","d")
-    str_list2 = golist.Join("X", str_list1)
+    str_list2 = golist.Join(str_list1, "X")
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 1 -> 0 -> 2 -> 0 -> 3 -> 0 -> 4 ]
     fmt.Printf("str_list2: %v\n", str_list2)    // [ a -> X -> b -> X -> c -> X -> d ]
     fmt.Println()
@@ -186,20 +186,20 @@ func main() {
     int_list1.Map(func(n int) int {
         return n * 2
     })
-    str_list2 = golist.Map(func(s string) string {
+    str_list2 = golist.Map(str_list1, func(s string) string {
         return strings.ToUpper(s)
-    }, str_list1)
+    })
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 2 -> 4 -> 6 -> 8 ]
-    int_list2, sum = golist.MapFoldl(func(n, s int) (int, int) {
+    int_list2, sum = golist.MapFoldl(int_list1, 0, func(n, s int) (int, int) {
         fmt.Printf("%v ", n)                    // 2 4 6 8
         return n * 2, s + n
-    }, 0, int_list1)
+    })
     fmt.Printf("| sum: %v\n", sum)              // 20
     fmt.Printf("int_list2: %v\n", int_list2)    // [ 4 -> 8 -> 12 -> 16 ]
-    int_list3, fac = golist.MapFoldr(func(n, f int) (int, int) {
+    int_list3, fac = golist.MapFoldr(int_list1, 1, func(n, f int) (int, int) {
         fmt.Printf("%v ", n)                    // 8 6 4 2
         return n * n, f * n
-    }, 1, int_list1)
+    })
     fmt.Printf("| fac: %v\n", fac)              // 384
     fmt.Printf("int_list3: %v\n", int_list3)    // [ 64 -> 36 -> 16 -> 4 ]
     fmt.Printf("str_list2: %v\n", str_list2)    // [ A -> B -> C -> D ]
@@ -215,13 +215,13 @@ func main() {
     str_len := golist.Len(str_list1)
     str_max := golist.Max(str_list1)
     str_min := golist.Min(str_list1)
-    str_mem := golist.Member("d", str_list1)
-    str_nth := golist.Nth(2, str_list1)
+    str_mem := golist.Member(str_list1, "d")
+    str_nth := golist.Nth(str_list1, 2)
     str_pre := golist.Prefix(str_list2, str_list1)
     str_suf := golist.Suffix(str_list3, str_list1)
-    pos, val := golist.Search(func(s string) bool {
+    pos, val := golist.Search(str_list1, func(s string) bool {
         return s > "c"
-    }, str_list1)
+    })
     fmt.Printf("str_find: %v\n", str_find)      // 2
     fmt.Printf("str_last: %v\n", str_last)      // b
     fmt.Printf("str_len:  %v\n", str_len)       // 6
@@ -239,7 +239,7 @@ func main() {
     int_list1 = golist.New(1,2,3,4,5)
     str_list1 = golist.New("a","b","c","d","e")
     int_list1.NthTail(3)
-    str_list2 = golist.NthTail(2, str_list1)
+    str_list2 = golist.NthTail(str_list1, 2)
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 4 -> 5 ]
     fmt.Printf("str_list2: %v\n", str_list2)    // [ c -> d -> e ]
     fmt.Println()
@@ -267,18 +267,18 @@ func main() {
     // Split - SplitWith - Partition
     fmt.Println("Example golist Split, SplitWith and Partition")
     int_list1 = golist.New(1,2,3,4,5,6,7,8,9,0)
-    int_list2, int_list3 = golist.SplitWith(func(n int) bool {
+    int_list2, int_list3 = golist.SplitWith(int_list1, func(n int) bool {
         return n < 5
-    }, int_list1)
+    })
     str_list1 = golist.New("a","b","c","d","e","f")
-    str_list2, str_list3 = golist.Split(4, str_list1)
+    str_list2, str_list3 = golist.Split(str_list1, 4)
     fmt.Printf("int_list2: %v\n", int_list2)    // [ 1 -> 2 -> 3 -> 4 ]
     fmt.Printf("int_list3: %v\n", int_list3)    // [ 5 -> 6 -> 7 -> 8 -> 9 -> 0 ]
     fmt.Printf("str_list2: %v\n", str_list2)    // [ a -> b -> c -> d ]
     fmt.Printf("str_list3: %v\n", str_list3)    // [ e -> f ]
-    int_list2, int_list3 = golist.Partition(func(n int) bool {
+    int_list2, int_list3 = golist.Partition(int_list1, func(n int) bool {
         return n % 2 == 0
-    }, int_list1)
+    })
     fmt.Printf("int_list2: %v\n", int_list2)    // [ 2 -> 4 -> 6 -> 8 -> 0 ]
     fmt.Printf("int_list3: %v\n", int_list3)    // [ 1 -> 3 -> 5 -> 7 -> 9 ]
     fmt.Println()
