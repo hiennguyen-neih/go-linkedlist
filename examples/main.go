@@ -19,7 +19,7 @@ func main() {
     int_list1 = golist.GoList[int]{}
     str_list1 = golist.New("a", "b", "c")
     fmt.Printf("int_list1: %v\n", int_list1)    // [  ]
-    fmt.Printf("str_list1: %v\n", str_list1)    // [ a -> b -> c ]
+    fmt.Printf("str_list1: %v\n", str_list1)    // [ "a" -> "b" -> "c" ]
     fmt.Println()
 
     // Append - AppendHead
@@ -30,8 +30,8 @@ func main() {
     str_list3 = golist.AppendHead(str_list1, "x", "y", "z")
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 1 -> 2 -> 3 -> 4 -> 3 ]
     fmt.Printf("int_list2: %v\n", int_list2)    // [ 5 -> 4 -> 3 -> 2 -> 1 ]
-    fmt.Printf("str_list2: %v\n", str_list2)    // [ a -> b -> c -> d -> e -> f ]
-    fmt.Printf("str_list3: %v\n", str_list3)    // [ x -> y -> z -> a -> b -> c ]
+    fmt.Printf("str_list2: %v\n", str_list2)    // [ "a" -> "b" -> "c" -> "d" -> "e" -> "f" ]
+    fmt.Printf("str_list3: %v\n", str_list3)    // [ "x" -> "y" -> "z" -> "a" -> "b" -> "c" ]
     fmt.Println()
 
     // All - Any
@@ -65,7 +65,7 @@ func main() {
     int_list1.Concat(int_list2)
     fmt.Printf("int_list1: %v\n", int_list1)        // [ 2 -> 8 -> 6 -> 8 -> 1 -> 3 -> 3 -> 7 ]
     fmt.Printf("int_list2: %v\n", int_list2)        // [ 1 -> 3 -> 3 -> 7 ]
-    fmt.Printf("str_list3: %v\n", str_list3)        // [ a -> b -> c -> d -> e -> f ]
+    fmt.Printf("str_list3: %v\n", str_list3)        // [ "a" -> "b" -> "c" -> "d" -> "e" -> "f" ]
     fmt.Println("Concat after int_list2 Map:")
     int_list2.Map(func(n int) int { return n * n })
     fmt.Printf("int_list1: %v\n", int_list1)        // [ 2 -> 8 -> 6 -> 8 -> 1 -> 9 -> 9 -> 49 ]
@@ -79,7 +79,7 @@ func main() {
     int_list1.Delete(3)
     str_list2 = golist.Delete(str_list1, "c")
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 1 -> 2 -> 4 -> 3 ]
-    fmt.Printf("str_list2: %v\n", str_list2)    // [ a -> b -> d -> e ]
+    fmt.Printf("str_list2: %v\n", str_list2)    // [ "a" -> "b" -> "d" -> "e" ]
     fmt.Println()
 
     // DropLast
@@ -89,7 +89,7 @@ func main() {
     int_list1.DropLast()
     str_list2 = golist.DropLast(str_list1)
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 1 -> 2 -> 3 ]
-    fmt.Printf("str_list2: %v\n", str_list2)    // [ a -> b -> c ]
+    fmt.Printf("str_list2: %v\n", str_list2)    // [ "a" -> "b" -> "c" ]
     fmt.Println()
 
     // DropWhile - TakeWhile
@@ -111,8 +111,8 @@ func main() {
     })
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 5 -> 4 -> 3 -> 2 -> 1 ]
     fmt.Printf("int_list2: %v\n", int_list2)    // [ 9 -> 8 -> 7 -> 6 -> 5 ]
-    fmt.Printf("str_list2: %v\n", str_list2)    // [ d -> c -> b -> a ]
-    fmt.Printf("str_list3: %v\n", str_list3)    // [ a -> b -> c ]
+    fmt.Printf("str_list2: %v\n", str_list2)    // [ "d" -> "c" -> "b" -> "a" ]
+    fmt.Printf("str_list3: %v\n", str_list3)    // [ "a" -> "b" -> "c" ]
     fmt.Println()
 
     // Duplicate - Seq - Sum
@@ -125,7 +125,7 @@ func main() {
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 0 -> 0 -> 0 -> 0 -> 0 ]
     fmt.Printf("int_list2: %v\n", int_list2)    // [ 2 -> 4 -> 6 -> 8 ]
     fmt.Printf("int_sum: %v\n", int_sum)        // 20
-    fmt.Printf("str_list1: %v\n", str_list1)    // [ X -> X -> X -> X ]
+    fmt.Printf("str_list1: %v\n", str_list1)    // [ "X" -> "X" -> "X" -> "X" ]
     fmt.Printf("str_sum: %v\n", str_sum)        // XXXX
     fmt.Println()
 
@@ -148,8 +148,8 @@ func main() {
     })
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 2 -> 4 -> 6 ]
     fmt.Printf("int_list2: %v\n", int_list2)    // [ 2 -> 6 -> 10 ]
-    fmt.Printf("str_list2: %v\n", str_list2)    // [ b -> c -> d ]
-    fmt.Printf("str_list3: %v\n", str_list3)    // [ B -> C -> D ]
+    fmt.Printf("str_list2: %v\n", str_list2)    // [ "b" -> "c" -> "d" ]
+    fmt.Printf("str_list3: %v\n", str_list3)    // [ "B" -> "C" -> "D" ]
     fmt.Println()
 
     // Foldl - Foldr - ForEach
@@ -177,7 +177,7 @@ func main() {
     str_list1 = golist.New("a","b","c","d")
     str_list2 = golist.Join(str_list1, "X")
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 1 -> 0 -> 2 -> 0 -> 3 -> 0 -> 4 ]
-    fmt.Printf("str_list2: %v\n", str_list2)    // [ a -> X -> b -> X -> c -> X -> d ]
+    fmt.Printf("str_list2: %v\n", str_list2)    // [ "a" -> "X" -> "b" -> "X" -> "c" -> "X" -> "d" ]
     fmt.Println()
 
     // Map - MapFoldl - MapFoldr
@@ -203,7 +203,7 @@ func main() {
     })
     fmt.Printf("| fac: %v\n", fac)              // 384
     fmt.Printf("int_list3: %v\n", int_list3)    // [ 64 -> 36 -> 16 -> 4 ]
-    fmt.Printf("str_list2: %v\n", str_list2)    // [ A -> B -> C -> D ]
+    fmt.Printf("str_list2: %v\n", str_list2)    // [ "A" -> "B" -> "C" -> "D" ]
     fmt.Println()
 
     // Find - Last - Len - Max - Min - Member - Nth - Prefix - Suffix - Search
@@ -242,7 +242,7 @@ func main() {
     int_list1.NthTail(3)
     str_list2 = golist.NthTail(str_list1, 2)
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 4 -> 5 ]
-    fmt.Printf("str_list2: %v\n", str_list2)    // [ c -> d -> e ]
+    fmt.Printf("str_list2: %v\n", str_list2)    // [ "c" -> "d" -> "e" ]
     fmt.Println()
 
     // Reverse
@@ -252,7 +252,7 @@ func main() {
     str_list2 = golist.Reverse(str_list1)
     int_list1.Reverse()
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 5 -> 4 -> 3 -> 2 -> 1 ]
-    fmt.Printf("str_list2: %v\n", str_list2)    // [ d -> c -> b -> a ]
+    fmt.Printf("str_list2: %v\n", str_list2)    // [ "d" -> "c" -> "b" -> "a" ]
     fmt.Println()
 
     // Sort - USort
@@ -275,8 +275,8 @@ func main() {
     str_list2, str_list3 = golist.Split(str_list1, 4)
     fmt.Printf("int_list2: %v\n", int_list2)    // [ 1 -> 2 -> 3 -> 4 ]
     fmt.Printf("int_list3: %v\n", int_list3)    // [ 5 -> 6 -> 7 -> 8 -> 9 -> 0 ]
-    fmt.Printf("str_list2: %v\n", str_list2)    // [ a -> b -> c -> d ]
-    fmt.Printf("str_list3: %v\n", str_list3)    // [ e -> f ]
+    fmt.Printf("str_list2: %v\n", str_list2)    // [ "a" -> "b" -> "c" -> "d" ]
+    fmt.Printf("str_list3: %v\n", str_list3)    // [ "e" -> "f" ]
     int_list2, int_list3 = golist.Partition(int_list1, func(n int) bool {
         return n % 2 == 0
     })
@@ -291,7 +291,7 @@ func main() {
     str_list1 = golist.New("a","b","c","d","e")
     str_list2 = golist.Sublist(str_list1, 3, 5)
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 2 -> 3 -> 4 ]
-    fmt.Printf("str_list2: %v\n", str_list2)    // [ d -> e ]
+    fmt.Printf("str_list2: %v\n", str_list2)    // [ "d" -> "e" ]
     fmt.Println()
 
     // Subtract
@@ -303,7 +303,7 @@ func main() {
     str_list2 = golist.New("b","a","b")
     str_list3 = golist.Subtract(str_list1, str_list2)
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 3 -> 1 -> 2 ]
-    fmt.Printf("str_list3: %v\n", str_list3)    // [ c -> a -> b ]
+    fmt.Printf("str_list3: %v\n", str_list3)    // [ "c" -> "a" -> "b" ]
     fmt.Println()
 
     // Method chaining

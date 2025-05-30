@@ -13,5 +13,9 @@ type Node[T comparable] struct {
 
 // Return a string representing node in linked list.
 func (node Node[T]) String() string {
+    var data any = node.Data
+    if str, ok := data.(string); ok {
+        return fmt.Sprintf("%q", str)
+    }
     return fmt.Sprintf("%v", node.Data)
 }

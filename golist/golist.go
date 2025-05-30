@@ -759,7 +759,12 @@ func (list GoList[T]) String() string {
     var builder strings.Builder
     builder.WriteString("[ ")
     for node := list.Head; node != nil; node = node.Next {
-        fmt.Fprintf(&builder, "%v", node.Data)
+        var data any = node.Data
+        if str, ok := data.(string); ok {
+            fmt.Fprintf(&builder, "%q", str)
+        } else {
+            fmt.Fprintf(&builder, "%v", node.Data)
+        }
         if node.Next != nil {
             builder.WriteString(" -> ")
         }
