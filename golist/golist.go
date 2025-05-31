@@ -126,7 +126,7 @@ func DeleteAt[T comparable](list GoList[T], index int) GoList[T] {
         index = len + index // same as len - abs(index)
     }
 
-    if index < 0 || index > len {
+    if index < 0 || index >= len {
         for node := list.Head; node != nil; node = node.Next {
             result.doAppendHead(node.Data)
         }
@@ -365,26 +365,40 @@ func Min[T constraints.Ordered](list GoList[T]) T {
     return min
 }
 
-// Return the nth element in list. Note that list index count from 0.
-func Nth[T comparable](list GoList[T], n int) T {
-    if n < 0 {
-        panic("Nth: input n must not be negative!")
+// Return data of node in list at specific index. Negative index indicate an
+// offset from the end of list.
+func Nth[T comparable](list GoList[T], index int) T {
+    len := Len(list)
+
+    if index < 0 {
+        index = len + index // same as len - abs(index)
     }
+
+    if index < 0 || index >= len {
+        panic("Nth, index is out of bound!")
+    }
+
     node := list.Head
-    for i := 0; i < n; i++ {
+    for i := 0; i < index; i++ {
         node = node.Next
     }
     return node.Data
 }
 
-// Return sublist from the nth element as new list.
-func NthTail[T comparable](list GoList[T], n int) GoList[T] {
-    if n < 0 {
-        panic("NthTail: input n must not be negative!")
+// Return sublist from node in list at specific index as a new list. Negative
+// index indicate an offset from the end of list.
+func NthTail[T comparable](list GoList[T], index int) GoList[T] {
+    len := Len(list)
+    if index < 0 {
+        index = len + index // same as len - abs(index)
     }
+    if index < 0 || index >= len {
+        panic("NthTail, index is out of bound!")
+    }
+
     var result GoList[T]
     node := list.Head
-    for i := 0; i < n; i++ {
+    for i := 0; i < index; i++ {
         node = node.Next
     }
     for node != nil {
@@ -464,11 +478,17 @@ func Sort[T constraints.Ordered](list GoList[T]) GoList[T] {
 }
 
 // Split list into list1 and list2, list1 contains n first elements and list2
-// contains the remaining elements.
+// contains the remaining elements. Negative n indicate an offset from the end
+// of list.
 func Split[T comparable](list GoList[T], n int) (GoList[T], GoList[T]) {
+    len := Len(list)
     if n < 0 {
-        panic("Split: input n must not be negative!")
+        n = len + n // same as len - abs(n)
     }
+    if n < 0 || n >= len {
+        panic("Split, n is out of bound!")
+    }
+
     var list1 GoList[T]
     var list2 GoList[T]
     node := list.Head
@@ -480,6 +500,7 @@ func Split[T comparable](list GoList[T], n int) (GoList[T], GoList[T]) {
         list2.doAppendHead(node.Data)
         node = node.Next
     }
+
     return *list1.Reverse(), *list2.Reverse()
 }
 
@@ -505,11 +526,20 @@ func SplitWith[T comparable](list GoList[T], fun func(T) bool) (GoList[T], GoLis
 }
 
 // Return sublist of input list as new list, starting at start and has maximum
-// len elements.
+// len elements. Negative start indicate an offset from the end of list.
 func Sublist[T comparable](list GoList[T], start, len int) GoList[T] {
-    if start < 0 || len < 0 {
-        panic("Sublist: input start and len must not be negative!")
+    if len < 0 {
+        panic("Sublist, input len must not be negative!")
     }
+
+    listLen := Len(list)
+    if start < 0 {
+        start = listLen + start // same as len - abs(start)
+    }
+    if start < 0 || start >= listLen {
+        panic("Sublist, start is out of bound!")
+    }
+
     var result GoList[T]
     node := list.Head
     for i := 0; node != nil && i < start; i++ {
@@ -638,7 +668,7 @@ func (list *GoList[T]) Delete(value T) *GoList[T] {
 // Delete node at specific index in list. Negative index indicate offset from
 // the end of list.
 func (list *GoList[T]) DeleteAt(index int) *GoList[T] {
-    var len int = Len(*list)
+    len := Len(*list)
 
     if list.Head == nil {
         return list
@@ -750,12 +780,19 @@ func (list *GoList[T]) Map(fun func(T) T) *GoList[T] {
 }
 
 // Return sublist from the nth element.
-func (list *GoList[T]) NthTail(n int) *GoList[T] {
-    if n < 0 {
-        panic("NthTail: input n must not be negative!")
+// Return sublist from node in list at specific index. Negative index indicate
+// an offset from the end of list.
+func (list *GoList[T]) NthTail(index int) *GoList[T] {
+    len := Len(*list)
+    if index < 0 {
+        index = len + index // same as len - abs(n)
     }
+    if index < 0 || index >= len {
+        panic("NthTail, index is out of bound!")
+    }
+
     node := list.Head
-    for i := 0; i < n; i++ {
+    for i := 0; i < index; i++ {
         node = node.Next
     }
     list.Head = node
@@ -778,9 +815,21 @@ func (list *GoList[T]) Reverse() *GoList[T] {
 
 // Return sublist that starting at start and has maximum len elements.
 func (list *GoList[T]) Sublist(start, len int) *GoList[T] {
-    if start < 0 || len < 0 {
-        panic("Sublist: input start and len must not be negative!")
+    if len == 0 {
+        list.Head = nil
+        return list
+    } else if len < 0 {
+        panic("Sublist, input len must not be negative!")
     }
+
+    listLen := Len(*list)
+    if start < 0 {
+        start = listLen + start // same as len - abs(start)
+    }
+    if start < 0 || start >= listLen {
+        panic("Sublist, start is out of bound!")
+    }
+
     node := list.Head
     for i := 0; node != nil && i < start; i++ {
         node = node.Next
@@ -792,6 +841,7 @@ func (list *GoList[T]) Sublist(start, len int) *GoList[T] {
     if node != nil {
         node.Next = nil
     }
+
     return list
 }
 
