@@ -256,6 +256,37 @@ func ForEach[T comparable](list GoList[T], fun func(T)) {
     }
 }
 
+// Return a list with val is inserted at specific index. Note that index is
+// capped at list length. Negative index indicate an offset from the end of list.
+func InsertAt[T comparable](list GoList[T], index int, val T) GoList[T] {
+    len := Len(list)
+    if index < 0 {
+        index = len + index // same as len - abs(index)
+    }
+    if index < 0 || index > len {
+        panic("InsertAt, index is out of bound!")
+    }
+
+    var result GoList[T]
+    if index == len {
+        for node := list.Head; node != nil; node = node.Next {
+            result.doAppendHead(node.Data)
+        }
+        result.doAppendHead(val)
+    } else {
+        i := 0
+        for node := list.Head; node != nil; node = node.Next {
+            if i == index {
+                result.doAppendHead(val)
+            }
+            result.doAppendHead(node.Data)
+            i++
+        }
+    }
+
+    return *result.Reverse()
+}
+
 // Insert sep between each element in list and return as new list.
 func Join[T comparable](list GoList[T], sep T) GoList[T] {
     var result GoList[T]
@@ -365,8 +396,8 @@ func Min[T constraints.Ordered](list GoList[T]) T {
     return min
 }
 
-// Return data of node in list at specific index. Negative index indicate an
-// offset from the end of list.
+// Return data of node in list at specific index. Note that index is capped at
+// list length. Negative index indicate an offset from the end of list.
 func Nth[T comparable](list GoList[T], index int) T {
     len := Len(list)
 
@@ -385,8 +416,9 @@ func Nth[T comparable](list GoList[T], index int) T {
     return node.Data
 }
 
-// Return sublist from node in list at specific index as a new list. Negative
-// index indicate an offset from the end of list.
+// Return sublist from node in list at specific index as a new list. Note that
+// index is capped at list length. Negative index indicate an offset from
+// the end of list.
 func NthTail[T comparable](list GoList[T], index int) GoList[T] {
     len := Len(list)
     if index < 0 {
@@ -478,8 +510,8 @@ func Sort[T constraints.Ordered](list GoList[T]) GoList[T] {
 }
 
 // Split list into list1 and list2, list1 contains n first elements and list2
-// contains the remaining elements. Negative n indicate an offset from the end
-// of list.
+// contains the remaining elements. Note that n is capped at list length.
+// Negative n indicate an offset from the end of list.
 func Split[T comparable](list GoList[T], n int) (GoList[T], GoList[T]) {
     len := Len(list)
     if n < 0 {
@@ -526,7 +558,8 @@ func SplitWith[T comparable](list GoList[T], fun func(T) bool) (GoList[T], GoLis
 }
 
 // Return sublist of input list as new list, starting at start and has maximum
-// len elements. Negative start indicate an offset from the end of list.
+// len elements. Note that start is capped at list length. Negative start
+// indicate an offset from the end of list.
 func Sublist[T comparable](list GoList[T], start, len int) GoList[T] {
     if len < 0 {
         panic("Sublist, input len must not be negative!")
@@ -665,8 +698,8 @@ func (list *GoList[T]) Delete(value T) *GoList[T] {
     return list
 }
 
-// Delete node at specific index in list. Negative index indicate offset from
-// the end of list.
+// Delete node at specific index in list. Note that index is capped at list
+// length. Negative index indicate offset from the end of list.
 func (list *GoList[T]) DeleteAt(index int) *GoList[T] {
     len := Len(*list)
 
@@ -756,6 +789,36 @@ func (list *GoList[T]) FilterMap(fun func(T) (bool, T)) *GoList[T] {
     return list
 }
 
+// Insert val into list at specific index. Note that index is capped at list
+// length. Negative index indicate an offset from the end of list.
+func (list *GoList[T]) InsertAt(index int, val T) *GoList[T] {
+    len := Len(*list)
+    if index < 0 {
+        index = len + index // same as len - abs(index)
+    }
+    if index < 0 || index > len {
+        panic("InsertAt, index is out of bound!")
+    }
+
+    insertNode := &node.Node[T]{Data: val}
+    if index == 0 {
+        insertNode.Next = list.Head
+        list.Head = insertNode
+    } else {
+        i := 1
+        for node := list.Head; node != nil; node = node.Next {
+            if i == index {
+                insertNode.Next = node.Next
+                node.Next = insertNode
+                break
+            }
+            i++
+        }
+    }
+
+    return list
+}
+
 // Insert sep between each element in list.
 func (list *GoList[T]) Join(sep T) *GoList[T] {
     curr := list.Head
@@ -779,9 +842,8 @@ func (list *GoList[T]) Map(fun func(T) T) *GoList[T] {
     return list
 }
 
-// Return sublist from the nth element.
-// Return sublist from node in list at specific index. Negative index indicate
-// an offset from the end of list.
+// Return sublist from node in list at specific index. Note that index is capped
+// at list length. Negative index indicate an offset from the end of list.
 func (list *GoList[T]) NthTail(index int) *GoList[T] {
     len := Len(*list)
     if index < 0 {
@@ -813,7 +875,9 @@ func (list *GoList[T]) Reverse() *GoList[T] {
     return list
 }
 
-// Return sublist that starting at start and has maximum len elements.
+// Return sublist that starting at start and has maximum len elements. Note
+// that start is capped at list length. Negative start indicate an offset from
+// the end of list.
 func (list *GoList[T]) Sublist(start, len int) *GoList[T] {
     if len == 0 {
         list.Head = nil
