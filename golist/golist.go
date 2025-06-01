@@ -31,6 +31,24 @@ func New[T comparable](values ...T) GoList[T] {
     return *list.AppendHead(values...)
 }
 
+// Convert input slice into linked list.
+func FromSlice[T comparable](values []T) GoList[T] {
+    var list GoList[T]
+    for _, val := range values {
+        list.doAppendHead(val)
+    }
+    return *list.Reverse()
+}
+
+// Convert input linked list into slice.
+func ToSlice[T comparable](list GoList[T]) []T {
+    var result []T
+    for node := list.Head; node != nil; node = node.Next {
+        result = append(result, node.Data)
+    }
+    return result
+}
+
 // Return true if fun returns true for all elements in list, otherwise return
 // false.
 func All[T comparable](list GoList[T], fun func(T) bool) bool {

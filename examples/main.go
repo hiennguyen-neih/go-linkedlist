@@ -14,12 +14,16 @@ func main() {
     var str_list2 = golist.GoList[string]{}
     var str_list3 = golist.GoList[string]{}
 
-    // New
-    fmt.Println("Example golist New")
+    // New - FromSlice - ToSlice
+    fmt.Println("Example golist New, FromSlice and ToSlice")
     int_list1 = golist.GoList[int]{}
-    str_list1 = golist.New("a", "b", "c")
+    int_list2 = golist.FromSlice([]int{6,5,4,3,2,1,0})
+    str_list1 = golist.New("a", "b", "c", "d", "e", "f", "g")
+    str_slice := golist.ToSlice(str_list1)
     fmt.Printf("int_list1: %v\n", int_list1)    // [  ]
-    fmt.Printf("str_list1: %v\n", str_list1)    // [ "a" -> "b" -> "c" ]
+    fmt.Printf("int_list2: %v\n", int_list2)    // [ 6 -> 5 -> 4 -> 3 -> 2 -> 1 -> 0 ]
+    fmt.Printf("str_list1: %v\n", str_list1)    // [ "a" -> "b" -> "c" -> "d" -> "e" -> "f" -> "g" ]
+    fmt.Printf("str_slice: %v\n", str_slice)    // [a b c d e f g]
     fmt.Println()
 
     // Append - AppendHead
