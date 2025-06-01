@@ -469,6 +469,29 @@ func Prefix[T comparable](list1, list2 GoList[T]) bool {
     return true
 }
 
+// Return a list that node at specific index is replaced with val. If index is
+// out of bound, the original list is returned. Negative index indicate an
+// offset from the end of list.
+func ReplaceAt[T comparable](list GoList[T], index int, val T) GoList[T] {
+    len := Len(list)
+    if index < 0 {
+        index = len + index // same as len - abs(index)
+    }
+
+    var result GoList[T]
+    i := 0
+    for node := list.Head; node != nil; node = node.Next {
+        if i == index {
+            result.doAppendHead(val)
+        } else {
+            result.doAppendHead(node.Data)
+        }
+        i++
+    }
+
+    return *result.Reverse()
+}
+
 // Return result is reverse of input list
 func Reverse[T comparable](list GoList[T]) GoList[T] {
     var head *node.Node[T]
@@ -858,6 +881,26 @@ func (list *GoList[T]) NthTail(index int) *GoList[T] {
         node = node.Next
     }
     list.Head = node
+    return list
+}
+
+// Replace a node at specific index in list with val If index is out of bound,
+// the original list is returned. Negative index indicate an offset from the
+// end of list.
+func (list *GoList[T]) ReplaceAt(index int, val T) *GoList[T] {
+    len := Len(*list)
+    if index < 0 {
+        index = len + index // same as len - abs(index)
+    }
+
+    i := 0
+    for node := list.Head; node != nil; node = node.Next {
+        if i == index {
+            node.Data = val
+        }
+        i++
+    }
+
     return list
 }
 

@@ -175,14 +175,19 @@ func main() {
     })
     fmt.Println("\n")
 
-    // InsertAt
-    fmt.Println("Example golist InsertAt")
+    // InsertAt - ReplaceAt
+    fmt.Println("Example golist InsertAt and ReplaceAt")
     int_list1 = golist.New(1,2,3,4,5)
+    int_list2 = golist.New(1,2,3,4,5)
     str_list1 = golist.New("a","b","c","d","e")
     int_list1.InsertAt(-3, 0)
     str_list2 = golist.InsertAt(str_list1, 5, "X")
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 1 -> 2 -> 0 -> 3 -> 4 -> 5 ]
     fmt.Printf("str_list2: %v\n", str_list2)    // [ "a" -> "b" -> "c" -> "d" -> "e" -> "X" ]
+    int_list2.ReplaceAt(3, 0)
+    str_list2 = golist.ReplaceAt(str_list1, -2, "X")
+    fmt.Printf("int_list2: %v\n", int_list2)    // [ 1 -> 2 -> 3 -> 0 -> 5 ]
+    fmt.Printf("str_list2: %v\n", str_list2)    // [ "a" -> "b" -> "c" -> "X" -> "e" ]
     fmt.Println()
 
     // Join
