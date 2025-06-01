@@ -1,32 +1,53 @@
 # go-linkedlist
+
+![License](https://img.shields.io/github/license/hiennguyen-neih/go-linkedlist)
+![Go Version](https://img.shields.io/badge/go-1.18+-blue)
+[![Go Reference](https://pkg.go.dev/badge/github.com/hiennguyen-neih/go-linkedlist/golist.svg)](https://pkg.go.dev/github.com/hiennguyen-neih/go-linkedlist/golist)
+
 Linked list library for Go programming language (golang).
 
 * [Go singly linked-list](./golist/)
 
 ## Install
-```Go
-$ go get github.com/hiennguyen-neih/go-linkedlist
+
+```bash
+go get github.com/hiennguyen-neih/go-linkedlist
 ```
 
-## Document
-```Go
-$ go doc -all github.com/hiennguyen-neih/go-linkedlist/golist
+## Documentation
+
+```bash
+go doc -all github.com/hiennguyen-neih/go-linkedlist/golist
 ```
 
 ## Import
-```Go
+
+```go
 import "github.com/hiennguyen-neih/go-linkedlist/golist"
 ```
 
 ## Usage
+
 ### Declare variables
-```Go
+
+```go
 list1 := golist.GoList[int]{}
-list2 := golist.New("a", "b", "c", "d")
+list2 := golist.New("a", "b", "c", "d", "e")
+list3 := golist.FromSlice([]int{1, 2, 3, 4, 5})
 ```
+
 ### For loop
-```Go
+
+```go
+list := golist.New("a", "b", "c", "d", "e")
 for node := list.Head; node != nil; node = node.Next {
-    // do-somethings
+    // do somethings with node.Data
+    fmt.Println(node.Data)
 }
+```
+### Example
+```go
+list := golist.New(1, 2, 3, 4, 5)
+list.Map(func(n int) int { return n*2 }).Join(0).Reverse()
+fmt.Println(list) // [ 10 -> 0 -> 8 -> 0 -> 6 -> 0 -> 4 -> 0 -> 2 ]
 ```
