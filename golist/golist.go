@@ -663,6 +663,29 @@ func USort[T constraints.Ordered](list GoList[T]) GoList[T] {
     return uniqueQuickSort(list)
 }
 
+// Return a list that node at specific index is updated with return value of
+// fun. If index is out of bound, the original list is returned. Negative index
+// indicate an offset from the end of list.
+func UpdateAt[T comparable](list GoList[T], index int, fun func(T) T) GoList[T] {
+    len := Len(list)
+    if index < 0 {
+        index = len + index // same as len - abs(index)
+    }
+
+    var result GoList[T]
+    i := 0
+    for node := list.Head; node != nil; node = node.Next {
+        if i == index {
+            result.doAppendHead(fun(node.Data))
+        } else {
+            result.doAppendHead(node.Data)
+        }
+        i++
+    }
+
+    return *result.Reverse()
+}
+
 /*
  *******************************************************************************
  * Exported methods
@@ -884,7 +907,7 @@ func (list *GoList[T]) NthTail(index int) *GoList[T] {
     return list
 }
 
-// Replace a node at specific index in list with val If index is out of bound,
+// Replace a node at specific index in list with val. If index is out of bound,
 // the original list is returned. Negative index indicate an offset from the
 // end of list.
 func (list *GoList[T]) ReplaceAt(index int, val T) *GoList[T] {
@@ -971,6 +994,26 @@ func (list *GoList[T]) TakeWhile(fun func(T) bool) *GoList[T] {
             node.Next = nil
         }
     }
+    return list
+}
+
+// Update a node at specific index in list with return value of fun. If index is
+// out of bound, the original list is returned. Negative index indicate an
+// offset from the end of list.
+func (list *GoList[T]) UpdateAt(index int, fun func(T) T) *GoList[T] {
+    len := Len(*list)
+    if index < 0 {
+        index = len + index // same as len - abs(index)
+    }
+
+    i := 0
+    for node := list.Head; node != nil; node = node.Next {
+        if i == index {
+            node.Data = fun(node.Data)
+        }
+        i++
+    }
+
     return list
 }
 
