@@ -16,6 +16,8 @@ go get github.com/hiennguyen-neih/go-linkedlist
 
 ## Documentation
 
+[Go Reference](https://pkg.go.dev/github.com/hiennguyen-neih/go-linkedlist/golist)
+
 ```bash
 go doc -all github.com/hiennguyen-neih/go-linkedlist/golist
 ```
@@ -48,6 +50,8 @@ for node := list.Head; node != nil; node = node.Next {
 ### Example
 ```go
 list := golist.New(1, 2, 3, 4, 5)
-list.Map(func(n int) int { return n*2 }).Join(0).Reverse()
+list = golist.Map(list, func(n int) int { return n * 2 })
+list = golist.Join(list, 0)
+list = golist.Reverse(list)
 fmt.Println(list) // [ 10 -> 0 -> 8 -> 0 -> 6 -> 0 -> 4 -> 0 -> 2 ]
 ```
