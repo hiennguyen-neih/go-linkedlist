@@ -710,7 +710,7 @@ func UpdateAt[T comparable](list GoList[T], index int, fun func(T) T) GoList[T] 
  *******************************************************************************
  */
 
-// Append all values into last of list.
+// Deprecated: Use function golist.Append instead.
 func (list *GoList[T]) Append(values ...T) *GoList[T] {
     list.Reverse()
     for _, value := range values {
@@ -720,7 +720,7 @@ func (list *GoList[T]) Append(values ...T) *GoList[T] {
     return list
 }
 
-// Append all values into head of list.
+// Deprecated: Use function golist.AppendHead instead.
 func (list *GoList[T]) AppendHead(values ...T) *GoList[T] {
     for i := len(values) - 1; i >= 0; i-- {
         list.doAppendHead(values[i])
@@ -728,9 +728,7 @@ func (list *GoList[T]) AppendHead(values ...T) *GoList[T] {
     return list
 }
 
-// Concatenates list2 into last of list1. This method won't remove list2, so
-// after this method executed, changes made to list2 might affect list1 and
-// changes made to list1 might affect list2 as well.
+// Deprecated: Use function golist.Concat instead.
 func (list1 *GoList[T]) Concat(list2 GoList[T]) *GoList[T] {
     for node1 := list1.Head; node1 != nil; node1 = node1.Next {
         if node1.Next == nil {
@@ -741,7 +739,7 @@ func (list1 *GoList[T]) Concat(list2 GoList[T]) *GoList[T] {
     return list1
 }
 
-// Delete first node in list with value of input.
+// Deprecated: Use function golist.Delete instead.
 func (list *GoList[T]) Delete(value T) *GoList[T] {
     if list.Head == nil {
         return list
@@ -762,8 +760,7 @@ func (list *GoList[T]) Delete(value T) *GoList[T] {
     return list
 }
 
-// Delete node at specific index in list. Note that index is capped at list
-// length. Negative index indicate offset from the end of list.
+// Deprecated: Use function golist.DeleteAt instead.
 func (list *GoList[T]) DeleteAt(index int) *GoList[T] {
     len := Len(*list)
 
@@ -792,7 +789,7 @@ func (list *GoList[T]) DeleteAt(index int) *GoList[T] {
     return list
 }
 
-// Drop the last element in list.
+// Deprecated: Use function golist.DropLast instead.
 func (list *GoList[T]) DropLast() *GoList[T] {
     node := list.Head
     for node != nil {
@@ -805,7 +802,7 @@ func (list *GoList[T]) DropLast() *GoList[T] {
     return list
 }
 
-// Drop elements in list while fun returns true.
+// Deprecated: Use function golist.DropWhile instead.
 func (list *GoList[T]) DropWhile(fun func(T) bool) *GoList[T] {
     for node := list.Head; node != nil; node = node.Next {
         if fun(node.Data) {
@@ -817,7 +814,7 @@ func (list *GoList[T]) DropWhile(fun func(T) bool) *GoList[T] {
     return list
 }
 
-// Only keep elements in list that fun return true.
+// Deprecated: Use function golist.Filter instead.
 func (list *GoList[T]) Filter(fun func(T) bool) *GoList[T] {
     if list.Head == nil {
         return list
@@ -833,9 +830,7 @@ func (list *GoList[T]) Filter(fun func(T) bool) *GoList[T] {
     return list
 }
 
-// Calls fun on successive elements of list. fun must return (bool, value).
-// The function returns the list of elements for which fun returns
-// a new value, where a value of true is synonymous with (true, value).
+// Deprecated: Use function golist.FilterMap instead.
 func (list *GoList[T]) FilterMap(fun func(T) (bool, T)) *GoList[T] {
     dummy := &node.Node[T]{Next: list.Head}
     prev := dummy
@@ -853,8 +848,7 @@ func (list *GoList[T]) FilterMap(fun func(T) (bool, T)) *GoList[T] {
     return list
 }
 
-// Insert val into list at specific index. Note that index is capped at list
-// length. Negative index indicate an offset from the end of list.
+// Deprecated: Use function golist.InsertAt instead.
 func (list *GoList[T]) InsertAt(index int, val T) *GoList[T] {
     len := Len(*list)
     if index < 0 {
@@ -883,7 +877,7 @@ func (list *GoList[T]) InsertAt(index int, val T) *GoList[T] {
     return list
 }
 
-// Insert sep between each element in list.
+// Deprecated: Use function golist.Join instead.
 func (list *GoList[T]) Join(sep T) *GoList[T] {
     curr := list.Head
     for curr != nil {
@@ -898,7 +892,7 @@ func (list *GoList[T]) Join(sep T) *GoList[T] {
     return list
 }
 
-// Applying function to every elements in list.
+// Deprecated: Use function golist.Map instead.
 func (list *GoList[T]) Map(fun func(T) T) *GoList[T] {
     for node := list.Head; node != nil; node = node.Next {
         node.Data = fun(node.Data)
@@ -906,8 +900,7 @@ func (list *GoList[T]) Map(fun func(T) T) *GoList[T] {
     return list
 }
 
-// Return sublist from node in list at specific index. Note that index is capped
-// at list length. Negative index indicate an offset from the end of list.
+// Deprecated: Use function golist.NthTail instead.
 func (list *GoList[T]) NthTail(index int) *GoList[T] {
     len := Len(*list)
     if index < 0 {
@@ -925,9 +918,7 @@ func (list *GoList[T]) NthTail(index int) *GoList[T] {
     return list
 }
 
-// Replace a node at specific index in list with val. If index is out of bound,
-// the original list is returned. Negative index indicate an offset from the
-// end of list.
+// Deprecated: Use function golist.ReplaceAt instead.
 func (list *GoList[T]) ReplaceAt(index int, val T) *GoList[T] {
     len := Len(*list)
     if index < 0 {
@@ -945,7 +936,7 @@ func (list *GoList[T]) ReplaceAt(index int, val T) *GoList[T] {
     return list
 }
 
-// Reverse the input list
+// Deprecated: Use function golist.Reverse instead.
 func (list *GoList[T]) Reverse() *GoList[T] {
     var prev *node.Node[T]
     node := list.Head
@@ -959,9 +950,7 @@ func (list *GoList[T]) Reverse() *GoList[T] {
     return list
 }
 
-// Return sublist that starting at start and has maximum len elements. Note
-// that start is capped at list length. Negative start indicate an offset from
-// the end of list.
+// Deprecated: Use function golist.Sublist instead.
 func (list *GoList[T]) Sublist(start, len int) *GoList[T] {
     if len == 0 {
         list.Head = nil
@@ -993,7 +982,7 @@ func (list *GoList[T]) Sublist(start, len int) *GoList[T] {
     return list
 }
 
-// Delete elements in list1 that is its first occurrence to each element in list2.
+// Deprecated: Use function golist.Subtract instead.
 func (list1 *GoList[T]) Subtract(list2 GoList[T]) *GoList[T] {
     for node := list2.Head; node != nil; node = node.Next {
         list1.Delete(node.Data)
@@ -1001,7 +990,7 @@ func (list1 *GoList[T]) Subtract(list2 GoList[T]) *GoList[T] {
     return list1
 }
 
-// Take elements in list while fun returns true.
+// Deprecated: Use function golist.TakeWhile instead.
 func (list *GoList[T]) TakeWhile(fun func(T) bool) *GoList[T] {
     if !fun(list.Head.Data) {
         list.Head = nil
@@ -1015,9 +1004,7 @@ func (list *GoList[T]) TakeWhile(fun func(T) bool) *GoList[T] {
     return list
 }
 
-// Update a node at specific index in list with return value of fun. If index is
-// out of bound, the original list is returned. Negative index indicate an
-// offset from the end of list.
+// Deprecated: Use function golist.UpdateAt instead.
 func (list *GoList[T]) UpdateAt(index int, fun func(T) T) *GoList[T] {
     len := Len(*list)
     if index < 0 {
