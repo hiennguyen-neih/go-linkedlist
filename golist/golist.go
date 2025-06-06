@@ -129,8 +129,9 @@ func Delete[T comparable](list GoList[T], value T) GoList[T] {
     return *result.Reverse()
 }
 
-// Delete node at the specific index in list and return as new list. Negative
-// index indicate an offset from the end of list.
+// Delete node at the specific index in list and return as new list. If index
+// is out of bound, the original list is returned. Negative index indicate an
+// offset from the end of list.
 func DeleteAt[T comparable](list GoList[T], index int) GoList[T] {
     var result GoList[T]
     len := Len(list)
@@ -168,7 +169,7 @@ func DropLast[T comparable](list GoList[T]) GoList[T] {
     for node := list.Head; node != nil; node = node.Next {
         if node.Next.Next == nil {
             result.doAppendHead(node.Data)
-            return *result.Reverse()
+            break
         }
         result.doAppendHead(node.Data)
     }
@@ -1079,8 +1080,6 @@ func quickSort[T constraints.Ordered](list GoList[T]) GoList[T] {
     sortedGreater := quickSort(greater)
 
     // Concatenates 3 lists: sortedLess + equal + sortedGreater
-    // result := Concat(sortedLess, equal)
-    // result = Concat(result, sortedGreater)
     result := Concat(sortedLess, equal, sortedGreater)
 
     return result
@@ -1118,8 +1117,6 @@ func uniqueQuickSort[T constraints.Ordered](list GoList[T]) GoList[T] {
     sortedGreater := uniqueQuickSort(greater)
 
     // Concatenate: sortedLess + equal + sortedGreater
-    // result := Concat(sortedLess, equal)
-    // result = Concat(result, sortedGreater)
     result := Concat(sortedLess, equal, sortedGreater)
 
     return result
