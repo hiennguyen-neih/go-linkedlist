@@ -50,16 +50,18 @@ func main() {
 
     // Concat - Merge - UMerge
     fmt.Println("Example golist Concat, Merge and UMerge")
-    int_list1 = golist.New(2,8,6,8)
-    int_list2 = golist.New(1,3,3,7)
-    str_list1 = golist.New("a","b","c")
-    str_list2 = golist.New("d","e","f")
-    int_list3 = golist.Merge(int_list1, int_list2)
-    fmt.Printf("Merge int_list3: %v\n", int_list3)      // [ 1 -> 2 -> 3 -> 3 -> 6 -> 7 -> 8 -> 8 ]
-    int_list3 = golist.UMerge(int_list1, int_list2)
-    fmt.Printf("UMerge int_list3: %v\n", int_list3)     // [ 1 -> 2 -> 3 -> 6 -> 7 -> 8 ]
-    str_list3 = golist.Concat(str_list1, str_list2)
-    fmt.Printf("str_list3: %v\n", str_list3)            // [ "a" -> "b" -> "c" -> "d" -> "e" -> "f" ]
+    int_list1 = golist.New(2, 8, 6)
+    int_list2 = golist.New(1, 3, 3)
+    int_list3 = golist.New(8, 4, 5)
+    str_list1 = golist.New("a", "b", "c")
+    str_list2 = golist.New("d", "e", "f")
+    str_list3 = golist.New("g", "h", "i")
+    int_list1 = golist.Merge(int_list1, int_list2, int_list3)
+    fmt.Printf("Merge int_list1: %v\n", int_list1)  // [ 1 -> 2 -> 3 -> 3 -> 4 -> 5 -> 6 -> 8 -> 8 ]
+    int_list1 = golist.UMerge(int_list1, int_list2, int_list3)
+    fmt.Printf("UMerge int_list1: %v\n", int_list1) // [ 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 8 ]
+    str_list1 = golist.Concat(str_list1, str_list2, str_list3)
+    fmt.Printf("str_list1: %v\n", str_list1)        // [ "a" -> "b" -> "c" -> "d" -> "e" -> "f" -> "g" -> "h" -> "i" ]
     fmt.Println()
 
     // Delete - DeleteAt
@@ -223,7 +225,7 @@ func main() {
 
     // Sort - USort
     fmt.Println("Example golist Sort and USort")
-    int_list1 = golist.New(2,5,1,2,7,3,9,4,8,6,4)
+    int_list1 = golist.New(2, 5, 1, 2, 7, 3, 9, 4, 8, 6, 4)
     int_list2 = golist.Sort(int_list1)
     int_list3 = golist.USort(int_list1)
     fmt.Printf("int_list1: %v\n", int_list1)    // [ 2 -> 5 -> 1 -> 2 -> 7 -> 3 -> 9 -> 4 -> 8 -> 6 -> 4 ]

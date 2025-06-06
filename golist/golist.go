@@ -95,14 +95,13 @@ func AppendHead[T comparable](list GoList[T], values ...T) GoList[T] {
     return *result.Reverse()
 }
 
-// Return a list that is concatenated of list1 and list2.
-func Concat[T comparable](list1, list2 GoList[T]) GoList[T] {
+// Return a list that is concatenated of all input lists.
+func Concat[T comparable](lists ...GoList[T]) GoList[T] {
     var result GoList[T]
-    for node1 := list1.Head; node1 != nil; node1 = node1.Next {
-        result.doAppendHead(node1.Data)
-    }
-    for node2 := list2.Head; node2 != nil; node2 = node2.Next {
-        result.doAppendHead(node2.Data)
+    for _, list := range lists {
+        for node := list.Head; node != nil; node = node.Next {
+            result.doAppendHead(node.Data)
+        }
     }
     return *result.Reverse()
 }
@@ -394,9 +393,9 @@ func Member[T comparable](list GoList[T], elem T) bool {
     return false
 }
 
-// Return a sorted list forming by merging list1 and list2.
-func Merge[T constraints.Ordered](list1, list2 GoList[T]) GoList[T] {
-    result := Concat(list1, list2)
+// Return a sorted list forming by merging all input lists.
+func Merge[T constraints.Ordered](lists ...GoList[T]) GoList[T] {
+    result := Concat(lists...)
     return Sort(result)
 }
 
@@ -669,10 +668,10 @@ func TakeWhile[T comparable](list GoList[T], fun func(T) bool) GoList[T] {
     return *result.Reverse()
 }
 
-// Return a unique sorted list forming by merging list1 and list2, then remove
+// Return a unique sorted list forming by merging all input lists and removing
 // all duplicated elements.
-func UMerge[T constraints.Ordered](list1, list2 GoList[T]) GoList[T] {
-    result := Concat(list1, list2)
+func UMerge[T constraints.Ordered](lists ...GoList[T]) GoList[T] {
+    result := Concat(lists...)
     return uniqueQuickSort(result)
 }
 
@@ -1080,8 +1079,9 @@ func quickSort[T constraints.Ordered](list GoList[T]) GoList[T] {
     sortedGreater := quickSort(greater)
 
     // Concatenates 3 lists: sortedLess + equal + sortedGreater
-    result := Concat(sortedLess, equal)
-    result = Concat(result, sortedGreater)
+    // result := Concat(sortedLess, equal)
+    // result = Concat(result, sortedGreater)
+    result := Concat(sortedLess, equal, sortedGreater)
 
     return result
 }
@@ -1118,8 +1118,9 @@ func uniqueQuickSort[T constraints.Ordered](list GoList[T]) GoList[T] {
     sortedGreater := uniqueQuickSort(greater)
 
     // Concatenate: sortedLess + equal + sortedGreater
-    result := Concat(sortedLess, equal)
-    result = Concat(result, sortedGreater)
+    // result := Concat(sortedLess, equal)
+    // result = Concat(result, sortedGreater)
+    result := Concat(sortedLess, equal, sortedGreater)
 
     return result
 }
