@@ -85,7 +85,7 @@ func TestDeleteEmptyList(t *testing.T) {
     list := New[int]()
     deleted := Delete(list, 0)
     if result := ToSlice(deleted); len(result) != 0 {
-        t.Errorf("Delete\nresult: %v", result)
+        t.Errorf("Delete\nresult: %v\nexpected: []", result)
     }
 }
 
@@ -102,7 +102,7 @@ func TestDeleteAtEmptyList(t *testing.T) {
     list := New[int]()
     deleted := DeleteAt(list, 0)
     if result := ToSlice(deleted); len(result) != 0 {
-        t.Errorf("Delete\nresult: %v", result)
+        t.Errorf("Delete\nresult: %v\nexpected: []", result)
     }
 }
 
@@ -130,5 +130,101 @@ func TestDropWhile(t *testing.T) {
     expected := []int{4, 5}
     if result := ToSlice(droped); !reflect.DeepEqual(result, expected) {
         t.Errorf("DropWhile\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestDuplicate(t *testing.T) {
+    duplicate := Duplicate(4, 0)
+    expected := []int{0, 0, 0, 0}
+    if result := ToSlice(duplicate); !reflect.DeepEqual(result, expected) {
+        t.Errorf("Duplicate\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestFilterNormalCase(t *testing.T) {
+    list := New(1, 2, 3, 4, 5, 6)
+    filtered := Filter(list, func(n int) bool { return n%2 == 0 })
+    expected := []int{2, 4, 6}
+    if result := ToSlice(filtered); !reflect.DeepEqual(result, expected) {
+        t.Errorf("Filter\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestFilterEmptyList(t *testing.T) {
+    list := New[int]()
+    filtered := Filter(list, func(n int) bool { return n%2 != 0 })
+    if result := ToSlice(filtered); len(result) != 0 {
+        t.Errorf("Filter\nresult: %v\nexpected: []", result)
+    }
+}
+
+func TestFilterMapNormalCase(t *testing.T) {
+    list := New(1, 2, 3, 4, 5, 6)
+    filtered := FilterMap(list, func(n int) (bool, int) {
+        return n % 2 != 0, n * n
+    })
+    expected := []int{1, 9, 25}
+    if result := ToSlice(filtered); !reflect.DeepEqual(result, expected) {
+        t.Errorf("FilterMap\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestFilterMapEmptyList(t *testing.T) {
+    list := New[int]()
+    filtered := FilterMap(list, func(n int) (bool, int) {
+        return n % 2 == 0, n * 2
+    })
+    if result := ToSlice(filtered); len(result) != 0 {
+        t.Errorf("FilterMap\nresult: %v\nexpected: []", result)
+    }
+}
+
+func TestFindFound(t *testing.T) {
+    list := New(1, 2, 3, 4)
+    result := Find(list, 3)
+    expected := 2
+    if result != expected {
+        t.Errorf("Find\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestFindNotFound(t *testing.T) {
+    list := New(1, 2, 3, 4)
+    result := Find(list, 5)
+    expected := -1
+    if result != expected {
+        t.Errorf("Find\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestFoldl(t *testing.T) {
+    list := New(1, 2, 3, 4, 5)
+    result := Foldl(list, 0, func(n, s int) int { return n + s })
+    expected := 15
+    if result != expected {
+        t.Errorf("Find\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestFoldr(t *testing.T) {
+    list := New(1, 2, 3, 4, 5)
+    result := Foldr(list, 1, func(n, s int) int { return n * s })
+    expected := 120
+    if result != expected {
+        t.Errorf("Find\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestForEach(t *testing.T) {
+    list := New[int](1, 2, 3, 4, 5)
+
+    var result []int
+    ForEach(list, func(val int) {
+        result = append(result, val)
+    })
+
+    expected := []int{1, 2, 3, 4, 5}
+    if !reflect.DeepEqual(result, expected) {
+        t.Errorf("ForEach\nresult: %v\nexpected: %v", result, expected)
     }
 }
