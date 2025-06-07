@@ -176,7 +176,7 @@ func main() {
         return n * n, f * n
     })
     fmt.Printf("| fac: %v\n", fac)              // 24
-    fmt.Printf("int_list3: %v\n", int_list3)    // [ 16 -> 9 -> 4 -> 1 ]
+    fmt.Printf("int_list3: %v\n", int_list3)    // [ 1 -> 4 -> 9 -> 16 ]
     fmt.Printf("str_list2: %v\n", str_list2)    // [ "A" -> "B" -> "C" -> "D" ]
     fmt.Println()
 

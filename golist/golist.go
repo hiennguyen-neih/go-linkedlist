@@ -367,7 +367,7 @@ func MapFoldr[T1, T2 comparable](list GoList[T1], acc0 T2, fun func(T1, T2) (T1,
         value, acc0 = fun(node.Data, acc0)
         result.doAppendHead(value)
     }
-    return *result.Reverse(), acc0
+    return result, acc0
 }
 
 // Return maximum element in list.
