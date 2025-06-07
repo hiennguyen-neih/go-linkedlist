@@ -198,7 +198,7 @@ func main() {
         return s > "c"
     })
     fmt.Printf("str_find: %v\n", str_find)      // 2
-    fmt.Printf("str_last: %v\n", str_last)      // b
+    fmt.Printf("str_last: %v\n", str_last)      // "b"
     fmt.Printf("str_len:  %v\n", str_len)       // 6
     fmt.Printf("str_max:  %v\n", str_max)       // d
     fmt.Printf("str_min:  %v\n", str_min)       // a

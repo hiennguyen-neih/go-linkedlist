@@ -264,3 +264,16 @@ func TestJoin(t *testing.T) {
         t.Errorf("Join\nresult: %v\nexpected: %v", result, expected)
     }
 }
+
+func TestLast(t *testing.T) {
+    last1 := Last(New(1, 2, 3, 4))
+    expected1 := 4
+    if last1.Data != expected1 {
+        t.Errorf("Last\nresult: %v\nexpected: %v", last1, expected1)
+    }
+
+    last2 := Last(New[int]())
+    if last2 != nil {
+        t.Errorf("Last\nresult: %v\nexpected: nil", last2)
+    }
+}

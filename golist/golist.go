@@ -317,16 +317,16 @@ func Join[T comparable](list GoList[T], sep T) GoList[T] {
     return *result.Reverse()
 }
 
-// Return data of last node in list.
-func Last[T comparable](list GoList[T]) T {
+// Return last node in list.
+func Last[T comparable](list GoList[T]) *node.Node[T] {
     if list.Head == nil || list.Head.Next == nil {
-        return list.Head.Data
+        return list.Head
     }
     node := list.Head
     for node.Next != nil {
         node = node.Next
     }
-    return node.Data
+    return node
 }
 
 // Return length of list.
