@@ -200,13 +200,13 @@ func main() {
     fmt.Printf("str_find: %v\n", str_find)      // 2
     fmt.Printf("str_last: %v\n", str_last)      // "b"
     fmt.Printf("str_len:  %v\n", str_len)       // 6
-    fmt.Printf("str_max:  %v\n", str_max)       // d
-    fmt.Printf("str_min:  %v\n", str_min)       // a
+    fmt.Printf("str_max:  %v\n", str_max)       // "d"
+    fmt.Printf("str_min:  %v\n", str_min)       // "a"
     fmt.Printf("str_mem:  %v\n", str_mem)       // true
-    fmt.Printf("str_nth:  %v\n", str_nth)       // c
+    fmt.Printf("str_nth:  %v\n", str_nth)       // "c"
     fmt.Printf("str_pre:  %v\n", str_pre)       // true
     fmt.Printf("str_suf:  %v\n", str_suf)       // true
-    fmt.Printf("pos: %v - val: %v\n", pos, val) // 3 - d
+    fmt.Printf("pos: %v - val: %v\n", pos, val) // 3 - "d"
     fmt.Println()
 
     // NthTail

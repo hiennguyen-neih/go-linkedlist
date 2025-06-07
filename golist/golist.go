@@ -372,12 +372,12 @@ func MapFoldr[T1, T2 comparable](list GoList[T1], acc0 T2, fun func(T1, T2) (T1,
 
 // Return maximum element in list.
 // This function only works with list of numbers or strings.
-func Max[T constraints.Ordered](list GoList[T]) T {
+func Max[T constraints.Ordered](list GoList[T]) *node.Node[T] {
     node := list.Head
-    max := node.Data
+    max := node
     for node != nil {
-        if node.Data > max {
-            max = node.Data
+        if node.Data > max.Data {
+            max = node
         }
         node = node.Next
     }
@@ -402,12 +402,12 @@ func Merge[T constraints.Ordered](lists ...GoList[T]) GoList[T] {
 
 // Return minimum element in list.
 // This functions only works with list of numbers or strings.
-func Min[T constraints.Ordered](list GoList[T]) T {
+func Min[T constraints.Ordered](list GoList[T]) *node.Node[T] {
     node := list.Head
-    min := node.Data
+    min := node
     for node != nil {
-        if node.Data < min {
-            min = node.Data
+        if node.Data < min.Data {
+            min = node
         }
         node = node.Next
     }
@@ -416,7 +416,7 @@ func Min[T constraints.Ordered](list GoList[T]) T {
 
 // Return data of node in list at specific index. Note that index is capped at
 // list length. Negative index indicate an offset from the end of list.
-func Nth[T comparable](list GoList[T], index int) T {
+func Nth[T comparable](list GoList[T], index int) *node.Node[T] {
     len := Len(list)
 
     if index < 0 {
@@ -431,7 +431,7 @@ func Nth[T comparable](list GoList[T], index int) T {
     for i := 0; i < index; i++ {
         node = node.Next
     }
-    return node.Data
+    return node
 }
 
 // Return sublist from node in list at specific index as a new list. Note that
@@ -523,12 +523,12 @@ func Reverse[T comparable](list GoList[T]) GoList[T] {
 // Return position and value of first element in list that fun returns true. If
 // every fun execution returns false, this function will returns -1 and zero
 // value of T.
-func Search[T comparable](list GoList[T], fun func(T) bool) (int, T) {
-    var zero T
+func Search[T comparable](list GoList[T], fun func(T) bool) (int, *node.Node[T]) {
+    var zero *node.Node[T]
     i := 0
     for node := list.Head; node != nil; node = node.Next {
         if fun(node.Data) {
-            return i, node.Data
+            return i, node
         }
         i++
     }
