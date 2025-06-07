@@ -124,12 +124,17 @@ func TestDropLast(t *testing.T) {
     }
 }
 
-func TestDropWhile(t *testing.T) {
-    list := New(1, 2, 3, 4, 5)
+func TestDropWhileTakeWhile(t *testing.T) {
+    list := New(1, 2, 3, 4, 5, 2)
     droped := DropWhile(list, func(n int) bool { return n < 4 })
-    expected := []int{4, 5}
-    if result := ToSlice(droped); !reflect.DeepEqual(result, expected) {
-        t.Errorf("DropWhile\nresult: %v\nexpected: %v", result, expected)
+    taken := TakeWhile(list, func(n int) bool { return n < 4 })
+    expected1 := []int{4, 5, 2}
+    expected2 := []int{1, 2, 3}
+    if result := ToSlice(droped); !reflect.DeepEqual(result, expected1) {
+        t.Errorf("DropWhile\nresult: %v\nexpected: %v", result, expected1)
+    }
+    if result := ToSlice(taken); !reflect.DeepEqual(result, expected2) {
+        t.Errorf("TakeWhile\nresult: %v\nexpected: %v", result, expected2)
     }
 }
 
@@ -430,5 +435,138 @@ func TestPreffixSuffix(t *testing.T) {
     }
     if result := Suffix(list1, list3); result {
         t.Errorf("Suffix\nresult: %v\nexpected: false", result)
+    }
+}
+
+func TestReplaceAtUpdateAt(t *testing.T) {
+    list := New(1, 2, 3, 4)
+    replaced := ReplaceAt(list, -2, 0)
+    updated := UpdateAt(list, -3, func(n int) int { return n * n })
+
+    expected1 := []int{1, 2, 0, 4}
+    expected2 := []int{1, 4, 3, 4}
+
+    if result := ToSlice(replaced); !reflect.DeepEqual(result, expected1) {
+        t.Errorf("ReplaceAt\nresult: %v\nexpected: %v", result, expected1)
+    }
+    if result := ToSlice(updated); !reflect.DeepEqual(result, expected2) {
+        t.Errorf("UpdateAt\nresult: %v\nexpected: %v", result, expected2)
+    }
+}
+
+func TestSearch(t *testing.T) {
+    list := New(1, 2, 3, 4)
+    index1, node1 := Search(list, func(n int) bool { return n % 2 == 0 })
+    index2, _ := Search(list, func(n int) bool { return n > 4 })
+
+    if index1 != 1 || node1.Data != 2 {
+        t.Errorf("Search\nresult: %v - %v\nexpected: 1 - 2", index1, node1)
+    }
+    if index2 != -1 {
+        t.Errorf("Search\nresult: %v\nexpected: -1", index2)
+    }
+}
+
+func TestSeq(t *testing.T) {
+    list := Seq(1, 10, 2)
+    expected := []int{1, 3, 5, 7, 9}
+    if result := ToSlice(list); !reflect.DeepEqual(result, expected) {
+        t.Errorf("Seq\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestSplitNormalCase(t *testing.T) {
+    list1, list2 := Split(New("a", "b", "c", "d", "e"), -3)
+    expected1 := []string{"a", "b"}
+    expected2 := []string{"c", "d", "e"}
+
+    if result := ToSlice(list1); !reflect.DeepEqual(result, expected1) {
+        t.Errorf("Split\nresult: %v\nexpected: %v", result, expected1)
+    }
+    if result := ToSlice(list2); !reflect.DeepEqual(result, expected2) {
+        t.Errorf("Split\nresult: %v\nexpected: %v", result, expected2)
+    }
+}
+
+func TestSplitIndexOutOfBound(t *testing.T) {
+    defer func() {
+        if r := recover(); r == nil {
+            t.Errorf("Split\nExpect panic")
+        } else if r != "Split, n is out of bound!" {
+            t.Errorf("Split\nWrong panic message")
+        }
+    }()
+    Split(New(1, 2, 3, 4, 5), 6)
+}
+
+func TestSplitWith(t *testing.T) {
+    list := New(1, 2, 3, 4, 1, 3)
+    list1, list2 := SplitWith(list, func(n int) bool { return n < 4 })
+    expected1 := []int{1, 2, 3}
+    expected2 := []int{4, 1, 3}
+    if result := ToSlice(list1); !reflect.DeepEqual(result, expected1) {
+        t.Errorf("SplitWith\nresult: %v\nexpected: %v", result, expected1)
+    }
+    if result := ToSlice(list2); !reflect.DeepEqual(result, expected2) {
+        t.Errorf("SplitWith\nresult: %v\nexpected: %v", result, expected2)
+    }
+}
+
+func TestSublistNormalCase(t *testing.T) {
+    list := New("a", "b", "c", "d", "e", "f")
+    sublist := Sublist(list, 2, 3)
+    expected := []string{"c", "d", "e"}
+    if result := ToSlice(sublist); !reflect.DeepEqual(result, expected) {
+        t.Errorf("Sublist\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestSublistNegativeLen(t *testing.T) {
+    defer func() {
+        if r := recover(); r == nil {
+            t.Errorf("Sublist\nExpect panic")
+        } else if r != "Sublist, input len must not be negative!" {
+            t.Errorf("Sublist\nWrong panic message")
+        }
+    }()
+    Sublist(New(1, 2, 3, 4), 2, -2)
+}
+
+func TestSublistStartOutOfBound(t *testing.T) {
+    defer func() {
+        if r := recover(); r == nil {
+            t.Errorf("Sublist\nExpect panic")
+        } else if r != "Sublist, start is out of bound!" {
+            t.Errorf("Sublist\nWrong panic message")
+        }
+    }()
+    Sublist(New(1, 2, 3, 4), -5, 2)
+}
+
+func TestSubtract(t *testing.T) {
+    list1 := New("a","b","c","b","a","b")
+    list2 := New("b","a","b")
+    subtract := Subtract(list1, list2)
+    expected := []string{"c", "a", "b"}
+    if result := ToSlice(subtract); !reflect.DeepEqual(result, expected) {
+        t.Errorf("Subtract\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestSum(t *testing.T) {
+    list := New("a", "b", "c", "d", "e", "f")
+    sum := Sum(list)
+    expected := "abcdef"
+    if sum != expected {
+        t.Errorf("Sum\nresult: %v\nexpected: %v", sum, expected)
+    }
+}
+
+func TestUSort(t *testing.T) {
+    list := New(2, 5, 1, 2, 7, 3, 9, 4, 8, 6, 4)
+    sorted := USort(list)
+    expected := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+    if result := ToSlice(sorted); !reflect.DeepEqual(result, expected) {
+        t.Errorf("USort\nresult: %v\nexpected: %v", result, expected)
     }
 }

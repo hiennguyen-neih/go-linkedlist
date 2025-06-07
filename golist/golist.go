@@ -370,8 +370,8 @@ func MapFoldr[T1, T2 comparable](list GoList[T1], acc0 T2, fun func(T1, T2) (T1,
     return result, acc0
 }
 
-// Return maximum element in list.
-// This function only works with list of numbers or strings.
+// Return node with maximum value in list. This function only works with
+// constraint Ordered list.
 func Max[T constraints.Ordered](list GoList[T]) *node.Node[T] {
     node := list.Head
     max := node
@@ -400,8 +400,8 @@ func Merge[T constraints.Ordered](lists ...GoList[T]) GoList[T] {
     return Sort(result)
 }
 
-// Return minimum element in list.
-// This functions only works with list of numbers or strings.
+// Return node with minimum value in list. This function only works with
+// constraint Ordered list.
 func Min[T constraints.Ordered](list GoList[T]) *node.Node[T] {
     node := list.Head
     min := node
@@ -414,8 +414,8 @@ func Min[T constraints.Ordered](list GoList[T]) *node.Node[T] {
     return min
 }
 
-// Return data of node in list at specific index. Note that index is capped at
-// list length. Negative index indicate an offset from the end of list.
+// Return node in list at specific index. Note that index is capped at list
+// length. Negative index indicate an offset from the end of list.
 func Nth[T comparable](list GoList[T], index int) *node.Node[T] {
     len := Len(list)
 
@@ -520,9 +520,8 @@ func Reverse[T comparable](list GoList[T]) GoList[T] {
     return GoList[T]{Head: head}
 }
 
-// Return position and value of first element in list that fun returns true. If
-// every fun execution returns false, this function will returns -1 and zero
-// value of T.
+// Return position and first node in list that fun returns true. If every fun
+// execution returns false, this function will returns position is -1.
 func Search[T comparable](list GoList[T], fun func(T) bool) (int, *node.Node[T]) {
     var zero *node.Node[T]
     i := 0
