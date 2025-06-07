@@ -277,3 +277,158 @@ func TestLast(t *testing.T) {
         t.Errorf("Last\nresult: %v\nexpected: nil", last2)
     }
 }
+
+func TestMap(t *testing.T) {
+    list := New(1, 2, 3, 4)
+    mapped := Map(list, func(n int) int { return n * n })
+    expected := []int{1, 4, 9, 16}
+    if result := ToSlice(mapped); !reflect.DeepEqual(result, expected) {
+        t.Errorf("Map\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestMapFoldlMapFoldr(t *testing.T) {
+    list := New(1, 2, 3, 4)
+    mapped1, sum := MapFoldl(list, 0, func(n, s int) (int, int) {
+        return n * 2, s + n
+    })
+    mapped2, fac := MapFoldr(list, 1, func(n, f int) (int, int) {
+        return n * 2, f * n
+    })
+    expectedL := []int{2, 4, 6, 8}
+    expectedS := 10
+    expectedF := 24
+    if result1 := ToSlice(mapped1); !reflect.DeepEqual(result1, expectedL) || sum != expectedS {
+        t.Errorf("MapFoldl\nresult: %v - %v\nexpected: %v - %v", sum, result1, expectedS, expectedL)
+    }
+    if result2 := ToSlice(mapped2); !reflect.DeepEqual(result2, expectedL) || fac != expectedF {
+        t.Errorf("MapFoldr\nresult: %v - %v\nexpected: %v - %v", fac, result2, expectedF, expectedL)
+    }
+}
+
+func TestMaxMin(t *testing.T) {
+    list := New("d", "b", "e", "a", "c")
+    max := Max(list)
+    min := Min(list)
+    expectedMax := "e"
+    expectedMin := "a"
+
+    if max.Data != expectedMax {
+        t.Errorf("Max\nresult: %v\nexpected: %v", max, expectedMax)
+    }
+    if min.Data != expectedMin {
+        t.Errorf("Min\nresult: %v\nexpected: %v", min, expectedMin)
+    }
+}
+
+func TestMember(t *testing.T) {
+    list := New(1, 2, 3, 4, 5)
+    member1 := Member(list, 4)
+    member2 := Member(list, 6)
+    if !member1 {
+        t.Errorf("Member\nresult: %v\nexpected: true", member1)
+    }
+    if member2 {
+        t.Errorf("Member\nresult: %v\nexpected: false", member2)
+    }
+}
+
+func TestMergeUMerge(t *testing.T) {
+    list1 := New(2, 8, 6)
+    list2 := New(1, 3, 3)
+    list3 := New(8, 4, 5)
+    merged := Merge(list1, list2, list3)
+    umerged := UMerge(list1, list2, list3)
+
+    expected1 := []int{1, 2, 3, 3, 4, 5, 6, 8, 8}
+    expected2 := []int{1, 2, 3, 4, 5, 6, 8}
+
+    if result1 := ToSlice(merged); !reflect.DeepEqual(result1, expected1) {
+        t.Errorf("Merge\nresult: %v\nexpected: %v", result1, expected1)
+    }
+    if result2 := ToSlice(umerged); !reflect.DeepEqual(result2, expected2) {
+        t.Errorf("UMerge\nresult: %v\nexpected: %v", result2, expected2)
+    }
+}
+
+func TestNthNormalCase(t *testing.T) {
+    list := New(1, 2, 3, 4, 5)
+    nth1 := Nth(list, 2)
+    nth2 := Nth(list, -2)
+
+    expected1 := 3
+    expected2 := 4
+
+    if nth1.Data != expected1 {
+        t.Errorf("Nth\nresult: %v\nexpected: %v", nth1, expected1)
+    }
+    if nth2.Data != expected2 {
+        t.Errorf("Nth\nresult: %v\nexpected: %v", nth2, expected2)
+    }
+}
+
+func TestNthIndexOutOfBound(t *testing.T) {
+    defer func() {
+        if r := recover(); r == nil {
+            t.Errorf("Nth\nExpect panic")
+        } else if r != "Nth, index is out of bound!" {
+            t.Errorf("Nth\nWrong panic message")
+        }
+    }()
+    Nth(New(1, 2, 3, 4), 10)
+}
+
+func TestNthTailNormalCase(t *testing.T) {
+    list := New("a", "b", "c", "d", "e")
+    tail := NthTail(list, -3)
+    expected := []string{"c", "d", "e"}
+
+    if result := ToSlice(tail); !reflect.DeepEqual(result, expected) {
+        t.Errorf("NthTail\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestNthTailIndexOutOfBound(t *testing.T) {
+    defer func() {
+        if r := recover(); r == nil {
+            t.Errorf("NthTail\nExpect panic")
+        } else if r != "NthTail, index is out of bound!" {
+            t.Errorf("NthTail\nWrong panic message")
+        }
+    }()
+    NthTail(New(1, 2, 3, 4), -10)
+}
+
+func TestPartition(t *testing.T) {
+    input := New(1, 2, 3, 4, 5, 6)
+    list1, list2 := Partition(input, func(n int) bool { return n % 2 != 0 })
+    expected1 := []int{1, 3, 5}
+    expected2 := []int{2, 4, 6}
+
+    if result1 := ToSlice(list1); !reflect.DeepEqual(result1, expected1) {
+        t.Errorf("Partition\nresult: %v\nexpected: %v", result1, expected1)
+    }
+    if result2 := ToSlice(list2); !reflect.DeepEqual(result2, expected2) {
+        t.Errorf("Partition\nresult: %v\nexpected: %v", result2, expected2)
+    }
+}
+
+func TestPreffixSuffix(t *testing.T) {
+    list1 := New("a", "b")
+    list2 := New("e", "f")
+    list3 := New("a", "b", "c", "d", "e", "f")
+
+    if result := Prefix(list1, list3); !result {
+        t.Errorf("Prefix\nresult: %v\nexpected: true", result)
+    }
+    if result := Prefix(list2, list3); result {
+        t.Errorf("Prefix\nresult: %v\nexpected: false", result)
+    }
+
+    if result := Suffix(list2, list3); !result {
+        t.Errorf("Suffix\nresult: %v\nexpected: true", result)
+    }
+    if result := Suffix(list1, list3); result {
+        t.Errorf("Suffix\nresult: %v\nexpected: false", result)
+    }
+}
