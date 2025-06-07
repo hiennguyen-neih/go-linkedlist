@@ -216,7 +216,7 @@ func TestFoldr(t *testing.T) {
 }
 
 func TestForEach(t *testing.T) {
-    list := New[int](1, 2, 3, 4, 5)
+    list := New(1, 2, 3, 4, 5)
 
     var result []int
     ForEach(list, func(val int) {
@@ -226,5 +226,41 @@ func TestForEach(t *testing.T) {
     expected := []int{1, 2, 3, 4, 5}
     if !reflect.DeepEqual(result, expected) {
         t.Errorf("ForEach\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestInsertAtNormalCase(t *testing.T) {
+    list := New("a", "b", "c", "d")
+
+    inserted1 := InsertAt(list, -2, "X")
+    expected1 := []string{"a", "b", "X", "c", "d"}
+    if result1 := ToSlice(inserted1); !reflect.DeepEqual(result1, expected1) {
+        t.Errorf("InsertAt\nresult: %v\nexpected: %v", result1, expected1)
+    }
+
+    inserted2 := InsertAt(list, 4, "X")
+    expected2 := []string{"a", "b", "c", "d", "X"}
+    if result2 := ToSlice(inserted2); !reflect.DeepEqual(result2, expected2) {
+        t.Errorf("InsertAt\nresult: %v\nexpected: %v", result2, expected2)
+    }
+}
+
+func TestInsertAtIndexOutOfBound(t *testing.T) {
+    defer func() {
+        if r := recover(); r == nil {
+            t.Errorf("InsertAt\nExpect panic")
+        } else if r != "InsertAt, index is out of bound!" {
+            t.Errorf("InsertAt\nWrong panic message")
+        }
+    }()
+    InsertAt(New(1, 2, 3, 4), 10, 0)
+}
+
+func TestJoin(t *testing.T) {
+    list := New("a", "b", "c", "d")
+    joined := Join(list, "X")
+    expected := []string{"a", "X", "b", "X", "c", "X", "d"}
+    if result := ToSlice(joined); !reflect.DeepEqual(result, expected) {
+        t.Errorf("Join\nresult: %v\nexpected: %v", result, expected)
     }
 }
