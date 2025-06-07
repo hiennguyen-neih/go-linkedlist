@@ -710,6 +710,7 @@ func UpdateAt[T comparable](list GoList[T], index int, fun func(T) T) GoList[T] 
  */
 
 // Deprecated: Use function golist.Append instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) Append(values ...T) *GoList[T] {
     list.Reverse()
     for _, value := range values {
@@ -720,6 +721,7 @@ func (list *GoList[T]) Append(values ...T) *GoList[T] {
 }
 
 // Deprecated: Use function golist.AppendHead instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) AppendHead(values ...T) *GoList[T] {
     for i := len(values) - 1; i >= 0; i-- {
         list.doAppendHead(values[i])
@@ -728,6 +730,7 @@ func (list *GoList[T]) AppendHead(values ...T) *GoList[T] {
 }
 
 // Deprecated: Use function golist.Concat instead.
+// Warning: This method will be removed in next release.
 func (list1 *GoList[T]) Concat(list2 GoList[T]) *GoList[T] {
     for node1 := list1.Head; node1 != nil; node1 = node1.Next {
         if node1.Next == nil {
@@ -739,6 +742,7 @@ func (list1 *GoList[T]) Concat(list2 GoList[T]) *GoList[T] {
 }
 
 // Deprecated: Use function golist.Delete instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) Delete(value T) *GoList[T] {
     if list.Head == nil {
         return list
@@ -760,6 +764,7 @@ func (list *GoList[T]) Delete(value T) *GoList[T] {
 }
 
 // Deprecated: Use function golist.DeleteAt instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) DeleteAt(index int) *GoList[T] {
     len := Len(*list)
 
@@ -789,6 +794,7 @@ func (list *GoList[T]) DeleteAt(index int) *GoList[T] {
 }
 
 // Deprecated: Use function golist.DropLast instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) DropLast() *GoList[T] {
     node := list.Head
     for node != nil {
@@ -802,6 +808,7 @@ func (list *GoList[T]) DropLast() *GoList[T] {
 }
 
 // Deprecated: Use function golist.DropWhile instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) DropWhile(fun func(T) bool) *GoList[T] {
     for node := list.Head; node != nil; node = node.Next {
         if fun(node.Data) {
@@ -814,6 +821,7 @@ func (list *GoList[T]) DropWhile(fun func(T) bool) *GoList[T] {
 }
 
 // Deprecated: Use function golist.Filter instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) Filter(fun func(T) bool) *GoList[T] {
     if list.Head == nil {
         return list
@@ -830,6 +838,7 @@ func (list *GoList[T]) Filter(fun func(T) bool) *GoList[T] {
 }
 
 // Deprecated: Use function golist.FilterMap instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) FilterMap(fun func(T) (bool, T)) *GoList[T] {
     dummy := &node.Node[T]{Next: list.Head}
     prev := dummy
@@ -848,6 +857,7 @@ func (list *GoList[T]) FilterMap(fun func(T) (bool, T)) *GoList[T] {
 }
 
 // Deprecated: Use function golist.InsertAt instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) InsertAt(index int, val T) *GoList[T] {
     len := Len(*list)
     if index < 0 {
@@ -877,6 +887,7 @@ func (list *GoList[T]) InsertAt(index int, val T) *GoList[T] {
 }
 
 // Deprecated: Use function golist.Join instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) Join(sep T) *GoList[T] {
     curr := list.Head
     for curr != nil {
@@ -892,6 +903,7 @@ func (list *GoList[T]) Join(sep T) *GoList[T] {
 }
 
 // Deprecated: Use function golist.Map instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) Map(fun func(T) T) *GoList[T] {
     for node := list.Head; node != nil; node = node.Next {
         node.Data = fun(node.Data)
@@ -900,6 +912,7 @@ func (list *GoList[T]) Map(fun func(T) T) *GoList[T] {
 }
 
 // Deprecated: Use function golist.NthTail instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) NthTail(index int) *GoList[T] {
     len := Len(*list)
     if index < 0 {
@@ -918,6 +931,7 @@ func (list *GoList[T]) NthTail(index int) *GoList[T] {
 }
 
 // Deprecated: Use function golist.ReplaceAt instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) ReplaceAt(index int, val T) *GoList[T] {
     len := Len(*list)
     if index < 0 {
@@ -936,6 +950,7 @@ func (list *GoList[T]) ReplaceAt(index int, val T) *GoList[T] {
 }
 
 // Deprecated: Use function golist.Reverse instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) Reverse() *GoList[T] {
     var prev *node.Node[T]
     node := list.Head
@@ -950,6 +965,7 @@ func (list *GoList[T]) Reverse() *GoList[T] {
 }
 
 // Deprecated: Use function golist.Sublist instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) Sublist(start, len int) *GoList[T] {
     if len == 0 {
         list.Head = nil
@@ -982,6 +998,7 @@ func (list *GoList[T]) Sublist(start, len int) *GoList[T] {
 }
 
 // Deprecated: Use function golist.Subtract instead.
+// Warning: This method will be removed in next release.
 func (list1 *GoList[T]) Subtract(list2 GoList[T]) *GoList[T] {
     for node := list2.Head; node != nil; node = node.Next {
         list1.Delete(node.Data)
@@ -990,6 +1007,7 @@ func (list1 *GoList[T]) Subtract(list2 GoList[T]) *GoList[T] {
 }
 
 // Deprecated: Use function golist.TakeWhile instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) TakeWhile(fun func(T) bool) *GoList[T] {
     if !fun(list.Head.Data) {
         list.Head = nil
@@ -1004,6 +1022,7 @@ func (list *GoList[T]) TakeWhile(fun func(T) bool) *GoList[T] {
 }
 
 // Deprecated: Use function golist.UpdateAt instead.
+// Warning: This method will be removed in next release.
 func (list *GoList[T]) UpdateAt(index int, fun func(T) T) *GoList[T] {
     len := Len(*list)
     if index < 0 {
