@@ -28,16 +28,19 @@ type GoList[T comparable] struct {
 // Create new singly linked list.
 func New[T comparable](values ...T) GoList[T] {
     var list GoList[T]
-    return *list.AppendHead(values...)
+    for _, val := range values {
+        list.appendHead(val)
+    }
+    return *list.reverse()
 }
 
 // Convert input slice into linked list.
 func FromSlice[T comparable](values []T) GoList[T] {
     var list GoList[T]
     for _, val := range values {
-        list.doAppendHead(val)
+        list.appendHead(val)
     }
-    return *list.Reverse()
+    return *list.reverse()
 }
 
 // Convert input linked list into slice.
@@ -75,24 +78,24 @@ func Any[T comparable](list GoList[T], fun func(T) bool) bool {
 func Append[T comparable](list GoList[T], values ...T) GoList[T] {
     var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
-        result.doAppendHead(node.Data)
+        result.appendHead(node.Data)
     }
     for _, value := range values {
-        result.doAppendHead(value)
+        result.appendHead(value)
     }
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Return new list is input list that append values into head of it.
 func AppendHead[T comparable](list GoList[T], values ...T) GoList[T] {
     var result GoList[T]
     for _, value := range values {
-        result.doAppendHead(value)
+        result.appendHead(value)
     }
     for node := list.Head; node != nil; node = node.Next {
-        result.doAppendHead(node.Data)
+        result.appendHead(node.Data)
     }
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Return a list that is concatenated of all input lists.
@@ -100,10 +103,10 @@ func Concat[T comparable](lists ...GoList[T]) GoList[T] {
     var result GoList[T]
     for _, list := range lists {
         for node := list.Head; node != nil; node = node.Next {
-            result.doAppendHead(node.Data)
+            result.appendHead(node.Data)
         }
     }
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Delte first node in list with value of input and return as new list.
@@ -115,7 +118,7 @@ func Delete[T comparable](list GoList[T], value T) GoList[T] {
     node := list.Head
     for node != nil {
         if node.Data != value {
-            result.doAppendHead(node.Data)
+            result.appendHead(node.Data)
             node = node.Next
         } else {
             node = node.Next
@@ -123,10 +126,10 @@ func Delete[T comparable](list GoList[T], value T) GoList[T] {
         }
     }
     for node != nil {
-        result.doAppendHead(node.Data)
+        result.appendHead(node.Data)
         node = node.Next
     }
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Delete node at the specific index in list and return as new list. If index
@@ -146,7 +149,7 @@ func DeleteAt[T comparable](list GoList[T], index int) GoList[T] {
 
     if index < 0 || index >= len {
         for node := list.Head; node != nil; node = node.Next {
-            result.doAppendHead(node.Data)
+            result.appendHead(node.Data)
         }
     } else {
         i := 0
@@ -156,11 +159,11 @@ func DeleteAt[T comparable](list GoList[T], index int) GoList[T] {
                 continue
             }
             i++
-            result.doAppendHead(node.Data)
+            result.appendHead(node.Data)
         }
     }
 
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Drop the last element in list and return as new list.
@@ -168,12 +171,12 @@ func DropLast[T comparable](list GoList[T]) GoList[T] {
     var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
         if node.Next.Next == nil {
-            result.doAppendHead(node.Data)
+            result.appendHead(node.Data)
             break
         }
-        result.doAppendHead(node.Data)
+        result.appendHead(node.Data)
     }
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Drop elements in list while fun returns true, and return as new list.
@@ -187,10 +190,10 @@ func DropWhile[T comparable](list GoList[T], fun func(T) bool) GoList[T] {
         node = node.Next
     }
     for node != nil {
-        result.doAppendHead(node.Data)
+        result.appendHead(node.Data)
         node = node.Next
     }
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Return a list containing n copies of term element. If n is negative or equal
@@ -198,7 +201,7 @@ func DropWhile[T comparable](list GoList[T], fun func(T) bool) GoList[T] {
 func Duplicate[T comparable](n int, elem T) GoList[T] {
     var result GoList[T]
     for i := 0; i < n; i++ {
-        result.doAppendHead(elem)
+        result.appendHead(elem)
     }
     return result
 }
@@ -211,10 +214,10 @@ func Filter[T comparable](list GoList[T], fun func(T) bool) GoList[T] {
     }
     for node := list.Head; node != nil; node = node.Next {
         if fun(node.Data) {
-            result.doAppendHead(node.Data)
+            result.appendHead(node.Data)
         }
     }
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Calls fun on successive elements of list. fun must return (bool, value).
@@ -227,10 +230,10 @@ func FilterMap[T comparable](list GoList[T], fun func(T) (bool, T)) GoList[T] {
     }
     for node := list.Head; node != nil; node = node.Next {
         if keep, value := fun(node.Data); keep {
-            result.doAppendHead(value)
+            result.appendHead(value)
         }
     }
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Return position of first element in list that match with value. If there is
@@ -288,33 +291,33 @@ func InsertAt[T comparable](list GoList[T], index int, val T) GoList[T] {
     var result GoList[T]
     if index == len {
         for node := list.Head; node != nil; node = node.Next {
-            result.doAppendHead(node.Data)
+            result.appendHead(node.Data)
         }
-        result.doAppendHead(val)
+        result.appendHead(val)
     } else {
         i := 0
         for node := list.Head; node != nil; node = node.Next {
             if i == index {
-                result.doAppendHead(val)
+                result.appendHead(val)
             }
-            result.doAppendHead(node.Data)
+            result.appendHead(node.Data)
             i++
         }
     }
 
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Insert sep between each element in list and return as new list.
 func Join[T comparable](list GoList[T], sep T) GoList[T] {
     var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
-        result.doAppendHead(node.Data)
+        result.appendHead(node.Data)
         if node.Next != nil {
-            result.doAppendHead(sep)
+            result.appendHead(sep)
         }
     }
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Return last node in list.
@@ -342,9 +345,9 @@ func Len[T comparable](list GoList[T]) int {
 func Map[T comparable](list GoList[T], fun func(T) T) GoList[T] {
     var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
-        result.doAppendHead(fun(node.Data))
+        result.appendHead(fun(node.Data))
     }
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Combines the operations of Map function and Foldl function into one pass.
@@ -353,9 +356,9 @@ func MapFoldl[T1, T2 comparable](list GoList[T1], acc0 T2, fun func(T1, T2) (T1,
     var result GoList[T1]
     for node := list.Head; node != nil; node = node.Next {
         value, acc0 = fun(node.Data, acc0)
-        result.doAppendHead(value)
+        result.appendHead(value)
     }
-    return *result.Reverse(), acc0
+    return *result.reverse(), acc0
 }
 
 // Combines the operations of Map function and Foldr function into one pass.
@@ -365,7 +368,7 @@ func MapFoldr[T1, T2 comparable](list GoList[T1], acc0 T2, fun func(T1, T2) (T1,
     reverse := Reverse(list)
     for node := reverse.Head; node != nil; node = node.Next {
         value, acc0 = fun(node.Data, acc0)
-        result.doAppendHead(value)
+        result.appendHead(value)
     }
     return result, acc0
 }
@@ -452,10 +455,10 @@ func NthTail[T comparable](list GoList[T], index int) GoList[T] {
         node = node.Next
     }
     for node != nil {
-        result.doAppendHead(node.Data)
+        result.appendHead(node.Data)
         node = node.Next
     }
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Split list into list1 and list2, where list1 contains elements which fun
@@ -465,12 +468,12 @@ func Partition[T comparable](list GoList[T], fun func(T) bool) (GoList[T], GoLis
     var list2 GoList[T]
     for node := list.Head; node != nil; node = node.Next {
         if fun(node.Data) {
-            list1.doAppendHead(node.Data)
+            list1.appendHead(node.Data)
         } else {
-            list2.doAppendHead(node.Data)
+            list2.appendHead(node.Data)
         }
     }
-    return *list1.Reverse(), *list2.Reverse()
+    return *list1.reverse(), *list2.reverse()
 }
 
 // Return true if list1 is prefix of list2, otherwise return false.
@@ -500,14 +503,14 @@ func ReplaceAt[T comparable](list GoList[T], index int, val T) GoList[T] {
     i := 0
     for node := list.Head; node != nil; node = node.Next {
         if i == index {
-            result.doAppendHead(val)
+            result.appendHead(val)
         } else {
-            result.doAppendHead(node.Data)
+            result.appendHead(node.Data)
         }
         i++
     }
 
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Return result is reverse of input list
@@ -539,9 +542,9 @@ func Search[T comparable](list GoList[T], fun func(T) bool) (int, *node.Node[T])
 func Seq[T constraints.Numeric](from, to, incr T) GoList[T] {
     var result GoList[T]
     for i := from; i <= to; i += incr {
-        result.doAppendHead(i)
+        result.appendHead(i)
     }
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Sort input list and returns as new list.
@@ -565,15 +568,15 @@ func Split[T comparable](list GoList[T], n int) (GoList[T], GoList[T]) {
     var list2 GoList[T]
     node := list.Head
     for i := 0; i < n; i++ {
-        list1.doAppendHead(node.Data)
+        list1.appendHead(node.Data)
         node = node.Next
     }
     for node != nil {
-        list2.doAppendHead(node.Data)
+        list2.appendHead(node.Data)
         node = node.Next
     }
 
-    return *list1.Reverse(), *list2.Reverse()
+    return *list1.reverse(), *list2.reverse()
 }
 
 // Split input list into list1 and list2, where list1 behave as
@@ -584,17 +587,17 @@ func SplitWith[T comparable](list GoList[T], fun func(T) bool) (GoList[T], GoLis
     node := list.Head
     for node != nil {
         if fun(node.Data) {
-            list1.doAppendHead(node.Data)
+            list1.appendHead(node.Data)
         } else {
             break
         }
         node = node.Next
     }
     for node != nil {
-        list2.doAppendHead(node.Data)
+        list2.appendHead(node.Data)
         node = node.Next
     }
-    return *list1.Reverse(), *list2.Reverse()
+    return *list1.reverse(), *list2.reverse()
 }
 
 // Return sublist of input list as new list, starting at start and has maximum
@@ -619,10 +622,10 @@ func Sublist[T comparable](list GoList[T], start, len int) GoList[T] {
         node = node.Next
     }
     for j := 0; node != nil && j < len; j++ {
-        result.doAppendHead(node.Data)
+        result.appendHead(node.Data)
         node = node.Next
     }
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Return a new list that is a copy of list1 which is for each element in list2,
@@ -630,11 +633,11 @@ func Sublist[T comparable](list GoList[T], start, len int) GoList[T] {
 func Subtract[T comparable](list1, list2 GoList[T]) GoList[T] {
     var result GoList[T]
     for node1 := list1.Head; node1 != nil; node1 = node1.Next {
-        result.doAppendHead(node1.Data)
+        result.appendHead(node1.Data)
     }
-    result.Reverse()
+    result.reverse()
     for node2 := list2.Head; node2 != nil; node2 = node2.Next {
-        result.Delete(node2.Data)
+        result.delete(node2.Data)
     }
     return result
 }
@@ -660,12 +663,12 @@ func TakeWhile[T comparable](list GoList[T], fun func(T) bool) GoList[T] {
     var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
         if fun(node.Data) {
-            result.doAppendHead(node.Data)
+            result.appendHead(node.Data)
         } else {
             break
         }
     }
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 // Return a unique sorted list forming by merging all input lists and removing
@@ -693,14 +696,14 @@ func UpdateAt[T comparable](list GoList[T], index int, fun func(T) T) GoList[T] 
     i := 0
     for node := list.Head; node != nil; node = node.Next {
         if i == index {
-            result.doAppendHead(fun(node.Data))
+            result.appendHead(fun(node.Data))
         } else {
-            result.doAppendHead(node.Data)
+            result.appendHead(node.Data)
         }
         i++
     }
 
-    return *result.Reverse()
+    return *result.reverse()
 }
 
 /*
@@ -708,337 +711,6 @@ func UpdateAt[T comparable](list GoList[T], index int, fun func(T) T) GoList[T] 
  * Exported methods
  *******************************************************************************
  */
-
-// Deprecated: Use function golist.Append instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) Append(values ...T) *GoList[T] {
-    list.Reverse()
-    for _, value := range values {
-        list.doAppendHead(value)
-    }
-    list.Reverse()
-    return list
-}
-
-// Deprecated: Use function golist.AppendHead instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) AppendHead(values ...T) *GoList[T] {
-    for i := len(values) - 1; i >= 0; i-- {
-        list.doAppendHead(values[i])
-    }
-    return list
-}
-
-// Deprecated: Use function golist.Concat instead.
-// Warning: This method will be removed in next release.
-func (list1 *GoList[T]) Concat(list2 GoList[T]) *GoList[T] {
-    for node1 := list1.Head; node1 != nil; node1 = node1.Next {
-        if node1.Next == nil {
-            node1.Next = list2.Head
-            return list1
-        }
-    }
-    return list1
-}
-
-// Deprecated: Use function golist.Delete instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) Delete(value T) *GoList[T] {
-    if list.Head == nil {
-        return list
-    }
-    // Ignore if it's first node
-    if list.Head.Data == value {
-        list.Head = list.Head.Next
-        return list
-    }
-    node := list.Head
-    for node.Next != nil {
-        if node.Next.Data == value {
-            node.Next = node.Next.Next
-            return list
-        }
-        node = node.Next
-    }
-    return list
-}
-
-// Deprecated: Use function golist.DeleteAt instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) DeleteAt(index int) *GoList[T] {
-    len := Len(*list)
-
-    if list.Head == nil {
-        return list
-    }
-
-    if index == 0 {
-        list.Head = list.Head.Next
-        return list
-    } else if index < 0 {
-        index = len + index // same as len - abs(index)
-    }
-
-    if index > 0 && index < len {
-        i := 1
-        for node := list.Head; node.Next != nil; node = node.Next {
-            if i == index {
-                node.Next = node.Next.Next
-                return list
-            }
-            i++
-        }
-    }
-
-    return list
-}
-
-// Deprecated: Use function golist.DropLast instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) DropLast() *GoList[T] {
-    node := list.Head
-    for node != nil {
-        if node.Next.Next == nil {
-            node.Next = nil
-            break
-        }
-        node = node.Next
-    }
-    return list
-}
-
-// Deprecated: Use function golist.DropWhile instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) DropWhile(fun func(T) bool) *GoList[T] {
-    for node := list.Head; node != nil; node = node.Next {
-        if fun(node.Data) {
-            list.Head = node.Next
-        } else {
-            break
-        }
-    }
-    return list
-}
-
-// Deprecated: Use function golist.Filter instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) Filter(fun func(T) bool) *GoList[T] {
-    if list.Head == nil {
-        return list
-    }
-    if !fun(list.Head.Data) {
-        list.Head = list.Head.Next
-    }
-    for node := list.Head; node.Next != nil; node = node.Next {
-        if !fun(node.Next.Data) {
-            node.Next = node.Next.Next
-        }
-    }
-    return list
-}
-
-// Deprecated: Use function golist.FilterMap instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) FilterMap(fun func(T) (bool, T)) *GoList[T] {
-    dummy := &node.Node[T]{Next: list.Head}
-    prev := dummy
-
-    for node := list.Head; node != nil; node = node.Next {
-        if keep, value := fun(node.Data); keep {
-            node.Data = value
-            prev = node
-        } else {
-            prev.Next = node.Next
-        }
-    }
-
-    list.Head = dummy.Next
-    return list
-}
-
-// Deprecated: Use function golist.InsertAt instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) InsertAt(index int, val T) *GoList[T] {
-    len := Len(*list)
-    if index < 0 {
-        index = len + index // same as len - abs(index)
-    }
-    if index < 0 || index > len {
-        panic("InsertAt, index is out of bound!")
-    }
-
-    insertNode := &node.Node[T]{Data: val}
-    if index == 0 {
-        insertNode.Next = list.Head
-        list.Head = insertNode
-    } else {
-        i := 1
-        for node := list.Head; node != nil; node = node.Next {
-            if i == index {
-                insertNode.Next = node.Next
-                node.Next = insertNode
-                break
-            }
-            i++
-        }
-    }
-
-    return list
-}
-
-// Deprecated: Use function golist.Join instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) Join(sep T) *GoList[T] {
-    curr := list.Head
-    for curr != nil {
-        if curr.Next != nil {
-            node := &node.Node[T]{Data: sep, Next: curr.Next}
-            curr.Next = node
-            curr = node.Next
-        } else {
-            curr = nil
-        }
-    }
-    return list
-}
-
-// Deprecated: Use function golist.Map instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) Map(fun func(T) T) *GoList[T] {
-    for node := list.Head; node != nil; node = node.Next {
-        node.Data = fun(node.Data)
-    }
-    return list
-}
-
-// Deprecated: Use function golist.NthTail instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) NthTail(index int) *GoList[T] {
-    len := Len(*list)
-    if index < 0 {
-        index = len + index // same as len - abs(n)
-    }
-    if index < 0 || index >= len {
-        panic("NthTail, index is out of bound!")
-    }
-
-    node := list.Head
-    for i := 0; i < index; i++ {
-        node = node.Next
-    }
-    list.Head = node
-    return list
-}
-
-// Deprecated: Use function golist.ReplaceAt instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) ReplaceAt(index int, val T) *GoList[T] {
-    len := Len(*list)
-    if index < 0 {
-        index = len + index // same as len - abs(index)
-    }
-
-    i := 0
-    for node := list.Head; node != nil; node = node.Next {
-        if i == index {
-            node.Data = val
-        }
-        i++
-    }
-
-    return list
-}
-
-// Deprecated: Use function golist.Reverse instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) Reverse() *GoList[T] {
-    var prev *node.Node[T]
-    node := list.Head
-    for node != nil {
-        next := node.Next
-        node.Next = prev
-        prev = node
-        node = next
-    }
-    list.Head = prev
-    return list
-}
-
-// Deprecated: Use function golist.Sublist instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) Sublist(start, len int) *GoList[T] {
-    if len == 0 {
-        list.Head = nil
-        return list
-    } else if len < 0 {
-        panic("Sublist, input len must not be negative!")
-    }
-
-    listLen := Len(*list)
-    if start < 0 {
-        start = listLen + start // same as len - abs(start)
-    }
-    if start < 0 || start >= listLen {
-        panic("Sublist, start is out of bound!")
-    }
-
-    node := list.Head
-    for i := 0; node != nil && i < start; i++ {
-        node = node.Next
-    }
-    list.Head = node
-    for j := 0; node != nil && node.Next != nil && j < len - 1; j++ {
-        node = node.Next
-    }
-    if node != nil {
-        node.Next = nil
-    }
-
-    return list
-}
-
-// Deprecated: Use function golist.Subtract instead.
-// Warning: This method will be removed in next release.
-func (list1 *GoList[T]) Subtract(list2 GoList[T]) *GoList[T] {
-    for node := list2.Head; node != nil; node = node.Next {
-        list1.Delete(node.Data)
-    }
-    return list1
-}
-
-// Deprecated: Use function golist.TakeWhile instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) TakeWhile(fun func(T) bool) *GoList[T] {
-    if !fun(list.Head.Data) {
-        list.Head = nil
-        return list
-    }
-    for node := list.Head; node != nil; node = node.Next {
-        if !fun(node.Next.Data) {
-            node.Next = nil
-        }
-    }
-    return list
-}
-
-// Deprecated: Use function golist.UpdateAt instead.
-// Warning: This method will be removed in next release.
-func (list *GoList[T]) UpdateAt(index int, fun func(T) T) *GoList[T] {
-    len := Len(*list)
-    if index < 0 {
-        index = len + index // same as len - abs(index)
-    }
-
-    i := 0
-    for node := list.Head; node != nil; node = node.Next {
-        if i == index {
-            node.Data = fun(node.Data)
-        }
-        i++
-    }
-
-    return list
-}
 
 // Return a string representing singly linked list.
 func (list GoList[T]) String() string {
@@ -1066,9 +738,42 @@ func (list GoList[T]) String() string {
  */
 
 // Do append value into head of list.
-func (list *GoList[T]) doAppendHead(value T) *GoList[T] {
+func (list *GoList[T]) appendHead(value T) *GoList[T] {
     node := &node.Node[T]{Data: value, Next: list.Head}
     list.Head = node
+    return list
+}
+
+// Do delete node with input value out of list.
+func (list *GoList[T]) delete(value T) *GoList[T] {
+    if list.Head == nil {
+        return list
+    }
+    // Ignore if it's first node
+    if list.Head.Data == value {
+        list.Head = list.Head.Next
+        return list
+    }
+    for node := list.Head; node.Next != nil; node = node.Next {
+        if node.Next.Data == value {
+            node.Next = node.Next.Next
+            break
+        }
+    }
+    return list
+}
+
+// Do reverse the list.
+func (list *GoList[T]) reverse() *GoList[T] {
+    var prev *node.Node[T]
+    node := list.Head
+    for node != nil {
+        next := node.Next
+        node.Next = prev
+        prev = node
+        node = next
+    }
+    list.Head = prev
     return list
 }
 
@@ -1085,11 +790,11 @@ func quickSort[T constraints.Ordered](list GoList[T]) GoList[T] {
     for node := list.Head; node != nil; node = node.Next {
         switch {
         case node.Data < pivot:
-            less.doAppendHead(node.Data)
+            less.appendHead(node.Data)
         case node.Data == pivot:
-            equal.doAppendHead(node.Data)
+            equal.appendHead(node.Data)
         case node.Data > pivot:
-            greater.doAppendHead(node.Data)
+            greater.appendHead(node.Data)
         }
     }
 
@@ -1122,11 +827,11 @@ func uniqueQuickSort[T constraints.Ordered](list GoList[T]) GoList[T] {
 
         switch {
         case node.Data < pivot:
-            less.doAppendHead(node.Data)
+            less.appendHead(node.Data)
         case node.Data == pivot:
-            equal.doAppendHead(node.Data)
+            equal.appendHead(node.Data)
         case node.Data > pivot:
-            greater.doAppendHead(node.Data)
+            greater.appendHead(node.Data)
         }
     }
 

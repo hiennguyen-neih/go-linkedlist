@@ -89,6 +89,14 @@ func TestDeleteEmptyList(t *testing.T) {
     }
 }
 
+func TestDeleteMethodEmptyList(t *testing.T) {
+    list := New[string]()
+    list.delete("x")
+    if result := ToSlice(list); len(result) != 0 {
+        t.Errorf("delete method\nresult: %v\n expected: []", result)
+    }
+}
+
 func TestDeleteAtNormalCase(t *testing.T) {
     list := New("a", "b", "c", "d")
     deleted := DeleteAt(list, -2)
