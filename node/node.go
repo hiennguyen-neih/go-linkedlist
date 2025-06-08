@@ -6,7 +6,7 @@ import (
 )
 
 // Node in singly linked List.
-type Node[T comparable] struct {
+type Node[T any] struct {
     Data T
     Next *Node[T]
 }

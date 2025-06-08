@@ -89,14 +89,6 @@ func TestDeleteEmptyList(t *testing.T) {
     }
 }
 
-func TestDeleteMethodEmptyList(t *testing.T) {
-    list := New[string]()
-    list.delete("x")
-    if result := ToSlice(list); len(result) != 0 {
-        t.Errorf("delete method\nresult: %v\n expected: []", result)
-    }
-}
-
 func TestDeleteAtNormalCase(t *testing.T) {
     list := New("a", "b", "c", "d")
     deleted := DeleteAt(list, -2)
@@ -551,13 +543,22 @@ func TestSublistStartOutOfBound(t *testing.T) {
     Sublist(New(1, 2, 3, 4), -5, 2)
 }
 
-func TestSubtract(t *testing.T) {
+func TestSubtractNormalCase(t *testing.T) {
     list1 := New("a","b","c","b","a","b")
     list2 := New("b","a","b")
     subtract := Subtract(list1, list2)
     expected := []string{"c", "a", "b"}
     if result := ToSlice(subtract); !reflect.DeepEqual(result, expected) {
         t.Errorf("Subtract\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestSubtractEmptyList1(t *testing.T) {
+    list1 := New[int]()
+    list2 := New(1, 2, 3)
+    subtract := Subtract(list1, list2)
+    if result := ToSlice(subtract); len(result) != 0 {
+        t.Errorf("Subtract\nresult: %v\nexpected: []", result)
     }
 }
 
