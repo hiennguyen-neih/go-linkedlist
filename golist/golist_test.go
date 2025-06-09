@@ -5,7 +5,7 @@ import (
     "reflect"
 )
 
-func TestNewAndToSlice(t *testing.T) {
+func TestNew_ToSlice(t *testing.T) {
     list := New(1, 2, 3, 4)
     expected := []int{1, 2, 3, 4}
     if result := ToSlice(list); !reflect.DeepEqual(result, expected) {
@@ -13,7 +13,7 @@ func TestNewAndToSlice(t *testing.T) {
     }
 }
 
-func TestFromSliceAndToSlice(t *testing.T) {
+func TestFromSlice_ToSlice(t *testing.T) {
     list := FromSlice([]int{1, 2, 3, 4})
     expected := []int{1, 2, 3, 4}
     if result := ToSlice(list); !reflect.DeepEqual(result, expected) {
@@ -72,7 +72,7 @@ func TestConcat(t *testing.T) {
     }
 }
 
-func TestDeleteNormalCase(t *testing.T) {
+func TestDelete_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 2, 4)
     deleted := Delete(list, 2)
     expected := []int{1, 3, 2, 4}
@@ -81,7 +81,7 @@ func TestDeleteNormalCase(t *testing.T) {
     }
 }
 
-func TestDeleteEmptyList(t *testing.T) {
+func TestDelete_EmptyList(t *testing.T) {
     list := New[int]()
     deleted := Delete(list, 0)
     if result := ToSlice(deleted); len(result) != 0 {
@@ -89,7 +89,7 @@ func TestDeleteEmptyList(t *testing.T) {
     }
 }
 
-func TestDeleteAtNormalCase(t *testing.T) {
+func TestDeleteAt_NormalCase(t *testing.T) {
     list := New("a", "b", "c", "d")
     deleted := DeleteAt(list, -2)
     expected := []string{"a", "b", "d"}
@@ -98,7 +98,7 @@ func TestDeleteAtNormalCase(t *testing.T) {
     }
 }
 
-func TestDeleteAtEmptyList(t *testing.T) {
+func TestDeleteAt_EmptyList(t *testing.T) {
     list := New[int]()
     deleted := DeleteAt(list, 0)
     if result := ToSlice(deleted); len(result) != 0 {
@@ -106,7 +106,7 @@ func TestDeleteAtEmptyList(t *testing.T) {
     }
 }
 
-func TestDeleteAtOutOfBound(t *testing.T) {
+func TestDeleteAt_IndexOutOfBound(t *testing.T) {
     list := New("a", "b", "c", "d")
     deleted := DeleteAt(list, 4)
     expected := []string{"a", "b", "c", "d"}
@@ -124,7 +124,7 @@ func TestDropLast(t *testing.T) {
     }
 }
 
-func TestDropWhileTakeWhile(t *testing.T) {
+func TestDropWhile_TakeWhile(t *testing.T) {
     list := New(1, 2, 3, 4, 5, 2)
     droped := DropWhile(list, func(n int) bool { return n < 4 })
     taken := TakeWhile(list, func(n int) bool { return n < 4 })
@@ -146,7 +146,7 @@ func TestDuplicate(t *testing.T) {
     }
 }
 
-func TestFilterNormalCase(t *testing.T) {
+func TestFilter_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 4, 5, 6)
     filtered := Filter(list, func(n int) bool { return n%2 == 0 })
     expected := []int{2, 4, 6}
@@ -155,7 +155,7 @@ func TestFilterNormalCase(t *testing.T) {
     }
 }
 
-func TestFilterEmptyList(t *testing.T) {
+func TestFilter_EmptyList(t *testing.T) {
     list := New[int]()
     filtered := Filter(list, func(n int) bool { return n%2 != 0 })
     if result := ToSlice(filtered); len(result) != 0 {
@@ -163,7 +163,7 @@ func TestFilterEmptyList(t *testing.T) {
     }
 }
 
-func TestFilterMapNormalCase(t *testing.T) {
+func TestFilterMap_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 4, 5, 6)
     filtered := FilterMap(list, func(n int) (bool, int) {
         return n % 2 != 0, n * n
@@ -174,7 +174,7 @@ func TestFilterMapNormalCase(t *testing.T) {
     }
 }
 
-func TestFilterMapEmptyList(t *testing.T) {
+func TestFilterMap_EmptyList(t *testing.T) {
     list := New[int]()
     filtered := FilterMap(list, func(n int) (bool, int) {
         return n % 2 == 0, n * 2
@@ -184,7 +184,7 @@ func TestFilterMapEmptyList(t *testing.T) {
     }
 }
 
-func TestFindFound(t *testing.T) {
+func TestFind_Found(t *testing.T) {
     list := New(1, 2, 3, 4)
     result := Find(list, 3)
     expected := 2
@@ -193,7 +193,7 @@ func TestFindFound(t *testing.T) {
     }
 }
 
-func TestFindNotFound(t *testing.T) {
+func TestFind_NotFound(t *testing.T) {
     list := New(1, 2, 3, 4)
     result := Find(list, 5)
     expected := -1
@@ -234,7 +234,23 @@ func TestForEach(t *testing.T) {
     }
 }
 
-func TestInsertAtNormalCase(t *testing.T) {
+func TestGoListString_Float(t *testing.T) {
+    list := New(0.1, 0.2, 0.3, 0.4, 0.5)
+    expected := "[ 0.1 -> 0.2 -> 0.3 -> 0.4 -> 0.5 ]"
+    if result := list.String(); result != expected {
+        t.Errorf("String\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestGoListString_String(t *testing.T) {
+    list := New("A", "B", "C", "D", "E", "F")
+    expected := `[ "A" -> "B" -> "C" -> "D" -> "E" -> "F" ]`
+    if result := list.String(); result != expected {
+        t.Errorf("String\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestInsertAt_NormalCase(t *testing.T) {
     list := New("a", "b", "c", "d")
 
     inserted1 := InsertAt(list, -2, "X")
@@ -250,7 +266,7 @@ func TestInsertAtNormalCase(t *testing.T) {
     }
 }
 
-func TestInsertAtIndexOutOfBound(t *testing.T) {
+func TestInsertAt_IndexOutOfBound(t *testing.T) {
     defer func() {
         if r := recover(); r == nil {
             t.Errorf("InsertAt\nExpect panic")
@@ -292,7 +308,7 @@ func TestMap(t *testing.T) {
     }
 }
 
-func TestMapFoldlMapFoldr(t *testing.T) {
+func TestMapFoldl_MapFoldr(t *testing.T) {
     list := New(1, 2, 3, 4)
     mapped1, sum := MapFoldl(list, 0, func(n, s int) (int, int) {
         return n * 2, s + n
@@ -311,7 +327,7 @@ func TestMapFoldlMapFoldr(t *testing.T) {
     }
 }
 
-func TestMaxMin(t *testing.T) {
+func TestMax_Min(t *testing.T) {
     list := New("d", "b", "e", "a", "c")
     max := Max(list)
     min := Min(list)
@@ -338,7 +354,7 @@ func TestMember(t *testing.T) {
     }
 }
 
-func TestMergeUMerge(t *testing.T) {
+func TestMerge_UMerge(t *testing.T) {
     list1 := New(2, 8, 6)
     list2 := New(1, 3, 3)
     list3 := New(8, 4, 5)
@@ -356,7 +372,7 @@ func TestMergeUMerge(t *testing.T) {
     }
 }
 
-func TestNthNormalCase(t *testing.T) {
+func TestNth_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 4, 5)
     nth1 := Nth(list, 2)
     nth2 := Nth(list, -2)
@@ -372,7 +388,7 @@ func TestNthNormalCase(t *testing.T) {
     }
 }
 
-func TestNthIndexOutOfBound(t *testing.T) {
+func TestNth_IndexOutOfBound(t *testing.T) {
     defer func() {
         if r := recover(); r == nil {
             t.Errorf("Nth\nExpect panic")
@@ -383,7 +399,7 @@ func TestNthIndexOutOfBound(t *testing.T) {
     Nth(New(1, 2, 3, 4), 10)
 }
 
-func TestNthTailNormalCase(t *testing.T) {
+func TestNthTail_NormalCase(t *testing.T) {
     list := New("a", "b", "c", "d", "e")
     tail := NthTail(list, -3)
     expected := []string{"c", "d", "e"}
@@ -393,7 +409,7 @@ func TestNthTailNormalCase(t *testing.T) {
     }
 }
 
-func TestNthTailIndexOutOfBound(t *testing.T) {
+func TestNthTail_IndexOutOfBound(t *testing.T) {
     defer func() {
         if r := recover(); r == nil {
             t.Errorf("NthTail\nExpect panic")
@@ -418,7 +434,7 @@ func TestPartition(t *testing.T) {
     }
 }
 
-func TestPreffixSuffix(t *testing.T) {
+func TestPreffix_Suffix(t *testing.T) {
     list1 := New("a", "b")
     list2 := New("e", "f")
     list3 := New("a", "b", "c", "d", "e", "f")
@@ -438,7 +454,7 @@ func TestPreffixSuffix(t *testing.T) {
     }
 }
 
-func TestReplaceAtUpdateAt(t *testing.T) {
+func TestReplaceAt_UpdateAt(t *testing.T) {
     list := New(1, 2, 3, 4)
     replaced := ReplaceAt(list, -2, 0)
     updated := UpdateAt(list, -3, func(n int) int { return n * n })
@@ -475,7 +491,7 @@ func TestSeq(t *testing.T) {
     }
 }
 
-func TestSplitNormalCase(t *testing.T) {
+func TestSplit_NormalCase(t *testing.T) {
     list1, list2 := Split(New("a", "b", "c", "d", "e"), -3)
     expected1 := []string{"a", "b"}
     expected2 := []string{"c", "d", "e"}
@@ -488,7 +504,7 @@ func TestSplitNormalCase(t *testing.T) {
     }
 }
 
-func TestSplitIndexOutOfBound(t *testing.T) {
+func TestSplit_IndexOutOfBound(t *testing.T) {
     defer func() {
         if r := recover(); r == nil {
             t.Errorf("Split\nExpect panic")
@@ -512,7 +528,7 @@ func TestSplitWith(t *testing.T) {
     }
 }
 
-func TestSublistNormalCase(t *testing.T) {
+func TestSublist_NormalCase(t *testing.T) {
     list := New("a", "b", "c", "d", "e", "f")
     sublist := Sublist(list, 2, 3)
     expected := []string{"c", "d", "e"}
@@ -521,7 +537,7 @@ func TestSublistNormalCase(t *testing.T) {
     }
 }
 
-func TestSublistNegativeLen(t *testing.T) {
+func TestSublist_NegativeLen(t *testing.T) {
     defer func() {
         if r := recover(); r == nil {
             t.Errorf("Sublist\nExpect panic")
@@ -532,7 +548,7 @@ func TestSublistNegativeLen(t *testing.T) {
     Sublist(New(1, 2, 3, 4), 2, -2)
 }
 
-func TestSublistStartOutOfBound(t *testing.T) {
+func TestSublist_StartOutOfBound(t *testing.T) {
     defer func() {
         if r := recover(); r == nil {
             t.Errorf("Sublist\nExpect panic")
@@ -543,7 +559,7 @@ func TestSublistStartOutOfBound(t *testing.T) {
     Sublist(New(1, 2, 3, 4), -5, 2)
 }
 
-func TestSubtractNormalCase(t *testing.T) {
+func TestSubtract_NormalCase(t *testing.T) {
     list1 := New("a","b","c","b","a","b")
     list2 := New("b","a","b")
     subtract := Subtract(list1, list2)
@@ -553,7 +569,7 @@ func TestSubtractNormalCase(t *testing.T) {
     }
 }
 
-func TestSubtractEmptyList1(t *testing.T) {
+func TestSubtract_EmptyList1(t *testing.T) {
     list1 := New[int]()
     list2 := New(1, 2, 3)
     subtract := Subtract(list1, list2)
