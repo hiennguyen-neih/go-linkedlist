@@ -146,6 +146,38 @@ func TestDuplicate(t *testing.T) {
     }
 }
 
+func TestEqual_ReturnTrue(t *testing.T) {
+    list1 := New(1, 2, 3, 4)
+    list2 := New(1, 2, 3, 4)
+    if !Equal(list1, list2) {
+        t.Errorf("Equal\nExpected true but got false")
+    }
+}
+
+func TestEqual_SameLenReturnFalse(t *testing.T) {
+    list1 := New(1, 2, 3, 4)
+    list2 := New(1, 2, 4, 3)
+    if Equal(list1, list2) {
+        t.Errorf("Equal\nExpected false but got true")
+    }
+}
+
+func TestEqual_List1Longer(t *testing.T) {
+    list1 := New(1, 2, 3, 4, 5)
+    list2 := New(1, 2, 3, 4)
+    if Equal(list1, list2) {
+        t.Errorf("Equal\nExpected false but got true")
+    }
+}
+
+func TestEqual_List2Longer(t *testing.T) {
+    list1 := New(1, 2, 3, 4)
+    list2 := New(1, 2, 3, 4, 5)
+    if Equal(list1, list2) {
+        t.Errorf("Equal\nExpected false but got true")
+    }
+}
+
 func TestFilter_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 4, 5, 6)
     filtered := Filter(list, func(n int) bool { return n%2 == 0 })

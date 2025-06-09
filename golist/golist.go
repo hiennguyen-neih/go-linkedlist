@@ -4,6 +4,7 @@ package golist
 import (
     "fmt"
     "strings"
+    "github.com/google/go-cmp/cmp"
     "github.com/hiennguyen-neih/go-linkedlist/node"
     "github.com/hiennguyen-neih/go-linkedlist/constraints"
 )
@@ -110,14 +111,14 @@ func Concat[T any](lists ...GoList[T]) GoList[T] {
 }
 
 // Delte first node in list with value of input and return as new list.
-func Delete[T comparable](list GoList[T], value T) GoList[T] {
+func Delete[T any](list GoList[T], value T) GoList[T] {
     var result GoList[T]
     if list.Head == nil {
         return result
     }
     node := list.Head
     for node != nil {
-        if node.Data != value {
+        if !cmp.Equal(node.Data, value) {
             result.appendHead(node.Data)
             node = node.Next
         } else {
@@ -206,6 +207,22 @@ func Duplicate[T any](n int, elem T) GoList[T] {
     return result
 }
 
+// Return true if all corresponding nodes in both list1 and list2 have the same
+// value, otherwise return false.
+func Equal[T any](list1, list2 GoList[T]) bool {
+    node2 := list2.Head
+    for node1 := list1.Head; node1 != nil; node1 = node1.Next {
+        if node2 == nil || !cmp.Equal(node1.Data, node2.Data) {
+            return false
+        }
+        node2 = node2.Next
+    }
+    if node2 != nil {
+        return false
+    }
+    return true
+}
+
 // Return new list contains elements in input that fun returns true.
 func Filter[T any](list GoList[T], fun func(T) bool) GoList[T] {
     var result GoList[T]
@@ -238,10 +255,10 @@ func FilterMap[T any](list GoList[T], fun func(T) (bool, T)) GoList[T] {
 
 // Return position of first element in list that match with value. If there is
 // no matching element, return -1.
-func Find[T comparable](list GoList[T], value T) int {
+func Find[T any](list GoList[T], value T) int {
     i := 0
     for node := list.Head; node != nil; node = node.Next {
-        if node.Data == value {
+        if cmp.Equal(node.Data, value) {
             return i
         }
         i++
@@ -388,9 +405,9 @@ func Max[T constraints.Ordered](list GoList[T]) *node.Node[T] {
 }
 
 // Return true if elem in list, otherwise return false.
-func Member[T comparable](list GoList[T], elem T) bool {
+func Member[T any](list GoList[T], elem T) bool {
     for node := list.Head; node != nil; node = node.Next {
-        if node.Data == elem {
+        if cmp.Equal(node.Data, elem) {
             return true
         }
     }
@@ -477,11 +494,11 @@ func Partition[T any](list GoList[T], fun func(T) bool) (GoList[T], GoList[T]) {
 }
 
 // Return true if list1 is prefix of list2, otherwise return false.
-func Prefix[T comparable](list1, list2 GoList[T]) bool {
+func Prefix[T any](list1, list2 GoList[T]) bool {
     node1 := list1.Head
     node2 := list2.Head
     for node1 != nil {
-        if node2 == nil || node1.Data != node2.Data {
+        if node2 == nil || !cmp.Equal(node1.Data, node2.Data) {
             return false
         }
         node1 = node1.Next
@@ -630,7 +647,7 @@ func Sublist[T any](list GoList[T], start, len int) GoList[T] {
 
 // Return a new list that is a copy of list1 which is for each element in list2,
 // its first occurrence in list1 is deleted.
-func Subtract[T comparable](list1, list2 GoList[T]) GoList[T] {
+func Subtract[T any](list1, list2 GoList[T]) GoList[T] {
     var result GoList[T]
     if list1.Head == nil {
         return result
@@ -640,12 +657,12 @@ func Subtract[T comparable](list1, list2 GoList[T]) GoList[T] {
     }
     result.reverse()
     for node2 := list2.Head; node2 != nil; node2 = node2.Next {
-        if result.Head.Data == node2.Data {
+        if cmp.Equal(result.Head.Data, node2.Data) {
             result.Head = result.Head.Next
             continue
         }
         for node3 := result.Head; node3.Next != nil; node3 = node3.Next {
-            if node3.Next.Data == node2.Data {
+            if cmp.Equal(node3.Next.Data, node2.Data) {
                 node3.Next = node3.Next.Next
                 break
             }
@@ -655,7 +672,7 @@ func Subtract[T comparable](list1, list2 GoList[T]) GoList[T] {
 }
 
 // Returns true if list1 is a suffix of list2, otherwise false.
-func Suffix[T comparable](list1, list2 GoList[T]) bool {
+func Suffix[T any](list1, list2 GoList[T]) bool {
     reverse1 := Reverse(list1)
     reverse2 := Reverse(list2)
     return Prefix(reverse1, reverse2)
