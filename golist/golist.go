@@ -75,7 +75,7 @@ func Any[T any](list GoList[T], fun func(T) bool) bool {
     return false
 }
 
-// Return new list is append of input list and values.
+// Append values into last of list.
 func Append[T any](list GoList[T], values ...T) GoList[T] {
     var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
@@ -87,7 +87,7 @@ func Append[T any](list GoList[T], values ...T) GoList[T] {
     return *result.reverse()
 }
 
-// Return new list is input list that append values into head of it.
+// Append values into head of list.
 func AppendHead[T any](list GoList[T], values ...T) GoList[T] {
     var result GoList[T]
     for _, value := range values {
@@ -110,7 +110,7 @@ func Concat[T any](lists ...GoList[T]) GoList[T] {
     return *result.reverse()
 }
 
-// Delte first node in list with value of input and return as new list.
+// Delete first node in list which node data is equal with input value.
 func Delete[T any](list GoList[T], value T) GoList[T] {
     var result GoList[T]
     if list.Head == nil {
@@ -133,9 +133,9 @@ func Delete[T any](list GoList[T], value T) GoList[T] {
     return *result.reverse()
 }
 
-// Delete node at the specific index in list and return as new list. If index
-// is out of bound, the original list is returned. Negative index indicate an
-// offset from the end of list.
+// Delete node at the specific index in list. If index is out of bound, the
+// original list is returned. Negative index indicate an offset from the end
+// of list.
 func DeleteAt[T any](list GoList[T], index int) GoList[T] {
     var result GoList[T]
     len := Len(list)
@@ -167,7 +167,7 @@ func DeleteAt[T any](list GoList[T], index int) GoList[T] {
     return *result.reverse()
 }
 
-// Drop the last element in list and return as new list.
+// Drop the last element in list.
 func DropLast[T any](list GoList[T]) GoList[T] {
     var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
@@ -180,7 +180,7 @@ func DropLast[T any](list GoList[T]) GoList[T] {
     return *result.reverse()
 }
 
-// Drop elements in list while fun returns true, and return as new list.
+// Drop elements in list while fun returns true.
 func DropWhile[T any](list GoList[T], fun func(T) bool) GoList[T] {
     var result GoList[T]
     node := list.Head
@@ -223,7 +223,7 @@ func Equal[T any](list1, list2 GoList[T]) bool {
     return true
 }
 
-// Return new list contains elements in input that fun returns true.
+// Return a list contains elements in input that fun returns true.
 func Filter[T any](list GoList[T], fun func(T) bool) GoList[T] {
     var result GoList[T]
     if list.Head == nil {
@@ -238,8 +238,8 @@ func Filter[T any](list GoList[T], fun func(T) bool) GoList[T] {
 }
 
 // Calls fun on successive elements of list. fun must return (bool, value).
-// The function returns a new list of elements for which fun returns
-// a new value, where a value of true is synonymous with (true, value).
+// The function returns a list of elements for which fun returns a new value,
+// where a value of true is synonymous with (true, value).
 func FilterMap[T any](list GoList[T], fun func(T) (bool, T)) GoList[T] {
     var result GoList[T]
     if list.Head == nil {
@@ -325,7 +325,7 @@ func InsertAt[T any](list GoList[T], index int, val T) GoList[T] {
     return *result.reverse()
 }
 
-// Insert sep between each element in list and return as new list.
+// Insert sep between each element in list.
 func Join[T any](list GoList[T], sep T) GoList[T] {
     var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
@@ -358,7 +358,8 @@ func Len[T any](list GoList[T]) int {
     return len
 }
 
-// Applying function to every elements in list and return as new list.
+// Applying fun to every elements in list and return a list contains return
+// values of that fun.
 func Map[T any](list GoList[T], fun func(T) T) GoList[T] {
     var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
@@ -404,7 +405,7 @@ func Max[T constraints.Ordered](list GoList[T]) *node.Node[T] {
     return max
 }
 
-// Return true if elem in list, otherwise return false.
+// Return true if elem existed in list, otherwise return false.
 func Member[T any](list GoList[T], elem T) bool {
     for node := list.Head; node != nil; node = node.Next {
         if cmp.Equal(node.Data, elem) {
@@ -530,7 +531,7 @@ func ReplaceAt[T any](list GoList[T], index int, val T) GoList[T] {
     return *result.reverse()
 }
 
-// Return result is reverse of input list
+// Reverse the input list.
 func Reverse[T any](list GoList[T]) GoList[T] {
     var head *node.Node[T]
     for curr := list.Head; curr != nil; curr = curr.Next {
@@ -541,7 +542,7 @@ func Reverse[T any](list GoList[T]) GoList[T] {
 }
 
 // Return position and first node in list that fun returns true. If every fun
-// execution returns false, this function will returns position is -1.
+// execution returns false, returns position is -1.
 func Search[T any](list GoList[T], fun func(T) bool) (int, *node.Node[T]) {
     var zero *node.Node[T]
     i := 0
@@ -564,13 +565,13 @@ func Seq[T constraints.Numeric](from, to, incr T) GoList[T] {
     return *result.reverse()
 }
 
-// Sort input list and returns as new list.
+// Return sorted list of input list.
 func Sort[T constraints.Ordered](list GoList[T]) GoList[T] {
     return quickSort(list)
 }
 
-// Split list into list1 and list2, list1 contains n first elements and list2
-// contains the remaining elements. Note that n is capped at list length.
+// Split input list into list1 and list2, list1 contains n first elements and
+// list2 contains the remaining elements. Note that n is capped at list length.
 // Negative n indicate an offset from the end of list.
 func Split[T any](list GoList[T], n int) (GoList[T], GoList[T]) {
     len := Len(list)
@@ -678,7 +679,8 @@ func Suffix[T any](list1, list2 GoList[T]) bool {
     return Prefix(reverse1, reverse2)
 }
 
-// Returns sum of elements in list.
+// Returns sum of elements in list. This function only works with constraint
+// Ordered list.
 func Sum[T constraints.Ordered](list GoList[T]) T {
     var sum T
     for node := list.Head; node != nil; node = node.Next {
@@ -687,7 +689,7 @@ func Sum[T constraints.Ordered](list GoList[T]) T {
     return sum
 }
 
-// Take elements in list while fun returns true, and return as new list.
+// Take elements in list while fun returns true.
 func TakeWhile[T any](list GoList[T], fun func(T) bool) GoList[T] {
     var result GoList[T]
     for node := list.Head; node != nil; node = node.Next {
@@ -707,7 +709,7 @@ func UMerge[T constraints.Ordered](lists ...GoList[T]) GoList[T] {
     return uniqueQuickSort(result)
 }
 
-// Sort input list and remove all duplicated elements, then returns as new list.
+// Sort input list and remove all duplicated elements.
 func USort[T constraints.Ordered](list GoList[T]) GoList[T] {
     return uniqueQuickSort(list)
 }
