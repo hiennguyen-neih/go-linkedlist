@@ -4,6 +4,7 @@ import (
     "fmt"
     "strings"
     "github.com/hiennguyen-neih/go-linkedlist/golist"
+    "github.com/hiennguyen-neih/go-linkedlist/golist2"
 )
 
 func main() {
@@ -266,4 +267,8 @@ func main() {
     str_list3 = golist.Subtract(str_list1, str_list2)
     fmt.Printf("str_list3: %v\n", str_list3)    // [ "c" -> "a" -> "b" ]
     fmt.Println()
+
+    // GoList2
+    list := golist2.New(1,2,3,4)
+    fmt.Println(list)
 }
