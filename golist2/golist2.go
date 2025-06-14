@@ -762,7 +762,7 @@ func UpdateAt[T any](list GoList2[T], index int, fun func(T) T) GoList2[T] {
 // Returns a string representing the doubly linked list.
 func (list GoList2[T]) String() string {
     var builder strings.Builder
-    builder.WriteString("[ ")
+    builder.WriteString("[")
     for node := list.Head; node != nil; node = node.Next {
         var data any = node.Data
         if str, ok := data.(string); ok {
@@ -771,10 +771,10 @@ func (list GoList2[T]) String() string {
             fmt.Fprintf(&builder, "%v", node.Data)
         }
         if node.Next != nil {
-            builder.WriteString(" <-> ")
+            builder.WriteString("<->")
         }
     }
-    builder.WriteString(" ]")
+    builder.WriteString("]")
     return builder.String()
 }
 

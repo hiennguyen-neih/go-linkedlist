@@ -268,7 +268,7 @@ func TestForEach(t *testing.T) {
 
 func TestGoListString_Float(t *testing.T) {
     list := New(0.1, 0.2, 0.3, 0.4, 0.5)
-    expected := "[ 0.1 -> 0.2 -> 0.3 -> 0.4 -> 0.5 ]"
+    expected := "[0.1->0.2->0.3->0.4->0.5]"
     if result := list.String(); result != expected {
         t.Errorf("String\nresult: %v\nexpected: %v", result, expected)
     }
@@ -276,7 +276,7 @@ func TestGoListString_Float(t *testing.T) {
 
 func TestGoListString_String(t *testing.T) {
     list := New("A", "B", "C", "D", "E", "F")
-    expected := `[ "A" -> "B" -> "C" -> "D" -> "E" -> "F" ]`
+    expected := `["A"->"B"->"C"->"D"->"E"->"F"]`
     if result := list.String(); result != expected {
         t.Errorf("String\nresult: %v\nexpected: %v", result, expected)
     }
