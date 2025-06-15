@@ -7,9 +7,9 @@ import (
 
 // Node in singly linked List.
 type Node2[T any] struct {
-    Prev *Node2[T]
+    Prev *Node2[T]    // Pointer to previous node of the list.
     Data T
-    Next *Node2[T]
+    Next *Node2[T]    // Pointer to next node of the list.
 }
 
 // Return a string representing node in linked list.
