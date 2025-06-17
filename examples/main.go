@@ -5,6 +5,7 @@ import (
     "strings"
     "github.com/hiennguyen-neih/go-linkedlist/golist"
     "github.com/hiennguyen-neih/go-linkedlist/golist2"
+    "github.com/hiennguyen-neih/go-linkedlist/golistc"
 )
 
 func main() {
@@ -35,4 +36,9 @@ func main() {
     list2 = golist2.Reverse(list2)
     fmt.Println(list2)  // [12<->8<->4]
     fmt.Println()
+
+    // GoListC (singly circular list)
+    fmt.Println("Examples for GoListC (singly circular list)")
+    listc := golistc.New(1.9, 2.8, 3.7, 4.6)
+    fmt.Println(listc)
 }
