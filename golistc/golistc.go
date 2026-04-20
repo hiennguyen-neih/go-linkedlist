@@ -3,11 +3,12 @@
 package golistc
 
 import (
-    "fmt"
-    "strings"
-    // "github.com/google/go-cmp/cmp"
-    "github.com/hiennguyen-neih/go-linkedlist/node"
-    // "github.com/hiennguyen-neih/go-linkedlist/constraints"
+	"fmt"
+	"strings"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/hiennguyen-neih/go-linkedlist/node"
+	// "github.com/hiennguyen-neih/go-linkedlist/constraints"
 )
 
 /*
@@ -18,8 +19,8 @@ import (
 
 // Struct of Go singly linked list.
 type GoListC[T any] struct {
-    Head *node.Node[T]    // First node of the list.
-    Tail *node.Node[T]    // Last node of the list.
+    Head *node.Node[T] // First node of the list.
+    Tail *node.Node[T] // Last node of the list.
 }
 
 /*
@@ -50,9 +51,11 @@ func FromSlice[T any](values []T) GoListC[T] {
 func ToSlice[T any](list GoListC[T]) []T {
     var result []T
     node := list.Head
+    if node == nil {
+        return result
+    }
     for {
         result = append(result, node.Data)
-
         node = node.Next
         if node == list.Head {
             break
@@ -69,7 +72,6 @@ func All[T any](list GoListC[T], fun func(T) bool) bool {
         if !fun(node.Data) {
             return false
         }
-
         node = node.Next
         if node == list.Head {
             break
@@ -86,7 +88,6 @@ func Any[T any](list GoListC[T], fun func(T) bool) bool {
         if fun(node.Data) {
             return true
         }
-
         node = node.Next
         if node == list.Head {
             break
@@ -101,7 +102,6 @@ func Append[T any](list GoListC[T], values ...T) GoListC[T] {
     node := list.Head
     for {
         result.append(node.Data)
-
         node = node.Next
         if node == list.Head {
             break
@@ -120,7 +120,6 @@ func AppendHead[T any](list GoListC[T], values ...T) GoListC[T] {
     for _, value := range values {
         result.append(value)
     }
-
     for {
         result.append(node.Data)
         node = node.Next
@@ -131,20 +130,345 @@ func AppendHead[T any](list GoListC[T], values ...T) GoListC[T] {
     return result
 }
 
+// Returns a list that is concatenated of all input lists.
+func Concat[T any](lists ...GoListC[T]) GoListC[T] {
+    var result GoListC[T]
+    for _, list := range lists {
+        node := list.Head
+        for {
+            result.append(node.Data)
+            node = node.Next
+            if node == list.Head {
+                break
+            }
+        }
+    }
+    return result
+}
+
+// Returns a copy of input list where the first node data that matching value
+// is removed.
+func Delete[T any](list GoListC[T], value T) GoListC[T] {
+    var result GoListC[T]
+    if list.Head == nil {
+        return result
+    }
+    node := list.Head
+    for {
+        if !cmp.Equal(node.Data, value) {
+            result.append(node.Data)
+            node = node.Next
+        } else {
+            node = node.Next
+            break
+        }
+        if node == list.Head {
+            break
+        }
+    }
+    for node != list.Head {
+        result.append(node.Data)
+        node = node.Next
+    }
+    return result
+}
+
+// Deletes node at the specific index of list. If index is out of bound, the
+// original list is returned. Negative index indicate an offset from the end
+// of list.
+func DeleteAt[T any](list GoListC[T], index int) GoListC[T] {
+    var result GoListC[T]
+    len := Len(list)
+    if list.Head == nil {
+        return result
+    }
+    if index < 0 {
+        index = len + index // same as len - abs(index)
+    }
+    if index < 0 || index >= len {
+        node := list.Head
+        for {
+            result.append(node.Data)
+            node = node.Next
+            if node == list.Head {
+                break
+            }
+        }
+    } else {
+        i := 0
+        node := list.Head
+        for {
+            if i == index {
+                i++
+                node = node.Next
+                if node == list.Head {
+                    break
+                }
+                continue
+            }
+            i++
+            result.append(node.Data)
+            node = node.Next
+            if node == list.Head {
+                break
+            }
+        }
+    }
+    return result
+}
+
+// Drops the last node of input list. If input list is an empty list, returns
+// an empty list.
+func DropLast[T any](list GoListC[T]) GoListC[T] {
+    var result GoListC[T]
+    node := list.Head
+    if node == nil {
+        return result
+    }
+    for {
+        if node.Next == list.Tail {
+            result.append(node.Data)
+            break
+        }
+        result.append(node.Data)
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return result
+}
+
+// Drops nodes from list while fun returns true.
+func DropWhile[T any](list GoListC[T], fun func(T) bool) GoListC[T] {
+    var result GoListC[T]
+    node := list.Head
+    if node == nil {
+        return result
+    }
+    for {
+        if !fun(node.Data) {
+            break
+        }
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    for {
+        result.append(node.Data)
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return result
+}
+
+// Returns a list containing n copies of term elem. If n is negative or equal
+// 0, return empty list.
+func Duplicate[T any](n int, elem T) GoListC[T] {
+    var result GoListC[T]
+    for i := 0; i < n; i++ {
+        result.append(elem)
+    }
+    return result
+}
+
+// Returns true if all corresponding nodes in both list1 and list2 have the
+// same value, otherwise return false.
+func Equal[T any](list1, list2 GoListC[T]) bool {
+    node1 := list1.Head
+    node2 := list2.Head
+    for {
+        if !cmp.Equal(node1.Data, node2.Data) {
+            return false
+        }
+        node1 = node1.Next
+        node2 = node2.Next
+        if (node1 == list1.Head && node2 != list2.Head) || (node1 != list1.Head && node2 == list2.Head) {
+            return false
+        } else if node1 == list1.Head && node2 == list2.Head {
+            break
+        }
+    }
+    return true
+}
+
+// Returns a list contains node data from input list for which fun returns true.
+func Filter[T any](list GoListC[T], fun func(T) bool) GoListC[T] {
+    var result GoListC[T]
+    node := list.Head
+    if node == nil {
+        return result
+    }
+    for {
+        if fun(node.Data) {
+            result.append(node.Data)
+        }
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return result
+}
+
+// Calls fun on successive nodes of list to update or remove nodes from list.
+// Input fun must return (bool, value). The functions returns a list that nodes
+// data are value in which fun returns (true, value).
+func FilterMap[T any](list GoListC[T], fun func(T) (bool, T)) GoListC[T] {
+    var result GoListC[T]
+    node := list.Head
+    if node == nil {
+        return result
+    }
+    for {
+        if keep, value := fun(node.Data); keep {
+            result.append(value)
+        }
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return result
+}
+
+// Returns position of first node of list that match with value. If there is
+// no matching node, returns -1.
+func Find[T any](list GoListC[T], value T) int {
+    i := 0
+    node := list.Head
+    if node == nil {
+        return -1
+    }
+    for {
+        if cmp.Equal(node.Data, value) {
+            return i
+        }
+        i++
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return -1
+}
+
+// Calls fun(data, acc) on successive nodes of list from left to right (from
+// start of list to end of list), starting with acc0. Input fun must return a
+// new accumulator, which is passed to the next call. The function returns the
+// final value of the accumulator. Input acc0 is returned if the list is empty.
+func Foldl[T1, T2 any](list GoListC[T1], acc0 T2, fun func(T1, T2) T2) T2 {
+    node := list.Head
+    for {
+        acc0 = fun(node.Data, acc0)
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return acc0
+}
+
+// Calls fun(data, acc) on successive nodes of list from right to left (from
+// end of list to start of list), starting with acc0. Input fun must return a
+// new accumulator, which is passed to the next call. The function returns the
+// final value of the accumulator. Input acc0 is returned if the list is empty.
+func Foldr[T1, T2 any](list GoListC[T1], acc0 T2, fun func(T1, T2) T2) T2 {
+    reverse := Reverse(list)
+    fmt.Println(reverse)
+    node := reverse.Head
+    tail := reverse.Tail
+    fmt.Printf("head: %v - tail: %v\n", node, tail)
+    for {
+        acc0 = fun(node.Data, acc0)
+        node = node.Next
+        fmt.Printf("acc0: %v - node: %v\n", acc0, node)
+        if node == reverse.Head {
+            break
+        }
+    }
+    return acc0
+}
+
+// Calls fun(data) for each node in list, ignoring the return value. This
+// function is used for its side effects and the evaluation order is defined
+// to be the same as the order of the nodes in the list.
+func ForEach[T any](list GoListC[T], fun func(T)) {
+    node := list.Head
+    for {
+        fun(node.Data)
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+}
+
+// Calls fun(data) to every nodes in list and returns a list contains returned
+// values of that fun.
+func Map[T any](list GoListC[T], fun func(T) T) GoListC[T] {
+    var result GoListC[T]
+    for node := list.Head; node != nil; node = node.Next {
+        result.append(fun(node.Data))
+    }
+    return result
+}
+
+// Returns the length of list.
+func Len[T any](list GoListC[T]) int {
+    len := 0
+    node := list.Head
+    if node == nil {
+        return len
+    }
+    for {
+        len += 1
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return len
+}
+
 // Returns a list containing the nodes of input list in reverse order.
 func Reverse[T any](list GoListC[T]) GoListC[T] {
     var head *node.Node[T]
+    curr := list.Head
     for {
-        curr := list.Head
         node := &node.Node[T]{Data: curr.Data, Next: head}
         head = node
-
         curr = curr.Next
         if curr == list.Head {
             break
         }
     }
-    return GoListC[T]{Head: head}
+    return GoListC[T]{Head: head, Tail: list.Head}
+}
+
+// Takes nodes data in list while fun returns true, returning the longest
+// prefix in which all nodes data satisfy the predicate.
+func TakeWhile[T any](list GoListC[T], fun func(T) bool) GoListC[T] {
+    var result GoListC[T]
+    node := list.Head
+    if node == nil {
+        return result
+    }
+    for {
+        if fun(node.Data) {
+            result.append(node.Data)
+        } else {
+            break
+        }
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return result
 }
 
 /*
@@ -159,6 +483,9 @@ func (list GoListC[T]) String() string {
     builder.WriteString("[")
     node := list.Head
     for {
+        if node == nil {
+            break
+        }
         var data any = node.Data
         if str, ok := data.(string); ok {
             fmt.Fprintf(&builder, "%q", str)
@@ -166,7 +493,6 @@ func (list GoListC[T]) String() string {
             fmt.Fprintf(&builder, "%v", node.Data)
         }
         builder.WriteString("=>")
-
         node = node.Next
         if node == list.Head {
             break
