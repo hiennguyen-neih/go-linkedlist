@@ -8,7 +8,7 @@ import (
 
     "github.com/google/go-cmp/cmp"
     "github.com/hiennguyen-neih/go-linkedlist/node"
-    // "github.com/hiennguyen-neih/go-linkedlist/constraints"
+    "github.com/hiennguyen-neih/go-linkedlist/constraints"
 )
 
 /*
@@ -480,6 +480,91 @@ func Map[T any](list GoListC[T], fun func(T) T) GoListC[T] {
         }
     }
     return result
+}
+
+// Combines the operations of Map function and Foldl function into one pass.
+func MapFoldl[T1, T2 any](list GoListC[T1], acc0 T2, fun func(T1, T2) (T1, T2)) (GoListC[T1], T2) {
+    var value T1
+    var result GoListC[T1]
+    if list.Head == nil {
+        return result, acc0
+    }
+    for node := list.Head; ; {
+        value, acc0 = fun(node.Data, acc0)
+        result.append(value)
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return result, acc0
+}
+
+// Combines the operations of Map function and Foldr function into one pass.
+func MapFoldr[T1, T2 any](list GoListC[T1], acc0 T2, fun func(T1, T2) (T1, T2)) (GoListC[T1], T2) {
+    var value T1
+    var result GoListC[T1]
+    if list.Head == nil {
+        return result, acc0
+    }
+    reverse := Reverse(list)
+    for node := reverse.Head; ; {
+        value, acc0 = fun(node.Data, acc0)
+        result.appendHead(value)
+        node = node.Next
+        if node == reverse.Head {
+            break
+        }
+    }
+    return result, acc0
+}
+
+// Returns the first node in list that compares greater than or equal to all
+// other nodes of list. This function only works with constraint Ordered list.
+func Max[T constraints.Ordered](list GoListC[T]) *node.Node[T] {
+    node := list.Head
+    max := node
+    for {
+        if node.Data > max.Data {
+            max = node
+        }
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return max
+}
+
+// Returns true if elem matches some node data of list, otherwise retusn false.
+func Member[T any](list GoListC[T], elem T) bool {
+    for node := list.Head; ; {
+        if cmp.Equal(node.Data, elem) {
+            return true
+        }
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return false
+}
+
+// Returns the first node in list that compares less than or equal to all
+// other nodes of list. This function only works with constraint Ordered list.
+func Min[T constraints.Ordered](list GoListC[T]) *node.Node[T] {
+    node := list.Head
+    min := node
+    for {
+        if node.Data < min.Data {
+            min = node
+        }
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return min
 }
 
 // Returns a list containing the nodes of input list in reverse order.

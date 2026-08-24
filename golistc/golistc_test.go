@@ -399,6 +399,71 @@ func TestMap_EmptyList(t *testing.T) {
     }
 }
 
+func TestMapFoldl_MapFoldr_NormalCase(t *testing.T) {
+    list := New(1, 2, 3, 4)
+    mapped1, sum := MapFoldl(list, 0, func(n, s int) (int, int) {
+        return n * 2, s + n
+    })
+    mapped2, fac := MapFoldr(list, 1, func(n, f int) (int, int) {
+        return n * 2, f * n
+    })
+    expectedL := []int{2, 4, 6, 8}
+    expectedS := 10
+    expectedF := 24
+    if result1 := ToSlice(mapped1); !reflect.DeepEqual(result1, expectedL) || sum != expectedS {
+        t.Errorf("MapFoldl\nresult: %v - %v\nexpected: %v - %v", sum, result1, expectedS, expectedL)
+    }
+    if result2 := ToSlice(mapped2); !reflect.DeepEqual(result2, expectedL) || fac != expectedF {
+        t.Errorf("MapFoldr\nresult: %v - %v\nexpected: %v - %v", fac, result2, expectedF, expectedL)
+    }
+}
+
+func TestMapFoldl_MapFoldr_EmptyList(t *testing.T) {
+    list := New[int]()
+    mapped1, sum := MapFoldl(list, 0, func(n, s int) (int, int) {
+        return n * 2, s + n
+    })
+    mapped2, fac := MapFoldr(list, 1, func(n, f int) (int, int) {
+        return n * 2, f * n
+    })
+    expectedL := []int{}
+    expectedS := 0
+    expectedF := 1
+    if result1 := ToSlice(mapped1); len(result1) != 0 || sum != expectedS {
+        t.Errorf("MapFoldl\nresult: %v - %v\nexpected: %v - %v", sum, result1, expectedS, expectedL)
+    }
+    if result2 := ToSlice(mapped2); len(result2) != 0 || fac != expectedF {
+        t.Errorf("MapFoldr\nresult: %v - %v\nexpected: %v - %v", fac, result2, expectedF, expectedL)
+    }
+}
+
+func TestMax_Min(t *testing.T) {
+    list := New("d", "b", "e", "a", "c")
+    max := Max(list)
+    min := Min(list)
+    expectedMax := "e"
+    expectedMin := "a"
+
+    if max.Data != expectedMax {
+        t.Errorf("Max\nresult: %v\nexpected: %v", max, expectedMax)
+    }
+    if min.Data != expectedMin {
+        t.Errorf("Min\nresult: %v\nexpected: %v", min, expectedMin)
+    }
+}
+
+func TestMember(t *testing.T) {
+    list := New(1, 2, 3, 4, 5)
+    member1 := Member(list, 4)
+    member2 := Member(list, 6)
+    if !member1 {
+        t.Errorf("Member\nresult: %v\nexpected: true", member1)
+    }
+    if member2 {
+        t.Errorf("Member\nresult: %v\nexpected: false", member2)
+    }
+}
+
 func TestReverse_EmptyList(t *testing.T) {
     list := New[int]()
     reverse := Reverse(list)
