@@ -3,12 +3,12 @@
 package golistc
 
 import (
-	"fmt"
-	"strings"
+    "fmt"
+    "strings"
 
-	"github.com/google/go-cmp/cmp"
-	"github.com/hiennguyen-neih/go-linkedlist/node"
-	// "github.com/hiennguyen-neih/go-linkedlist/constraints"
+    "github.com/google/go-cmp/cmp"
+    "github.com/hiennguyen-neih/go-linkedlist/node"
+    // "github.com/hiennguyen-neih/go-linkedlist/constraints"
 )
 
 /*
@@ -186,8 +186,7 @@ func DeleteAt[T any](list GoListC[T], index int) GoListC[T] {
         index = len + index // same as len - abs(index)
     }
     if index < 0 || index >= len {
-        node := list.Head
-        for {
+        for node := list.Head; ; {
             result.append(node.Data)
             node = node.Next
             if node == list.Head {
@@ -195,15 +194,11 @@ func DeleteAt[T any](list GoListC[T], index int) GoListC[T] {
             }
         }
     } else {
-        i := 0
         node := list.Head
-        for {
+        for i := 0; ; {
             if i == index {
                 i++
                 node = node.Next
-                if node == list.Head {
-                    break
-                }
                 continue
             }
             i++
@@ -232,9 +227,6 @@ func DropLast[T any](list GoListC[T]) GoListC[T] {
         }
         result.append(node.Data)
         node = node.Next
-        if node == list.Head {
-            break
-        }
     }
     return result
 }
@@ -252,7 +244,7 @@ func DropWhile[T any](list GoListC[T], fun func(T) bool) GoListC[T] {
         }
         node = node.Next
         if node == list.Head {
-            break
+            return result
         }
     }
     for {
@@ -361,8 +353,7 @@ func Find[T any](list GoListC[T], value T) int {
 // new accumulator, which is passed to the next call. The function returns the
 // final value of the accumulator. Input acc0 is returned if the list is empty.
 func Foldl[T1, T2 any](list GoListC[T1], acc0 T2, fun func(T1, T2) T2) T2 {
-    node := list.Head
-    for {
+    for node := list.Head; ; {
         acc0 = fun(node.Data, acc0)
         node = node.Next
         if node == list.Head {
@@ -378,14 +369,9 @@ func Foldl[T1, T2 any](list GoListC[T1], acc0 T2, fun func(T1, T2) T2) T2 {
 // final value of the accumulator. Input acc0 is returned if the list is empty.
 func Foldr[T1, T2 any](list GoListC[T1], acc0 T2, fun func(T1, T2) T2) T2 {
     reverse := Reverse(list)
-    fmt.Println(reverse)
-    node := reverse.Head
-    tail := reverse.Tail
-    fmt.Printf("head: %v - tail: %v\n", node, tail)
-    for {
+    for node := reverse.Head; ; {
         acc0 = fun(node.Data, acc0)
         node = node.Next
-        fmt.Printf("acc0: %v - node: %v\n", acc0, node)
         if node == reverse.Head {
             break
         }
@@ -397,8 +383,7 @@ func Foldr[T1, T2 any](list GoListC[T1], acc0 T2, fun func(T1, T2) T2) T2 {
 // function is used for its side effects and the evaluation order is defined
 // to be the same as the order of the nodes in the list.
 func ForEach[T any](list GoListC[T], fun func(T)) {
-    node := list.Head
-    for {
+    for node := list.Head; ; {
         fun(node.Data)
         node = node.Next
         if node == list.Head {
@@ -407,12 +392,58 @@ func ForEach[T any](list GoListC[T], fun func(T)) {
     }
 }
 
-// Calls fun(data) to every nodes in list and returns a list contains returned
-// values of that fun.
-func Map[T any](list GoListC[T], fun func(T) T) GoListC[T] {
+// Returns a list with val is inserted at specific index. index is capped at
+// list length. Negative index indicate an offset from the end of list.
+func InsertAt[T any](list GoListC[T], index int, val T) GoListC[T] {
+    len := Len(list)
+    if index < 0 {
+        index = len + index // same as len - abs(index)
+    }
+    if index < 0 || index > len {
+        panic("InsertAt, index is out of bound!")
+    }
+
     var result GoListC[T]
-    for node := list.Head; node != nil; node = node.Next {
-        result.append(fun(node.Data))
+    if index == len {
+        for node := list.Head; ; {
+            result.append(node.Data)
+            node = node.Next
+            if node == list.Head {
+                break
+            }
+        }
+        result.append(val)
+    } else {
+        i := 0
+        for node := list.Head; ; {
+            if i == index {
+                result.append(val)
+            }
+            result.append(node.Data)
+            i++
+            node = node.Next
+            if node == list.Head {
+                break
+            }
+        }
+    }
+
+    return result
+}
+
+// Inserts sep between each node in list. This function has no effect on an
+// empty list or a singleton list.
+func Join[T any](list GoListC[T], sep T) GoListC[T] {
+    var result GoListC[T]
+    for node := list.Head; ; {
+        result.append(node.Data)
+        if node.Next != list.Head {
+            result.append(sep)
+        }
+        node = node.Next
+        if node == list.Head {
+            break
+        }
     }
     return result
 }
@@ -434,19 +465,37 @@ func Len[T any](list GoListC[T]) int {
     return len
 }
 
-// Returns a list containing the nodes of input list in reverse order.
-func Reverse[T any](list GoListC[T]) GoListC[T] {
-    var head *node.Node[T]
-    curr := list.Head
-    for {
-        node := &node.Node[T]{Data: curr.Data, Next: head}
-        head = node
-        curr = curr.Next
-        if curr == list.Head {
+// Calls fun(data) to every nodes in list and returns a list contains returned
+// values of that fun.
+func Map[T any](list GoListC[T], fun func(T) T) GoListC[T] {
+    var result GoListC[T]
+    if list.Head == nil {
+        return result
+    }
+    for node := list.Head; ; {
+        result.append(fun(node.Data))
+        node = node.Next
+        if node == list.Head {
             break
         }
     }
-    return GoListC[T]{Head: head, Tail: list.Head}
+    return result
+}
+
+// Returns a list containing the nodes of input list in reverse order.
+func Reverse[T any](list GoListC[T]) GoListC[T] {
+    var result GoListC[T]
+    if list.Head == nil {
+        return result
+    }
+    for node := list.Head; ; {
+        result.appendHead(node.Data)
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return result
 }
 
 // Takes nodes data in list while fun returns true, returning the longest
@@ -508,7 +557,7 @@ func (list GoListC[T]) String() string {
  *******************************************************************************
  */
 
-// Do append value into head of list.
+// Do append value into tail of list.
 func (list *GoListC[T]) append(value T) *GoListC[T] {
     node := &node.Node[T]{Data: value}
     if list.Head != nil {
@@ -523,20 +572,35 @@ func (list *GoListC[T]) append(value T) *GoListC[T] {
     return list
 }
 
-// Do reverse the list.
-func (list *GoListC[T]) reverse() *GoListC[T] {
-    prev := list.Tail
-    node := list.Head
-    for {
-        next := node.Next
-        node.Next = prev
-        prev = node
-        node = next
-        if node == list.Head {
-            break
-        }
+// Do append value into head of list.
+func (list *GoListC[T]) appendHead(value T) *GoListC[T] {
+    node := &node.Node[T]{Data: value}
+    if list.Head == nil {
+        list.Head = node
+        list.Tail = node
+        node.Next = node
+    } else {
+        node.Next = list.Head
+        list.Head = node
+        list.Tail.Next = node
     }
-    list.Head = prev
-    list.Tail = node
     return list
 }
+
+// Do reverse the list.
+// func (list *GoListC[T]) reverse() *GoListC[T] {
+//     prev := list.Tail
+//     node := list.Head
+//     for {
+//         next := node.Next
+//         node.Next = prev
+//         prev = node
+//         node = next
+//         if node == list.Head {
+//             break
+//         }
+//     }
+//     list.Head = prev
+//     list.Tail = node
+//     return list
+// }

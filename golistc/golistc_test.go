@@ -37,6 +37,14 @@ func TestGoListString_String(t *testing.T) {
     }
 }
 
+func TestGoListString_Empty(t *testing.T) {
+    list := New[string]()
+    expected := `[]`
+    if result := list.String(); result != expected {
+        t.Errorf("String\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
 func TestAll(t *testing.T) {
     list1 := New(1, 3, 5, 7)
     list2 := New(1, 3, 5, 8)
@@ -105,6 +113,15 @@ func TestDelete_EmptyList(t *testing.T) {
     }
 }
 
+func TestDelete_NotFound(t *testing.T) {
+    list := New(1, 2, 3, 2, 4)
+    deleted := Delete(list, 5)
+    expected := []int{1, 2, 3, 2, 4}
+    if result := ToSlice(deleted); !reflect.DeepEqual(result, expected) {
+        t.Errorf("Delete\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
 func TestDeleteAt_NormalCase(t *testing.T) {
     list := New("a", "b", "c", "d")
     deleted := DeleteAt(list, -2)
@@ -131,11 +148,20 @@ func TestDeleteAt_IndexOutOfBound(t *testing.T) {
     }
 }
 
-func TestDropLast(t *testing.T) {
+func TestDropLast_NormalCase(t *testing.T) {
     list := New("a", "b", "c", "d")
     droped := DropLast(list)
     expected := []string{"a", "b", "c"}
     if result := ToSlice(droped); !reflect.DeepEqual(result, expected) {
+        t.Errorf("DropLast\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestDropLast_EmptyList(t *testing.T) {
+    list := New[int]()
+    droped := DropLast(list)
+    expected := []int{}
+    if result := ToSlice(droped); len(result) != 0 {
         t.Errorf("DropLast\nresult: %v\nexpected: %v", result, expected)
     }
 }
@@ -147,6 +173,34 @@ func TestDropWhile_TakeWhile(t *testing.T) {
     expected1 := []int{4, 5, 2}
     expected2 := []int{1, 2, 3}
     if result := ToSlice(droped); !reflect.DeepEqual(result, expected1) {
+        t.Errorf("DropWhile\nresult: %v\nexpected: %v", result, expected1)
+    }
+    if result := ToSlice(taken); !reflect.DeepEqual(result, expected2) {
+        t.Errorf("TakeWhile\nresult: %v\nexpected: %v", result, expected2)
+    }
+}
+
+func TestDropWhile_TakeWhile_EmptyList(t *testing.T) {
+    list := New[string]()
+    droped := DropWhile(list, func(n string) bool { return n == "a" })
+    taken := TakeWhile(list, func(n string) bool { return n == "a" })
+    expected1 := []string{}
+    expected2 := []string{}
+    if result := ToSlice(droped); len(result) != 0 {
+        t.Errorf("DropWhile\nresult: %v\nexpected: %v", result, expected1)
+    }
+    if result := ToSlice(taken); len(result) != 0 {
+        t.Errorf("TakeWhile\nresult: %v\nexpected: %v", result, expected2)
+    }
+}
+
+func TestDropWhile_TakeWhile_TilEndOfList(t *testing.T) {
+    list := New[string]("a", "a", "a", "a")
+    droped := DropWhile(list, func(n string) bool { return n == "a" })
+    taken := TakeWhile(list, func(n string) bool { return n == "a" })
+    expected1 := []string{}
+    expected2 := []string{"a", "a", "a", "a"}
+    if result := ToSlice(droped); len(result) != 0 {
         t.Errorf("DropWhile\nresult: %v\nexpected: %v", result, expected1)
     }
     if result := ToSlice(taken); !reflect.DeepEqual(result, expected2) {
@@ -274,5 +328,82 @@ func TestFoldr(t *testing.T) {
     expected := 120
     if result != expected {
         t.Errorf("Find\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestForEach(t *testing.T) {
+    list := New(1, 2, 3, 4, 5)
+
+    var result []int
+    ForEach(list, func(val int) {
+        result = append(result, val)
+    })
+
+    expected := []int{1, 2, 3, 4, 5}
+    if !reflect.DeepEqual(result, expected) {
+        t.Errorf("ForEach\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestInsertAt_NormalCase(t *testing.T) {
+    list := New("a", "b", "c", "d")
+
+    inserted1 := InsertAt(list, -2, "X")
+    expected1 := []string{"a", "b", "X", "c", "d"}
+    if result1 := ToSlice(inserted1); !reflect.DeepEqual(result1, expected1) {
+        t.Errorf("InsertAt\nresult: %v\nexpected: %v", result1, expected1)
+    }
+
+    inserted2 := InsertAt(list, 4, "X")
+    expected2 := []string{"a", "b", "c", "d", "X"}
+    if result2 := ToSlice(inserted2); !reflect.DeepEqual(result2, expected2) {
+        t.Errorf("InsertAt\nresult: %v\nexpected: %v", result2, expected2)
+    }
+}
+
+func TestInsertAt_IndexOutOfBound(t *testing.T) {
+    defer func() {
+        if r := recover(); r == nil {
+            t.Errorf("InsertAt\nExpect panic")
+        } else if r != "InsertAt, index is out of bound!" {
+            t.Errorf("InsertAt\nWrong panic message")
+        }
+    }()
+    InsertAt(New(1, 2, 3, 4), 10, 0)
+}
+
+func TestJoin(t *testing.T) {
+    list := New("a", "b", "c", "d")
+    joined := Join(list, "X")
+    expected := []string{"a", "X", "b", "X", "c", "X", "d"}
+    if result := ToSlice(joined); !reflect.DeepEqual(result, expected) {
+        t.Errorf("Join\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestMap(t *testing.T) {
+    list := New(1, 2, 3, 4)
+    mapped := Map(list, func(n int) int { return n * n })
+    expected := []int{1, 4, 9, 16}
+    if result := ToSlice(mapped); !reflect.DeepEqual(result, expected) {
+        t.Errorf("Map\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestMap_EmptyList(t *testing.T) {
+    list := New[int]()
+    mapped := Map(list, func(n int) int { return n * n })
+    expected := []int{}
+    if result := ToSlice(mapped); len(result) != 0 {
+        t.Errorf("Map\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestReverse_EmptyList(t *testing.T) {
+    list := New[int]()
+    reverse := Reverse(list)
+    expected := []int{}
+    if result := ToSlice(reverse); len(result) != 0 {
+        t.Errorf("Reverse\nresult: %v\nexpected: %v", result, expected)
     }
 }
