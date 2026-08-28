@@ -85,12 +85,33 @@ func TestAppendHead(t *testing.T) {
     }
 }
 
-func TestConcat(t *testing.T) {
+func TestConcat_NormalCase(t *testing.T) {
     list1 := New(1, 2, 3)
     list2 := New(4, 5, 6)
     list3 := New(7, 8, 9)
     concatenated := Concat(list1, list2, list3)
     expected := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+    if result := ToSlice(concatenated); !reflect.DeepEqual(result, expected) {
+        t.Errorf("Concat\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestConcat_EmptyList(t *testing.T) {
+    list1 := New[int]()
+    list2 := New[int]()
+    list3 := New[int]()
+    concatenated := Concat(list1, list2, list3)
+    if result := ToSlice(concatenated); len(result) != 0 {
+        t.Errorf("Delete\nresult: %v\nexpected: []", result)
+    }
+}
+
+func TestConcat_MixList(t *testing.T) {
+    list1 := New(1, 2, 3)
+    list2 := New[int]()
+    list3 := New(7, 8, 9)
+    concatenated := Concat(list1, list2, list3)
+    expected := []int{1, 2, 3, 7, 8, 9}
     if result := ToSlice(concatenated); !reflect.DeepEqual(result, expected) {
         t.Errorf("Concat\nresult: %v\nexpected: %v", result, expected)
     }
@@ -464,11 +485,38 @@ func TestMember(t *testing.T) {
     }
 }
 
+func TestMerge_UMerge(t *testing.T) {
+    list1 := New(2, 8, 6)
+    list2 := New(1, 3, 3)
+    list3 := New(8, 4, 5)
+    merged := Merge(list1, list2, list3)
+    umerged := UMerge(list1, list2, list3)
+
+    expected1 := []int{1, 2, 3, 3, 4, 5, 6, 8, 8}
+    expected2 := []int{1, 2, 3, 4, 5, 6, 8}
+
+    if result1 := ToSlice(merged); !reflect.DeepEqual(result1, expected1) {
+        t.Errorf("Merge\nresult: %v\nexpected: %v", result1, expected1)
+    }
+    if result2 := ToSlice(umerged); !reflect.DeepEqual(result2, expected2) {
+        t.Errorf("UMerge\nresult: %v\nexpected: %v", result2, expected2)
+    }
+}
+
 func TestReverse_EmptyList(t *testing.T) {
     list := New[int]()
     reverse := Reverse(list)
     expected := []int{}
     if result := ToSlice(reverse); len(result) != 0 {
         t.Errorf("Reverse\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestUSort(t *testing.T) {
+    list := New(2, 5, 1, 2, 7, 3, 9, 4, 8, 6, 4)
+    sorted := USort(list)
+    expected := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+    if result := ToSlice(sorted); !reflect.DeepEqual(result, expected) {
+        t.Errorf("USort\nresult: %v\nexpected: %v", result, expected)
     }
 }

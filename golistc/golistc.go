@@ -99,12 +99,13 @@ func Any[T any](list GoListC[T], fun func(T) bool) bool {
 // Appends values into last of input list.
 func Append[T any](list GoListC[T], values ...T) GoListC[T] {
     var result GoListC[T]
-    node := list.Head
-    for {
-        result.append(node.Data)
-        node = node.Next
-        if node == list.Head {
-            break
+    if list.Head != nil {
+        for node := list.Head; ; {
+            result.append(node.Data)
+            node = node.Next
+            if node == list.Head {
+                break
+            }
         }
     }
     for _, value := range values {
@@ -134,8 +135,10 @@ func AppendHead[T any](list GoListC[T], values ...T) GoListC[T] {
 func Concat[T any](lists ...GoListC[T]) GoListC[T] {
     var result GoListC[T]
     for _, list := range lists {
-        node := list.Head
-        for {
+        if list.Head == nil {
+            continue
+        }
+        for node := list.Head; ; {
             result.append(node.Data)
             node = node.Next
             if node == list.Head {
@@ -550,6 +553,13 @@ func Member[T any](list GoListC[T], elem T) bool {
     return false
 }
 
+// Returns a sorted list forming by merging all input lists. This function only
+// works with constraint Ordered lists.
+func Merge[T constraints.Ordered](lists ...GoListC[T]) GoListC[T] {
+    result := Concat(lists...)
+    return Sort(result)
+}
+
 // Returns the first node in list that compares less than or equal to all
 // other nodes of list. This function only works with constraint Ordered list.
 func Min[T constraints.Ordered](list GoListC[T]) *node.Node[T] {
@@ -583,6 +593,12 @@ func Reverse[T any](list GoListC[T]) GoListC[T] {
     return result
 }
 
+// Returns a list containing the sorted nodes data of input list. This function
+// only works with constraint Ordered list.
+func Sort[T constraints.Ordered](list GoListC[T]) GoListC[T] {
+    return quickSort(list)
+}
+
 // Takes nodes data in list while fun returns true, returning the longest
 // prefix in which all nodes data satisfy the predicate.
 func TakeWhile[T any](list GoListC[T], fun func(T) bool) GoListC[T] {
@@ -603,6 +619,20 @@ func TakeWhile[T any](list GoListC[T], fun func(T) bool) GoListC[T] {
         }
     }
     return result
+}
+
+// Returns a sorted list formed by merging all input lists, while removing
+// duplicates. This function only works with constraint Ordered lists.
+func UMerge[T constraints.Ordered](lists ...GoListC[T]) GoListC[T] {
+    result := Concat(lists...)
+    return uniqueQuickSort(result)
+}
+
+// Returns a sorted list of the nodes data of list, keeping only the first
+// occurrence of nodes that compare equal and removing duplicates. This
+// function only works with constraint Ordered list.
+func USort[T constraints.Ordered](list GoListC[T]) GoListC[T] {
+    return uniqueQuickSort(list)
 }
 
 /*
@@ -689,3 +719,80 @@ func (list *GoListC[T]) appendHead(value T) *GoListC[T] {
 //     list.Tail = node
 //     return list
 // }
+
+// Do quick sort input list.
+func quickSort[T constraints.Ordered](list GoListC[T]) GoListC[T] {
+    if list.Head == nil || list.Head.Next == list.Head {
+        return list
+    }
+
+    pivot := list.Head.Data
+    var less, equal, greater GoListC[T]
+
+    // Partitioning
+    for node := list.Head; ; {
+        switch {
+        case node.Data < pivot:
+            less.appendHead(node.Data)
+        case node.Data == pivot:
+            equal.appendHead(node.Data)
+        case node.Data > pivot:
+            greater.appendHead(node.Data)
+        }
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+
+    // Recursive sort
+    sortedLess := quickSort(less)
+    sortedGreater := quickSort(greater)
+
+    // Concatenates 3 lists: sortedLess + equal + sortedGreater
+    result := Concat(sortedLess, equal, sortedGreater)
+
+    return result
+}
+
+// Do quick sort input list and remove duplicate nodes.
+func uniqueQuickSort[T constraints.Ordered](list GoListC[T]) GoListC[T] {
+    if list.Head == nil || list.Head.Next == list.Head {
+        return list
+    }
+
+    pivot := list.Head.Data
+    var less, equal, greater GoListC[T]
+    seen := make(map[T]bool) // store already seen node data into map
+
+    // Partitioning and remove seen node
+    for node := list.Head; ; {
+        if !seen[node.Data] {
+            seen[node.Data] = true
+
+            switch {
+            case node.Data < pivot:
+                less.appendHead(node.Data)
+            case node.Data == pivot:
+                equal.appendHead(node.Data)
+            case node.Data > pivot:
+                greater.appendHead(node.Data)
+            }
+        }
+
+        node = node.Next
+
+        if node == list.Head {
+            break
+        }
+    }
+
+    // Recursive sort
+    sortedLess := uniqueQuickSort(less)
+    sortedGreater := uniqueQuickSort(greater)
+
+    // Concatenate: sortedLess + equal + sortedGreater
+    result := Concat(sortedLess, equal, sortedGreater)
+
+    return result
+}
