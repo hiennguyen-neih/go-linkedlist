@@ -65,9 +65,12 @@ func ToSlice[T any](list GoListC[T]) []T {
 }
 
 // Returns true if fun returns true for all node data in list, otherwise returns
-// false.
+// false. If input list is an empty list, returns true.
 func All[T any](list GoListC[T], fun func(T) bool) bool {
     node := list.Head
+    if node == nil {
+        return true
+    }
     for {
         if !fun(node.Data) {
             return false
@@ -81,9 +84,12 @@ func All[T any](list GoListC[T], fun func(T) bool) bool {
 }
 
 // Returns true if fun returns true for at least 1 node data in list, otherwise
-// returns false.
+// returns false. If input list is an empty list, returns false.
 func Any[T any](list GoListC[T], fun func(T) bool) bool {
     node := list.Head
+    if node == nil {
+        return false
+    }
     for {
         if fun(node.Data) {
             return true
@@ -99,8 +105,9 @@ func Any[T any](list GoListC[T], fun func(T) bool) bool {
 // Appends values into last of input list.
 func Append[T any](list GoListC[T], values ...T) GoListC[T] {
     var result GoListC[T]
-    if list.Head != nil {
-        for node := list.Head; ; {
+    node := list.Head
+    if node != nil {
+        for {
             result.append(node.Data)
             node = node.Next
             if node == list.Head {
@@ -121,11 +128,13 @@ func AppendHead[T any](list GoListC[T], values ...T) GoListC[T] {
     for _, value := range values {
         result.append(value)
     }
-    for {
-        result.append(node.Data)
-        node = node.Next
-        if node == list.Head {
-            break
+    if node != nil {
+        for {
+            result.append(node.Data)
+            node = node.Next
+            if node == list.Head {
+                break
+            }
         }
     }
     return result
@@ -153,10 +162,10 @@ func Concat[T any](lists ...GoListC[T]) GoListC[T] {
 // is removed.
 func Delete[T any](list GoListC[T], value T) GoListC[T] {
     var result GoListC[T]
-    if list.Head == nil {
+    node := list.Head
+    if node == nil {
         return result
     }
-    node := list.Head
     for {
         if !cmp.Equal(node.Data, value) {
             result.append(node.Data)
@@ -182,7 +191,7 @@ func Delete[T any](list GoListC[T], value T) GoListC[T] {
 func DeleteAt[T any](list GoListC[T], index int) GoListC[T] {
     var result GoListC[T]
     len := Len(list)
-    if list.Head == nil {
+    if len == 0 {
         return result
     }
     if index < 0 {
@@ -216,11 +225,11 @@ func DeleteAt[T any](list GoListC[T], index int) GoListC[T] {
 }
 
 // Drops the last node of input list. If input list is an empty list, returns
-// an empty list.
+// a new empty list.
 func DropLast[T any](list GoListC[T]) GoListC[T] {
     var result GoListC[T]
     node := list.Head
-    if node == nil {
+    if node == nil || node == node.Next {
         return result
     }
     for {
@@ -275,6 +284,9 @@ func Duplicate[T any](n int, elem T) GoListC[T] {
 func Equal[T any](list1, list2 GoListC[T]) bool {
     node1 := list1.Head
     node2 := list2.Head
+    if node1 == nil || node2 == nil {
+        return node1 == nil && node2 == nil
+    }
     for {
         if !cmp.Equal(node1.Data, node2.Data) {
             return false
@@ -356,7 +368,11 @@ func Find[T any](list GoListC[T], value T) int {
 // new accumulator, which is passed to the next call. The function returns the
 // final value of the accumulator. Input acc0 is returned if the list is empty.
 func Foldl[T1, T2 any](list GoListC[T1], acc0 T2, fun func(T1, T2) T2) T2 {
-    for node := list.Head; ; {
+    node := list.Head
+    if node == nil {
+        return acc0
+    }
+    for {
         acc0 = fun(node.Data, acc0)
         node = node.Next
         if node == list.Head {
@@ -372,7 +388,11 @@ func Foldl[T1, T2 any](list GoListC[T1], acc0 T2, fun func(T1, T2) T2) T2 {
 // final value of the accumulator. Input acc0 is returned if the list is empty.
 func Foldr[T1, T2 any](list GoListC[T1], acc0 T2, fun func(T1, T2) T2) T2 {
     reverse := Reverse(list)
-    for node := reverse.Head; ; {
+    node := reverse.Head
+    if node == nil {
+        return acc0
+    }
+    for {
         acc0 = fun(node.Data, acc0)
         node = node.Next
         if node == reverse.Head {
@@ -386,11 +406,14 @@ func Foldr[T1, T2 any](list GoListC[T1], acc0 T2, fun func(T1, T2) T2) T2 {
 // function is used for its side effects and the evaluation order is defined
 // to be the same as the order of the nodes in the list.
 func ForEach[T any](list GoListC[T], fun func(T)) {
-    for node := list.Head; ; {
-        fun(node.Data)
-        node = node.Next
-        if node == list.Head {
-            break
+    node := list.Head
+    if node != nil {
+        for {
+            fun(node.Data)
+            node = node.Next
+            if node == list.Head {
+                break
+            }
         }
     }
 }
@@ -407,7 +430,9 @@ func InsertAt[T any](list GoListC[T], index int, val T) GoListC[T] {
     }
 
     var result GoListC[T]
-    if index == len {
+    if len == 0 && index == 0 {
+        result.append(val)
+    } else if index == len {
         for node := list.Head; ; {
             result.append(node.Data)
             node = node.Next
@@ -438,7 +463,11 @@ func InsertAt[T any](list GoListC[T], index int, val T) GoListC[T] {
 // empty list or a singleton list.
 func Join[T any](list GoListC[T], sep T) GoListC[T] {
     var result GoListC[T]
-    for node := list.Head; ; {
+    node := list.Head
+    if node == nil {
+        return result
+    }
+    for {
         result.append(node.Data)
         if node.Next != list.Head {
             result.append(sep)
@@ -524,16 +553,19 @@ func MapFoldr[T1, T2 any](list GoListC[T1], acc0 T2, fun func(T1, T2) (T1, T2)) 
 
 // Returns the first node in list that compares greater than or equal to all
 // other nodes of list. This function only works with constraint Ordered list.
+// If input list is an empty list, returns nil.
 func Max[T constraints.Ordered](list GoListC[T]) *node.Node[T] {
     node := list.Head
     max := node
-    for {
-        if node.Data > max.Data {
-            max = node
-        }
-        node = node.Next
-        if node == list.Head {
-            break
+    if node != nil {
+        for {
+            if node.Data > max.Data {
+                max = node
+            }
+            node = node.Next
+            if node == list.Head {
+                break
+            }
         }
     }
     return max
@@ -541,7 +573,11 @@ func Max[T constraints.Ordered](list GoListC[T]) *node.Node[T] {
 
 // Returns true if elem matches some node data of list, otherwise retusn false.
 func Member[T any](list GoListC[T], elem T) bool {
-    for node := list.Head; ; {
+    node := list.Head
+    if node == nil {
+        return false
+    }
+    for {
         if cmp.Equal(node.Data, elem) {
             return true
         }
@@ -562,16 +598,19 @@ func Merge[T constraints.Ordered](lists ...GoListC[T]) GoListC[T] {
 
 // Returns the first node in list that compares less than or equal to all
 // other nodes of list. This function only works with constraint Ordered list.
+// If input list is an empty list, returns nil.
 func Min[T constraints.Ordered](list GoListC[T]) *node.Node[T] {
     node := list.Head
     min := node
-    for {
-        if node.Data < min.Data {
-            min = node
-        }
-        node = node.Next
-        if node == list.Head {
-            break
+    if node != nil {
+        for {
+            if node.Data < min.Data {
+                min = node
+            }
+            node = node.Next
+            if node == list.Head {
+                break
+            }
         }
     }
     return min
@@ -580,10 +619,11 @@ func Min[T constraints.Ordered](list GoListC[T]) *node.Node[T] {
 // Returns a list containing the nodes of input list in reverse order.
 func Reverse[T any](list GoListC[T]) GoListC[T] {
     var result GoListC[T]
-    if list.Head == nil {
+    node := list.Head
+    if node == nil {
         return result
     }
-    for node := list.Head; ; {
+    for {
         result.appendHead(node.Data)
         node = node.Next
         if node == list.Head {
