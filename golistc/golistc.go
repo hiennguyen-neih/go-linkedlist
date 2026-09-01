@@ -639,6 +639,37 @@ func Nth[T any](list GoListC[T], index int) *node.Node[T] {
     return node
 }
 
+// Returns sublist from node in list at specific index. index is capped at
+// list length. Negative index indicate an offset from the end of list.
+func NthTail[T any](list GoListC[T], index int) GoListC[T] {
+    len := Len(list)
+    if len == 0 {
+        panic("NthTail, list is empty!")
+    }
+
+    if index < 0 {
+        index = len + index // same as len - abs(index)
+    }
+
+    if index < 0 || index >= len {
+        panic("NthTail, index is out of bound!")
+    }
+
+    var result GoListC[T]
+    node := list.Head
+    for i := 0; i < index; i++ {
+        node = node.Next
+    }
+    for {
+        result.append(node.Data)
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return result
+}
+
 // Returns a list containing the nodes of input list in reverse order.
 func Reverse[T any](list GoListC[T]) GoListC[T] {
     var result GoListC[T]

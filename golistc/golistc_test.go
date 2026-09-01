@@ -11,6 +11,7 @@ import (
  *******************************************************************************
  */
 
+// Test Constructors
 func TestNew_ToSlice(t *testing.T) {
     list := New(1, 2, 3, 4)
     expected := []int{1, 2, 3, 4}
@@ -29,6 +30,7 @@ func TestFromSlice_ToSlice(t *testing.T) {
     assertCircular(t, list)
 }
 
+// Test Stringer
 func TestGoListString_Float(t *testing.T) {
     list := New(0.1, 0.2, 0.3, 0.4, 0.5)
     expected := "[0.1=>0.2=>0.3=>0.4=>0.5=>]"
@@ -53,6 +55,7 @@ func TestGoListString_Empty(t *testing.T) {
     }
 }
 
+// Test All
 func TestAll_NormalCase(t *testing.T) {
     list1 := New(1, 3, 5, 7)
     list2 := New(1, 3, 5, 8)
@@ -71,6 +74,7 @@ func TestAll_EmptyList(t *testing.T) {
     }
 }
 
+// Test Any
 func TestAny_NormalCase(t *testing.T) {
     list1 := New(2, 4, 6, 7)
     list2 := New(2, 4, 6, 8)
@@ -89,6 +93,7 @@ func TestAny_EmptyList(t *testing.T) {
     }
 }
 
+// Test Append
 func TestAppend(t *testing.T) {
     list := New(1, 2)
     appended := Append(list, 3, 4)
@@ -99,6 +104,7 @@ func TestAppend(t *testing.T) {
     assertCircular(t, appended)
 }
 
+// Test AppendHead
 func TestAppendHead(t *testing.T) {
     list := New("c", "d")
     appended := AppendHead(list, "a", "b")
@@ -109,6 +115,7 @@ func TestAppendHead(t *testing.T) {
     assertCircular(t, appended)
 }
 
+// Test Concat
 func TestConcat_NormalCase(t *testing.T) {
     list1 := New(1, 2, 3)
     list2 := New(4, 5, 6)
@@ -144,6 +151,7 @@ func TestConcat_MixList(t *testing.T) {
     assertCircular(t, concatenated)
 }
 
+// Test Delete
 func TestDelete_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 2, 4)
     deleted := Delete(list, 2)
@@ -182,6 +190,7 @@ func TestDelete_NotFound(t *testing.T) {
     assertCircular(t, deleted)
 }
 
+// Test DeleteAt
 func TestDeleteAt_NormalCase(t *testing.T) {
     list := New("a", "b", "c", "d")
     deleted := DeleteAt(list, -2)
@@ -218,6 +227,7 @@ func TestDeleteAt_IndexOutOfBound(t *testing.T) {
     assertCircular(t, deleted2)
 }
 
+// Test DropLast
 func TestDropLast_NormalCase(t *testing.T) {
     list := New("a", "b", "c", "d")
     droped := DropLast(list)
@@ -246,7 +256,8 @@ func TestDropLast_EmptyList(t *testing.T) {
     assertCircular(t, droped)
 }
 
-func TestDropWhile_TakeWhile(t *testing.T) {
+// Test DropWhile and TakeWhile
+func TestDropWhile_TakeWhile_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 4, 5, 2)
 
     droped := DropWhile(list, func(n int) bool { return n < 4 })
@@ -318,6 +329,7 @@ func TestDropWhile_TakeWhile_Boundary(t *testing.T) {
     assertCircular(t, taken)
 }
 
+// Test Duplicate
 func TestDuplicate_NormalCase(t *testing.T) {
     duplicate := Duplicate(4, 0)
     expected := []int{0, 0, 0, 0}
@@ -341,6 +353,7 @@ func TestDuplicate_EmptyList(t *testing.T) {
     assertCircular(t, duplicate2)
 }
 
+// Test Equal
 func TestEqual_ReturnTrue(t *testing.T) {
     list1 := New(1, 2, 3, 4)
     list2 := New(1, 2, 3, 4)
@@ -397,6 +410,7 @@ func TestEqual_BothEmpty(t *testing.T) {
     }
 }
 
+// Test Filter
 func TestFilter_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 4, 5, 6)
     filtered := Filter(list, func(n int) bool { return n%2 == 0 })
@@ -425,6 +439,7 @@ func TestFilter_EmptyList(t *testing.T) {
     assertCircular(t, filtered)
 }
 
+// Test FilterMap
 func TestFilterMap_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 4, 5, 6)
     filtered := FilterMap(list, func(n int) (bool, int) {
@@ -459,6 +474,7 @@ func TestFilterMap_EmptyList(t *testing.T) {
     assertCircular(t, filtered)
 }
 
+// Test Find
 func TestFind_Found(t *testing.T) {
     list := New(1, 2, 3, 4)
     result := Find(list, 3)
@@ -486,6 +502,7 @@ func TestFind_EmptyList(t *testing.T) {
     }
 }
 
+// Test Foldl
 func TestFoldl_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 4, 5)
     result := Foldl(list, 0, func(n, s int) int { return n + s })
@@ -504,6 +521,7 @@ func TestFoldl_EmptyList(t *testing.T) {
     }
 }
 
+// Test Foldr
 func TestFoldr_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 4, 5)
     result := Foldr(list, 1, func(n, s int) int { return n * s })
@@ -522,6 +540,7 @@ func TestFoldr_EmptyList(t *testing.T) {
     }
 }
 
+// Test ForEach
 func TestForEach(t *testing.T) {
     list := New(1, 2, 3, 4, 5)
 
@@ -536,6 +555,7 @@ func TestForEach(t *testing.T) {
     }
 }
 
+// Test InsertAt
 func TestInsertAt_NormalCase(t *testing.T) {
     list := New("a", "b", "c", "d")
 
@@ -589,6 +609,7 @@ func TestInsertAt_EmptyList_IndexOutOfBound(t *testing.T) {
     )
 }
 
+// Test Join
 func TestJoin_NormalCase(t *testing.T) {
     list := New("a", "b", "c", "d")
     joined := Join(list, "X")
@@ -618,7 +639,8 @@ func TestJoin_EmptyList(t *testing.T) {
     assertCircular(t, joined)
 }
 
-func TestMap(t *testing.T) {
+// Test Map
+func TestMap_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 4)
     mapped := Map(list, func(n int) int { return n * n })
     expected := []int{1, 4, 9, 16}
@@ -638,6 +660,7 @@ func TestMap_EmptyList(t *testing.T) {
     assertCircular(t, mapped)
 }
 
+// Test MapFoldl and MapFoldr
 func TestMapFoldl_MapFoldr_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 4)
     mapped1, sum := MapFoldl(list, 0, func(n, s int) (int, int) {
@@ -680,6 +703,7 @@ func TestMapFoldl_MapFoldr_EmptyList(t *testing.T) {
     assertCircular(t, mapped2)
 }
 
+// Test Max and Min
 func TestMax_Min_NormalCase(t *testing.T) {
     list := New("d", "b", "e", "a", "c")
 
@@ -710,6 +734,7 @@ func TestMax_Min_EmptyList(t *testing.T) {
     }
 }
 
+// Test Member
 func TestMember_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 4, 5)
 
@@ -732,6 +757,7 @@ func TestMember_EmptyList(t *testing.T) {
     }
 }
 
+// Test Merge and UMerge
 func TestMerge_UMerge_NormalCase(t *testing.T) {
     list1 := New(2, 8, 6)
     list2 := New(1, 3, 3)
@@ -790,6 +816,7 @@ func TestMerge_UMerge_MixList(t *testing.T) {
     assertCircular(t, umerged)
 }
 
+// Test Nth
 func TestNth_NormalCase(t *testing.T) {
     list := New(1, 2, 3, 4, 5)
 
@@ -811,13 +838,13 @@ func TestNth_PositiveFirstLast(t *testing.T) {
 
     nth1 := Nth(list, 0)
     expected1 := 1
-    if nth1.Data != 1 {
+    if nth1.Data != expected1 {
         t.Errorf("Nth\nresult: %v\nexpected: %v", nth1, expected1)
     }
 
     nth2 := Nth(list, 4)
     expected2 := 5
-    if nth2.Data != 5 {
+    if nth2.Data != expected2 {
         t.Errorf("Nth\nresult: %v\nexpected: %v", nth2, expected2)
     }
 }
@@ -827,27 +854,28 @@ func TestNth_NegativeFirstLast(t *testing.T) {
 
     nth1 := Nth(list, -5)
     expected1 := 1
-    if nth1.Data != 1 {
+    if nth1.Data != expected1 {
         t.Errorf("Nth\nresult: %v\nexpected: %v", nth1, expected1)
     }
 
     nth2 := Nth(list, -1)
     expected2 := 5
-    if nth2.Data != 5 {
+    if nth2.Data != expected2 {
         t.Errorf("Nth\nresult: %v\nexpected: %v", nth2, expected2)
     }
 }
 
 func TestNth_SingleNode(t *testing.T) {
-    list := New(42)
+    data := 42
+    list := New(data)
     nth1 := Nth(list, 0)
     nth2 := Nth(list, -1)
 
-    if nth1.Data != 42 {
-        t.Errorf("Nth\nexpected 42")
+    if nth1.Data != data {
+        t.Errorf("Nth\nresult: %v\nexpected: %v", nth1, data)
     }
-    if nth2.Data != 42 {
-        t.Errorf("Nth\nexpected 42")
+    if nth2.Data != data {
+        t.Errorf("Nth\nresult: %v\nexpected: %v", nth2, data)
     }
     if nth1 != nth2 {
         t.Errorf("Nth\nexpected same node")
@@ -878,6 +906,90 @@ func TestNth_EmptyList(t *testing.T) {
     )
 }
 
+// Test NthTail
+func TestNthTail_NormalCase(t *testing.T) {
+    list := New("a", "b", "c", "d", "e")
+    tail := NthTail(list, -3)
+    expected := []string{"c", "d", "e"}
+
+    if result := ToSlice(tail); !reflect.DeepEqual(result, expected) {
+        t.Errorf("NthTail\nresult: %v\nexpected: %v", result, expected)
+    }
+}
+
+func TestNthTail_PositiveFirstLast(t *testing.T) {
+    list := New(1, 2, 3, 4, 5)
+
+    tail1 := NthTail(list, 0)
+    expected1 := []int{1, 2, 3, 4, 5}
+    if result := ToSlice(tail1); !reflect.DeepEqual(result, expected1) {
+        t.Errorf("NthTail\nresult: %v\nexpected: %v", result, expected1)
+    }
+
+    tail2 := NthTail(list, 4)
+    expected2 := []int{5}
+    if result := ToSlice(tail2); !reflect.DeepEqual(result, expected2) {
+        t.Errorf("NthTail\nresult: %v\nexpected: %v", result, expected2)
+    }
+}
+
+func TestNthTail_NegativeFirstLast(t *testing.T) {
+    list := New(1, 2, 3, 4, 5)
+
+    tail1 := NthTail(list, -5)
+    expected1 := []int{1, 2, 3, 4, 5}
+    if result := ToSlice(tail1); !reflect.DeepEqual(result, expected1) {
+        t.Errorf("NthTail\nresult: %v\nexpected: %v", result, expected1)
+    }
+
+    tail2 := NthTail(list, -1)
+    expected2 := []int{5}
+    if result := ToSlice(tail2); !reflect.DeepEqual(result, expected2) {
+        t.Errorf("NthTail\nresult: %v\nexpected: %v", result, expected2)
+    }
+}
+
+func TestNthTail_SingleNode(t *testing.T) {
+    list := New(1)
+
+    tail1 := NthTail(list, 0)
+    expected1 := []int{1}
+    if result := ToSlice(tail1); !reflect.DeepEqual(result, expected1) {
+        t.Errorf("NthTail\nresult: %v\nexpected: %v", result, expected1)
+    }
+
+    tail2 := NthTail(list, -1)
+    expected2 := []int{1}
+    if result := ToSlice(tail2); !reflect.DeepEqual(result, expected2) {
+        t.Errorf("NthTail\nresult: %v\nexpected: %v", result, expected2)
+    }
+}
+
+func TestNthTail_PositiveIndexOutOfBound(t *testing.T) {
+    assertPanic(
+        t,
+        "NthTail, index is out of bound!",
+        func() { NthTail(New(1, 2, 3, 4), 10) },
+    )
+}
+
+func TestNthTail_NegativeIndexOutOfBound(t *testing.T) {
+    assertPanic(
+        t,
+        "NthTail, index is out of bound!",
+        func() { NthTail(New(1, 2, 3, 4), -10) },
+    )
+}
+
+func TestNthTail_EmptyList(t *testing.T) {
+    assertPanic(
+        t,
+        "NthTail, list is empty!",
+        func() { NthTail(New[int](), 0) },
+    )
+}
+
+// Test Reverse
 func TestReverse_NormalCase(t *testing.T) {
     list := New(1,2,3,4)
     reversed := Reverse(list)
@@ -908,6 +1020,7 @@ func TestReverse_EmptyList(t *testing.T) {
     assertCircular(t, reversed)
 }
 
+// Test Sort
 func TestSort_NormalCase(t *testing.T) {
     list := New(2, 5, 1, 2, 7, 3, 9, 4, 8, 6, 4)
     sorted := Sort(list)
@@ -926,6 +1039,7 @@ func TestSort_EmptyList(t *testing.T) {
     assertCircular(t, sorted)
 }
 
+// Test USort
 func TestUSort_NormalCase(t *testing.T) {
     list := New(2, 5, 1, 2, 7, 3, 9, 4, 8, 6, 4)
     sorted := USort(list)
@@ -950,6 +1064,7 @@ func TestUSort_EmptyList(t *testing.T) {
  *******************************************************************************
  */
 
+// assertCircular
 func assertCircular[T any](t *testing.T, list GoListC[T]) {
     t.Helper()
 
@@ -979,6 +1094,7 @@ func assertCircular[T any](t *testing.T, list GoListC[T]) {
     }
 }
 
+// assertPanic
 func assertPanic(t *testing.T, expected string, fn func()) {
     t.Helper()
 
