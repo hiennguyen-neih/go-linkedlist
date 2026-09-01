@@ -555,25 +555,19 @@ func TestInsertAt_NormalCase(t *testing.T) {
 }
 
 func TestInsertAt_PositiveIndexOutOfBound(t *testing.T) {
-    defer func() {
-        if r := recover(); r == nil {
-            t.Errorf("InsertAt\nExpect panic")
-        } else if r != "InsertAt, index is out of bound!" {
-            t.Errorf("InsertAt\nWrong panic message")
-        }
-    }()
-    InsertAt(New(1, 2, 3, 4), 10, 0)
+    assertPanic(
+        t,
+        "InsertAt, index is out of bound!",
+        func() { InsertAt(New(1, 2, 3, 4), 10, 0) },
+    )
 }
 
 func TestInsertAt_NegativeIndexOutOfBound(t *testing.T) {
-    defer func() {
-        if r := recover(); r == nil {
-            t.Errorf("InsertAt\nExpect panic")
-        } else if r != "InsertAt, index is out of bound!" {
-            t.Errorf("InsertAt\nWrong panic message")
-        }
-    }()
-    InsertAt(New(1, 2, 3, 4), -5, 0)
+    assertPanic(
+        t,
+        "InsertAt, index is out of bound!",
+        func() { InsertAt(New(1, 2, 3, 4), -5, 0) },
+    )
 }
 
 func TestInsertAt_EmptyList(t *testing.T) {
@@ -588,14 +582,11 @@ func TestInsertAt_EmptyList(t *testing.T) {
 }
 
 func TestInsertAt_EmptyList_IndexOutOfBound(t *testing.T) {
-    defer func() {
-        if r := recover(); r == nil {
-            t.Errorf("InsertAt\nExpect panic")
-        } else if r != "InsertAt, index is out of bound!" {
-            t.Errorf("InsertAt\nWrong panic message")
-        }
-    }()
-    InsertAt(New[int](), 10, 0)
+    assertPanic(
+        t,
+        "InsertAt, index is out of bound!",
+        func() { InsertAt(New[int](), 10, 0) },
+    )
 }
 
 func TestJoin_NormalCase(t *testing.T) {
@@ -864,36 +855,27 @@ func TestNth_SingleNode(t *testing.T) {
 }
 
 func TestNth_PositiveIndexOutOfBound(t *testing.T) {
-    defer func() {
-        if r := recover(); r == nil {
-            t.Errorf("Nth\nExpect panic")
-        } else if r != "Nth, index is out of bound!" {
-            t.Errorf("Nth\nWrong panic message")
-        }
-    }()
-    Nth(New(1, 2, 3, 4), 10)
+    assertPanic(
+        t,
+        "Nth, index is out of bound!",
+        func() { Nth(New(1, 2, 3, 4), 10) },
+    )
 }
 
 func TestNth_NegativeIndexOutOfBound(t *testing.T) {
-    defer func() {
-        if r := recover(); r == nil {
-            t.Errorf("Nth\nExpect panic")
-        } else if r != "Nth, index is out of bound!" {
-            t.Errorf("Nth\nWrong panic message")
-        }
-    }()
-    Nth(New(1, 2, 3, 4), -10)
+    assertPanic(
+        t,
+        "Nth, index is out of bound!",
+        func() { Nth(New(1, 2, 3, 4), -10) },
+    )
 }
 
 func TestNth_EmptyList(t *testing.T) {
-    defer func() {
-        if r := recover(); r == nil {
-            t.Errorf("Nth\nExpect panic")
-        } else if r != "Nth, list is empty!" {
-            t.Errorf("Nth\nWrong panic message")
-        }
-    }()
-    Nth(New[int](), 0)
+    assertPanic(
+        t,
+        "Nth, list is empty!",
+        func() { Nth(New[int](), 0) },
+    )
 }
 
 func TestReverse_NormalCase(t *testing.T) {
@@ -995,4 +977,18 @@ func assertCircular[T any](t *testing.T, list GoListC[T]) {
             t.Fatal("found nil link in circular list")
         }
     }
+}
+
+func assertPanic(t *testing.T, expected string, fn func()) {
+    t.Helper()
+
+    defer func() {
+        if r := recover(); r == nil {
+            t.Fatalf("expected panic")
+        } else if r != expected {
+            t.Fatalf("panic = %v, expected %v", r, expected)
+        }
+    }()
+
+    fn()
 }
