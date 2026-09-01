@@ -670,6 +670,29 @@ func NthTail[T any](list GoListC[T], index int) GoListC[T] {
     return result
 }
 
+// Partitions input list into list1 and list2, where list1 contains nodes
+// which fun returns true and list2 contains nodes which fun returns false.
+func Partition[T any](list GoListC[T], fun func(T) bool) (GoListC[T], GoListC[T]) {
+    var list1 GoListC[T]
+    var list2 GoListC[T]
+    node := list.Head
+    if node == nil {
+        return list1, list2
+    }
+    for {
+        if fun(node.Data) {
+            list1.append(node.Data)
+        } else {
+            list2.append(node.Data)
+        }
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return list1, list2
+}
+
 // Returns a list containing the nodes of input list in reverse order.
 func Reverse[T any](list GoListC[T]) GoListC[T] {
     var result GoListC[T]

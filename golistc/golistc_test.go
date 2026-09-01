@@ -989,6 +989,109 @@ func TestNthTail_EmptyList(t *testing.T) {
     )
 }
 
+// Test Partition
+func TestPartition_NormalCase(t *testing.T) {
+    input := New(1, 2, 3, 4, 5, 6)
+    list1, list2 := Partition(input, func(n int) bool { return n % 2 != 0 })
+    expected1 := []int{1, 3, 5}
+    expected2 := []int{2, 4, 6}
+
+    if result := ToSlice(list1); !reflect.DeepEqual(result, expected1) {
+        t.Errorf("Partition\nresult: %v\nexpected: %v", result, expected1)
+    }
+    if result := ToSlice(list2); !reflect.DeepEqual(result, expected2) {
+        t.Errorf("Partition\nresult: %v\nexpected: %v", result, expected2)
+    }
+
+    assertCircular(t, list1)
+    assertCircular(t, list2)
+}
+
+func TestPartition_AllTrue(t *testing.T) {
+    input := New(1, 3, 5, 7, 9)
+    list1, list2 := Partition(input, func(n int) bool { return n % 2 != 0 })
+    expected1 := []int{1, 3, 5, 7, 9}
+    expected2 := []int{}
+
+    if result := ToSlice(list1); !reflect.DeepEqual(result, expected1) {
+        t.Errorf("Partition\nresult: %v\nexpected: %v", result, expected1)
+    }
+    if result := ToSlice(list2); len(result) != 0 {
+        t.Errorf("Partition\nresult: %v\nexpected: %v", result, expected2)
+    }
+
+    assertCircular(t, list1)
+    assertCircular(t, list2)
+}
+
+func TestPartition_AllFalse(t *testing.T) {
+    input := New(2, 4, 6, 8)
+    list1, list2 := Partition(input, func(n int) bool { return n % 2 != 0 })
+    expected1 := []int{}
+    expected2 := []int{2, 4, 6, 8}
+
+    if result := ToSlice(list1); len(result) != 0 {
+        t.Errorf("Partition\nresult: %v\nexpected: %v", result, expected1)
+    }
+    if result := ToSlice(list2); !reflect.DeepEqual(result, expected2) {
+        t.Errorf("Partition\nresult: %v\nexpected: %v", result, expected2)
+    }
+
+    assertCircular(t, list1)
+    assertCircular(t, list2)
+}
+
+func TestPartition_SingletonTrue(t *testing.T) {
+    input := New(1)
+    list1, list2 := Partition(input, func(n int) bool { return n % 2 != 0 })
+    expected1 := []int{1}
+    expected2 := []int{}
+
+    if result := ToSlice(list1); !reflect.DeepEqual(result, expected1) {
+        t.Errorf("Partition\nresult: %v\nexpected: %v", result, expected1)
+    }
+    if result := ToSlice(list2); len(result) != 0 {
+        t.Errorf("Partition\nresult: %v\nexpected: %v", result, expected2)
+    }
+
+    assertCircular(t, list1)
+    assertCircular(t, list2)
+}
+
+func TestPartition_SingletonFalse(t *testing.T) {
+    input := New(2)
+    list1, list2 := Partition(input, func(n int) bool { return n % 2 != 0 })
+    expected1 := []int{}
+    expected2 := []int{2}
+
+    if result := ToSlice(list1); len(result) != 0 {
+        t.Errorf("Partition\nresult: %v\nexpected: %v", result, expected1)
+    }
+    if result := ToSlice(list2); !reflect.DeepEqual(result, expected2) {
+        t.Errorf("Partition\nresult: %v\nexpected: %v", result, expected2)
+    }
+
+    assertCircular(t, list1)
+    assertCircular(t, list2)
+}
+
+func TestPartition_EmptyList(t *testing.T) {
+    input := New[int]()
+    list1, list2 := Partition(input, func(n int) bool { return n % 2 != 0 })
+    expected1 := []int{}
+    expected2 := []int{}
+
+    if result := ToSlice(list1); len(result) != 0 {
+        t.Errorf("Partition\nresult: %v\nexpected: %v", result, expected1)
+    }
+    if result := ToSlice(list2); len(result) != 0 {
+        t.Errorf("Partition\nresult: %v\nexpected: %v", result, expected2)
+    }
+
+    assertCircular(t, list1)
+    assertCircular(t, list2)
+}
+
 // Test Reverse
 func TestReverse_NormalCase(t *testing.T) {
     list := New(1,2,3,4)
