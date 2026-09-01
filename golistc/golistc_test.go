@@ -5,12 +5,19 @@ import (
     "reflect"
 )
 
+/*
+ *******************************************************************************
+ * Test cases
+ *******************************************************************************
+ */
+
 func TestNew_ToSlice(t *testing.T) {
     list := New(1, 2, 3, 4)
     expected := []int{1, 2, 3, 4}
     if result := ToSlice(list); !reflect.DeepEqual(result, expected) {
         t.Errorf("ToSlice(New(...)): %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, list)
 }
 
 func TestFromSlice_ToSlice(t *testing.T) {
@@ -19,6 +26,7 @@ func TestFromSlice_ToSlice(t *testing.T) {
     if result := ToSlice(list); !reflect.DeepEqual(result, expected) {
         t.Errorf("ToSlice(FromSlice(...)): %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, list)
 }
 
 func TestGoListString_Float(t *testing.T) {
@@ -88,6 +96,7 @@ func TestAppend(t *testing.T) {
     if result := ToSlice(appended); !reflect.DeepEqual(result, expected) {
         t.Errorf("Append\nresul: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, appended)
 }
 
 func TestAppendHead(t *testing.T) {
@@ -97,6 +106,7 @@ func TestAppendHead(t *testing.T) {
     if result := ToSlice(appended); !reflect.DeepEqual(result, expected) {
         t.Errorf("AppendHead\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, appended)
 }
 
 func TestConcat_NormalCase(t *testing.T) {
@@ -108,6 +118,7 @@ func TestConcat_NormalCase(t *testing.T) {
     if result := ToSlice(concatenated); !reflect.DeepEqual(result, expected) {
         t.Errorf("Concat\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, concatenated)
 }
 
 func TestConcat_EmptyList(t *testing.T) {
@@ -118,6 +129,7 @@ func TestConcat_EmptyList(t *testing.T) {
     if result := ToSlice(concatenated); len(result) != 0 {
         t.Errorf("Concat\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, concatenated)
 }
 
 func TestConcat_MixList(t *testing.T) {
@@ -129,6 +141,7 @@ func TestConcat_MixList(t *testing.T) {
     if result := ToSlice(concatenated); !reflect.DeepEqual(result, expected) {
         t.Errorf("Concat\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, concatenated)
 }
 
 func TestDelete_NormalCase(t *testing.T) {
@@ -138,6 +151,7 @@ func TestDelete_NormalCase(t *testing.T) {
     if result := ToSlice(deleted); !reflect.DeepEqual(result, expected) {
         t.Errorf("Delete\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, deleted)
 }
 
 func TestDelete_Singleton(t *testing.T) {
@@ -146,6 +160,7 @@ func TestDelete_Singleton(t *testing.T) {
     if result := ToSlice(deleted); len(result) != 0 {
         t.Errorf("Delete\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, deleted)
 }
 
 func TestDelete_EmptyList(t *testing.T) {
@@ -154,6 +169,7 @@ func TestDelete_EmptyList(t *testing.T) {
     if result := ToSlice(deleted); len(result) != 0 {
         t.Errorf("Delete\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, deleted)
 }
 
 func TestDelete_NotFound(t *testing.T) {
@@ -163,6 +179,7 @@ func TestDelete_NotFound(t *testing.T) {
     if result := ToSlice(deleted); !reflect.DeepEqual(result, expected) {
         t.Errorf("Delete\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, deleted)
 }
 
 func TestDeleteAt_NormalCase(t *testing.T) {
@@ -172,6 +189,7 @@ func TestDeleteAt_NormalCase(t *testing.T) {
     if result := ToSlice(deleted); !reflect.DeepEqual(result, expected) {
         t.Errorf("DeleteAt\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, deleted)
 }
 
 func TestDeleteAt_EmptyList(t *testing.T) {
@@ -180,6 +198,7 @@ func TestDeleteAt_EmptyList(t *testing.T) {
     if result := ToSlice(deleted); len(result) != 0 {
         t.Errorf("DeleteAt\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, deleted)
 }
 
 func TestDeleteAt_IndexOutOfBound(t *testing.T) {
@@ -190,11 +209,13 @@ func TestDeleteAt_IndexOutOfBound(t *testing.T) {
     if result1 := ToSlice(deleted1); !reflect.DeepEqual(result1, expected) {
         t.Errorf("DeleteAt\nresult1: %v\nexpected: %v", result1, expected)
     }
+    assertCircular(t, deleted1)
 
     deleted2 := DeleteAt(list, -5)
     if result2 := ToSlice(deleted2); !reflect.DeepEqual(result2, expected) {
         t.Errorf("DeleteAt\nresult2: %v\nexpected: %v", result2, expected)
     }
+    assertCircular(t, deleted2)
 }
 
 func TestDropLast_NormalCase(t *testing.T) {
@@ -204,6 +225,7 @@ func TestDropLast_NormalCase(t *testing.T) {
     if result := ToSlice(droped); !reflect.DeepEqual(result, expected) {
         t.Errorf("DropLast\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, droped)
 }
 
 func TestDropLast_Singleton(t *testing.T) {
@@ -212,6 +234,7 @@ func TestDropLast_Singleton(t *testing.T) {
     if result := ToSlice(droped); len(result) != 0 {
         t.Errorf("DropLast\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, droped)
 }
 
 func TestDropLast_EmptyList(t *testing.T) {
@@ -220,6 +243,7 @@ func TestDropLast_EmptyList(t *testing.T) {
     if result := ToSlice(droped); len(result) != 0 {
         t.Errorf("DropLast\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, droped)
 }
 
 func TestDropWhile_TakeWhile(t *testing.T) {
@@ -230,12 +254,14 @@ func TestDropWhile_TakeWhile(t *testing.T) {
     if result := ToSlice(droped); !reflect.DeepEqual(result, expected1) {
         t.Errorf("DropWhile\nresult: %v\nexpected: %v", result, expected1)
     }
+    assertCircular(t, droped)
 
     taken := TakeWhile(list, func(n int) bool { return n < 4 })
     expected2 := []int{1, 2, 3}
     if result := ToSlice(taken); !reflect.DeepEqual(result, expected2) {
         t.Errorf("TakeWhile\nresult: %v\nexpected: %v", result, expected2)
     }
+    assertCircular(t, taken)
 }
 
 func TestDropWhile_TakeWhile_EmptyList(t *testing.T) {
@@ -246,12 +272,14 @@ func TestDropWhile_TakeWhile_EmptyList(t *testing.T) {
     if result := ToSlice(droped); len(result) != 0 {
         t.Errorf("DropWhile\nresult: %v\nexpected: %v", result, expected1)
     }
+    assertCircular(t, droped)
 
     taken := TakeWhile(list, func(n string) bool { return n == "a" })
     expected2 := []string{}
     if result := ToSlice(taken); len(result) != 0 {
         t.Errorf("TakeWhile\nresult: %v\nexpected: %v", result, expected2)
     }
+    assertCircular(t, taken)
 }
 
 func TestDropWhile_TakeWhile_AllOfList(t *testing.T) {
@@ -262,12 +290,14 @@ func TestDropWhile_TakeWhile_AllOfList(t *testing.T) {
     if result := ToSlice(droped); len(result) != 0 {
         t.Errorf("DropWhile\nresult: %v\nexpected: %v", result, expected1)
     }
+    assertCircular(t, droped)
 
     taken := TakeWhile(list, func(n string) bool { return n == "a" })
     expected2 := []string{"a", "a", "a", "a"}
     if result := ToSlice(taken); !reflect.DeepEqual(result, expected2) {
         t.Errorf("TakeWhile\nresult: %v\nexpected: %v", result, expected2)
     }
+    assertCircular(t, taken)
 }
 
 func TestDropWhile_TakeWhile_Boundary(t *testing.T) {
@@ -278,12 +308,14 @@ func TestDropWhile_TakeWhile_Boundary(t *testing.T) {
     if result := ToSlice(droped); !reflect.DeepEqual(result, expected1) {
         t.Errorf("DropWhile\nresult: %v\nexpected: %v", result, expected1)
     }
+    assertCircular(t, droped)
 
     taken := TakeWhile(list, func(n string) bool { return n == "b" })
     expected2 := []string{}
     if result := ToSlice(taken); len(result) != 0 {
         t.Errorf("TakeWhile\nresult: %v\nexpected: %v", result, expected2)
     }
+    assertCircular(t, taken)
 }
 
 func TestDuplicate_NormalCase(t *testing.T) {
@@ -292,6 +324,7 @@ func TestDuplicate_NormalCase(t *testing.T) {
     if result := ToSlice(duplicate); !reflect.DeepEqual(result, expected) {
         t.Errorf("Duplicate\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, duplicate)
 }
 
 func TestDuplicate_EmptyList(t *testing.T) {
@@ -299,11 +332,13 @@ func TestDuplicate_EmptyList(t *testing.T) {
     if result := ToSlice(duplicate1); len(result) != 0 {
         t.Errorf("Duplicate\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, duplicate1)
 
     duplicate2 := Duplicate(-1, "X")
     if result := ToSlice(duplicate2); len(result) != 0 {
         t.Errorf("Duplicate\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, duplicate2)
 }
 
 func TestEqual_ReturnTrue(t *testing.T) {
@@ -369,6 +404,7 @@ func TestFilter_NormalCase(t *testing.T) {
     if result := ToSlice(filtered); !reflect.DeepEqual(result, expected) {
         t.Errorf("Filter\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, filtered)
 }
 
 func TestFilter_NoMatch(t *testing.T) {
@@ -377,6 +413,7 @@ func TestFilter_NoMatch(t *testing.T) {
     if result := ToSlice(filtered); len(result) != 0 {
         t.Errorf("Filter\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, filtered)
 }
 
 func TestFilter_EmptyList(t *testing.T) {
@@ -385,6 +422,7 @@ func TestFilter_EmptyList(t *testing.T) {
     if result := ToSlice(filtered); len(result) != 0 {
         t.Errorf("Filter\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, filtered)
 }
 
 func TestFilterMap_NormalCase(t *testing.T) {
@@ -396,6 +434,7 @@ func TestFilterMap_NormalCase(t *testing.T) {
     if result := ToSlice(filtered); !reflect.DeepEqual(result, expected) {
         t.Errorf("FilterMap\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, filtered)
 }
 
 func TestFilterMap_RemoveAll(t *testing.T) {
@@ -406,6 +445,7 @@ func TestFilterMap_RemoveAll(t *testing.T) {
     if result := ToSlice(filtered); len(result) != 0 {
         t.Errorf("FilterMap\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, filtered)
 }
 
 func TestFilterMap_EmptyList(t *testing.T) {
@@ -416,6 +456,7 @@ func TestFilterMap_EmptyList(t *testing.T) {
     if result := ToSlice(filtered); len(result) != 0 {
         t.Errorf("FilterMap\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, filtered)
 }
 
 func TestFind_Found(t *testing.T) {
@@ -503,12 +544,14 @@ func TestInsertAt_NormalCase(t *testing.T) {
     if result1 := ToSlice(inserted1); !reflect.DeepEqual(result1, expected1) {
         t.Errorf("InsertAt\nresult: %v\nexpected: %v", result1, expected1)
     }
+    assertCircular(t, inserted1)
 
     inserted2 := InsertAt(list, 4, "X")
     expected2 := []string{"a", "b", "c", "d", "X"}
     if result2 := ToSlice(inserted2); !reflect.DeepEqual(result2, expected2) {
         t.Errorf("InsertAt\nresult: %v\nexpected: %v", result2, expected2)
     }
+    assertCircular(t, inserted2)
 }
 
 func TestInsertAt_PositiveIndexOutOfBound(t *testing.T) {
@@ -541,6 +584,7 @@ func TestInsertAt_EmptyList(t *testing.T) {
     if result1 := ToSlice(inserted1); !reflect.DeepEqual(result1, expected1) {
         t.Errorf("InsertAt\nresult: %v\nexpected: %v", result1, expected1)
     }
+    assertCircular(t, inserted1)
 }
 
 func TestInsertAt_EmptyList_IndexOutOfBound(t *testing.T) {
@@ -561,6 +605,7 @@ func TestJoin_NormalCase(t *testing.T) {
     if result := ToSlice(joined); !reflect.DeepEqual(result, expected) {
         t.Errorf("Join\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, joined)
 }
 
 func TestJoin_Singleton(t *testing.T) {
@@ -570,6 +615,7 @@ func TestJoin_Singleton(t *testing.T) {
     if result := ToSlice(joined); !reflect.DeepEqual(result, expected) {
         t.Errorf("Join\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, joined)
 }
 
 func TestJoin_EmptyList(t *testing.T) {
@@ -578,6 +624,7 @@ func TestJoin_EmptyList(t *testing.T) {
     if result := ToSlice(joined); len(result) != 0 {
         t.Errorf("Join\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, joined)
 }
 
 func TestMap(t *testing.T) {
@@ -587,6 +634,7 @@ func TestMap(t *testing.T) {
     if result := ToSlice(mapped); !reflect.DeepEqual(result, expected) {
         t.Errorf("Map\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, mapped)
 }
 
 func TestMap_EmptyList(t *testing.T) {
@@ -596,6 +644,7 @@ func TestMap_EmptyList(t *testing.T) {
     if result := ToSlice(mapped); len(result) != 0 {
         t.Errorf("Map\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, mapped)
 }
 
 func TestMapFoldl_MapFoldr_NormalCase(t *testing.T) {
@@ -615,6 +664,8 @@ func TestMapFoldl_MapFoldr_NormalCase(t *testing.T) {
     if result2 := ToSlice(mapped2); !reflect.DeepEqual(result2, expectedL) || fac != expectedF {
         t.Errorf("MapFoldr\nresult: %v - %v\nexpected: %v - %v", fac, result2, expectedF, expectedL)
     }
+    assertCircular(t, mapped1)
+    assertCircular(t, mapped2)
 }
 
 func TestMapFoldl_MapFoldr_EmptyList(t *testing.T) {
@@ -634,6 +685,8 @@ func TestMapFoldl_MapFoldr_EmptyList(t *testing.T) {
     if result2 := ToSlice(mapped2); len(result2) != 0 || fac != expectedF {
         t.Errorf("MapFoldr\nresult: %v - %v\nexpected: %v - %v", fac, result2, expectedF, expectedL)
     }
+    assertCircular(t, mapped1)
+    assertCircular(t, mapped2)
 }
 
 func TestMax_Min_NormalCase(t *testing.T) {
@@ -698,12 +751,14 @@ func TestMerge_UMerge_NormalCase(t *testing.T) {
     if result1 := ToSlice(merged); !reflect.DeepEqual(result1, expected1) {
         t.Errorf("Merge\nresult: %v\nexpected: %v", result1, expected1)
     }
+    assertCircular(t, merged)
 
     umerged := UMerge(list1, list2, list3)
     expected2 := []int{1, 2, 3, 4, 5, 6, 8}
     if result2 := ToSlice(umerged); !reflect.DeepEqual(result2, expected2) {
         t.Errorf("UMerge\nresult: %v\nexpected: %v", result2, expected2)
     }
+    assertCircular(t, umerged)
 }
 
 func TestMerge_UMerge_EmptyList(t *testing.T) {
@@ -715,11 +770,13 @@ func TestMerge_UMerge_EmptyList(t *testing.T) {
     if result := ToSlice(merged); len(result) != 0 {
         t.Errorf("Merge\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, merged)
 
     umerged := Concat(list1, list2, list3)
     if result := ToSlice(umerged); len(result) != 0 {
         t.Errorf("UMerge\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, umerged)
 }
 
 func TestMerge_UMerge_MixList(t *testing.T) {
@@ -732,12 +789,14 @@ func TestMerge_UMerge_MixList(t *testing.T) {
     if result1 := ToSlice(merged); !reflect.DeepEqual(result1, expected1) {
         t.Errorf("Merge\nresult: %v\nexpected: %v", result1, expected1)
     }
+    assertCircular(t, merged)
 
     umerged := UMerge(list1, list2, list3)
     expected2 := []int{2, 4, 5, 6, 8}
     if result2 := ToSlice(umerged); !reflect.DeepEqual(result2, expected2) {
         t.Errorf("UMerge\nresult: %v\nexpected: %v", result2, expected2)
     }
+    assertCircular(t, umerged)
 }
 
 func TestReverse_NormalCase(t *testing.T) {
@@ -747,6 +806,7 @@ func TestReverse_NormalCase(t *testing.T) {
     if result := ToSlice(reversed); !reflect.DeepEqual(result, expected) {
         t.Errorf("Reverse\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, reversed)
 }
 
 func TestReverse_Singleton(t *testing.T) {
@@ -756,6 +816,7 @@ func TestReverse_Singleton(t *testing.T) {
     if result := ToSlice(reversed); !reflect.DeepEqual(result, expected) {
         t.Errorf("Reverse\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, reversed)
 }
 
 func TestReverse_EmptyList(t *testing.T) {
@@ -765,6 +826,7 @@ func TestReverse_EmptyList(t *testing.T) {
     if result := ToSlice(reversed); len(result) != 0 {
         t.Errorf("Reverse\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, reversed)
 }
 
 func TestSort_NormalCase(t *testing.T) {
@@ -774,6 +836,7 @@ func TestSort_NormalCase(t *testing.T) {
     if result := ToSlice(sorted); !reflect.DeepEqual(result, expected) {
         t.Errorf("Sort\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, sorted)
 }
 
 func TestSort_EmptyList(t *testing.T) {
@@ -781,6 +844,7 @@ func TestSort_EmptyList(t *testing.T) {
     if result := ToSlice(sorted); len(result) != 0 {
         t.Errorf("Sort\nresult: %v\nexpected: []", result)
     }
+    assertCircular(t, sorted)
 }
 
 func TestUSort_NormalCase(t *testing.T) {
@@ -790,11 +854,48 @@ func TestUSort_NormalCase(t *testing.T) {
     if result := ToSlice(sorted); !reflect.DeepEqual(result, expected) {
         t.Errorf("USort\nresult: %v\nexpected: %v", result, expected)
     }
+    assertCircular(t, sorted)
 }
 
 func TestUSort_EmptyList(t *testing.T) {
     sorted := USort(New[int]())
     if result := ToSlice(sorted); len(result) != 0 {
         t.Errorf("USort\nresult: %v\nexpected: []", result)
+    }
+    assertCircular(t, sorted)
+}
+
+/*
+ *******************************************************************************
+ * Internal functions and methods
+ *******************************************************************************
+ */
+
+func assertCircular[T any](t *testing.T, list GoListC[T]) {
+    t.Helper()
+
+    if list.Head == nil {
+        if list.Tail != nil {
+            t.Fatal("empty list: Tail should be nil")
+        }
+        return
+    }
+
+    if list.Tail == nil {
+        t.Fatal("non-empty list: Tail is nil")
+    }
+
+    node := list.Head
+    for {
+        if node.Next == list.Head {
+            if node != list.Tail {
+                t.Fatal("Tail does not reference actual last node")
+            }
+            break
+        }
+        node = node.Next
+        if node == nil {
+            t.Fatal("found nil link in circular list")
+        }
     }
 }
