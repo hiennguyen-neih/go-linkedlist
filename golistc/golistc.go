@@ -17,7 +17,7 @@ import (
  *******************************************************************************
  */
 
-// Struct of Go singly linked list.
+// Struct of Go singly circular linked list.
 type GoListC[T any] struct {
     Head *node.Node[T] // First node of the list.
     Tail *node.Node[T] // Last node of the list.
@@ -29,7 +29,7 @@ type GoListC[T any] struct {
  *******************************************************************************
  */
 
-// Create new singly linked list from input values.
+// Create new singly circular linked list from input values.
 func New[T any](values ...T) GoListC[T] {
     var list GoListC[T]
     for _, val := range values {
@@ -38,7 +38,7 @@ func New[T any](values ...T) GoListC[T] {
     return list
 }
 
-// Convert input slice into new singly linked list.
+// Convert input slice into new singly circular linked list.
 func FromSlice[T any](values []T) GoListC[T] {
     var list GoListC[T]
     for _, val := range values {
@@ -47,7 +47,7 @@ func FromSlice[T any](values []T) GoListC[T] {
     return list
 }
 
-// Convert input singly linked list into new slice.
+// Convert input singly circular linked list into new slice.
 func ToSlice[T any](list GoListC[T]) []T {
     var result []T
     node := list.Head
@@ -102,7 +102,7 @@ func Any[T any](list GoListC[T], fun func(T) bool) bool {
     return false
 }
 
-// Appends values into last of input list.
+// Appends values into last of input list preserving values order.
 func Append[T any](list GoListC[T], values ...T) GoListC[T] {
     var result GoListC[T]
     node := list.Head
@@ -121,7 +121,7 @@ func Append[T any](list GoListC[T], values ...T) GoListC[T] {
     return result
 }
 
-// Appends values into head of input list.
+// Appends values into head of input list preserving values order.
 func AppendHead[T any](list GoListC[T], values ...T) GoListC[T] {
     var result GoListC[T]
     node := list.Head
@@ -363,7 +363,7 @@ func Find[T any](list GoListC[T], value T) int {
     return -1
 }
 
-// Calls fun(data, acc) on successive nodes of list from left to right (from
+// Calls fun(data, acc) on successive nodes of list from Head to Tail (from
 // start of list to end of list), starting with acc0. Input fun must return a
 // new accumulator, which is passed to the next call. The function returns the
 // final value of the accumulator. Input acc0 is returned if the list is empty.
@@ -382,7 +382,7 @@ func Foldl[T1, T2 any](list GoListC[T1], acc0 T2, fun func(T1, T2) T2) T2 {
     return acc0
 }
 
-// Calls fun(data, acc) on successive nodes of list from right to left (from
+// Calls fun(data, acc) on successive nodes of list from Tail to Head (from
 // end of list to start of list), starting with acc0. Input fun must return a
 // new accumulator, which is passed to the next call. The function returns the
 // final value of the accumulator. Input acc0 is returned if the list is empty.
@@ -571,7 +571,7 @@ func Max[T constraints.Ordered](list GoListC[T]) *node.Node[T] {
     return max
 }
 
-// Returns true if elem matches some node data of list, otherwise retusn false.
+// Returns true if elem matches some node data of list, otherwise returns false.
 func Member[T any](list GoListC[T], elem T) bool {
     node := list.Head
     if node == nil {
@@ -681,7 +681,7 @@ func USort[T constraints.Ordered](list GoListC[T]) GoListC[T] {
  *******************************************************************************
  */
 
-// Returns a string representing the singly linked list.
+// Returns a string representing the singly circular linked list.
 func (list GoListC[T]) String() string {
     var builder strings.Builder
     builder.WriteString("[")
@@ -741,24 +741,6 @@ func (list *GoListC[T]) appendHead(value T) *GoListC[T] {
     }
     return list
 }
-
-// Do reverse the list.
-// func (list *GoListC[T]) reverse() *GoListC[T] {
-//     prev := list.Tail
-//     node := list.Head
-//     for {
-//         next := node.Next
-//         node.Next = prev
-//         prev = node
-//         node = next
-//         if node == list.Head {
-//             break
-//         }
-//     }
-//     list.Head = prev
-//     list.Tail = node
-//     return list
-// }
 
 // Do quick sort input list.
 func quickSort[T constraints.Ordered](list GoListC[T]) GoListC[T] {
