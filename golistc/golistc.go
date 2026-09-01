@@ -616,6 +616,29 @@ func Min[T constraints.Ordered](list GoListC[T]) *node.Node[T] {
     return min
 }
 
+// Returns node in list at specific index. index is capped at list length.
+// Negative index indicate an offset from the end of list.
+func Nth[T any](list GoListC[T], index int) *node.Node[T] {
+    len := Len(list)
+    if len == 0 {
+        panic("Nth, list is empty!")
+    }
+
+    if index < 0 {
+        index = len + index // same as len - abs(index)
+    }
+
+    if index < 0 || index >= len {
+        panic("Nth, index is out of bound!")
+    }
+
+    node := list.Head
+    for i := 0; i < index; i++ {
+        node = node.Next
+    }
+    return node
+}
+
 // Returns a list containing the nodes of input list in reverse order.
 func Reverse[T any](list GoListC[T]) GoListC[T] {
     var result GoListC[T]

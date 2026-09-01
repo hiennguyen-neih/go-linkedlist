@@ -799,6 +799,103 @@ func TestMerge_UMerge_MixList(t *testing.T) {
     assertCircular(t, umerged)
 }
 
+func TestNth_NormalCase(t *testing.T) {
+    list := New(1, 2, 3, 4, 5)
+
+    nth1 := Nth(list, 2)
+    expected1 := 3
+    if nth1.Data != expected1 {
+        t.Errorf("Nth\nresult: %v\nexpected: %v", nth1, expected1)
+    }
+
+    nth2 := Nth(list, -2)
+    expected2 := 4
+    if nth2.Data != expected2 {
+        t.Errorf("Nth\nresult: %v\nexpected: %v", nth2, expected2)
+    }
+}
+
+func TestNth_PositiveFirstLast(t *testing.T) {
+    list := New(1, 2, 3, 4, 5)
+
+    nth1 := Nth(list, 0)
+    expected1 := 1
+    if nth1.Data != 1 {
+        t.Errorf("Nth\nresult: %v\nexpected: %v", nth1, expected1)
+    }
+
+    nth2 := Nth(list, 4)
+    expected2 := 5
+    if nth2.Data != 5 {
+        t.Errorf("Nth\nresult: %v\nexpected: %v", nth2, expected2)
+    }
+}
+
+func TestNth_NegativeFirstLast(t *testing.T) {
+    list := New(1, 2, 3, 4, 5)
+
+    nth1 := Nth(list, -5)
+    expected1 := 1
+    if nth1.Data != 1 {
+        t.Errorf("Nth\nresult: %v\nexpected: %v", nth1, expected1)
+    }
+
+    nth2 := Nth(list, -1)
+    expected2 := 5
+    if nth2.Data != 5 {
+        t.Errorf("Nth\nresult: %v\nexpected: %v", nth2, expected2)
+    }
+}
+
+func TestNth_SingleNode(t *testing.T) {
+    list := New(42)
+    nth1 := Nth(list, 0)
+    nth2 := Nth(list, -1)
+
+    if nth1.Data != 42 {
+        t.Errorf("Nth\nexpected 42")
+    }
+    if nth2.Data != 42 {
+        t.Errorf("Nth\nexpected 42")
+    }
+    if nth1 != nth2 {
+        t.Errorf("Nth\nexpected same node")
+    }
+}
+
+func TestNth_PositiveIndexOutOfBound(t *testing.T) {
+    defer func() {
+        if r := recover(); r == nil {
+            t.Errorf("Nth\nExpect panic")
+        } else if r != "Nth, index is out of bound!" {
+            t.Errorf("Nth\nWrong panic message")
+        }
+    }()
+    Nth(New(1, 2, 3, 4), 10)
+}
+
+func TestNth_NegativeIndexOutOfBound(t *testing.T) {
+    defer func() {
+        if r := recover(); r == nil {
+            t.Errorf("Nth\nExpect panic")
+        } else if r != "Nth, index is out of bound!" {
+            t.Errorf("Nth\nWrong panic message")
+        }
+    }()
+    Nth(New(1, 2, 3, 4), -10)
+}
+
+func TestNth_EmptyList(t *testing.T) {
+    defer func() {
+        if r := recover(); r == nil {
+            t.Errorf("Nth\nExpect panic")
+        } else if r != "Nth, list is empty!" {
+            t.Errorf("Nth\nWrong panic message")
+        }
+    }()
+    Nth(New[int](), 0)
+}
+
 func TestReverse_NormalCase(t *testing.T) {
     list := New(1,2,3,4)
     reversed := Reverse(list)
