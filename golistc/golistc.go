@@ -819,6 +819,24 @@ func (list *GoListC[T]) appendHead(value T) *GoListC[T] {
     return list
 }
 
+// Do concatenate all input lists.
+func (list *GoListC[T]) concat(lists ...GoListC[T]) *GoListC[T] {
+    for _, other := range lists {
+        if other.Head == nil {
+            continue
+        }
+        if list.Head == nil {
+            list.Head = other.Head
+            list.Tail = other.Tail
+            continue
+        }
+        list.Tail.Next = other.Head
+        other.Tail.Next = list.Head
+        list.Tail = other.Tail
+    }
+    return list
+}
+
 // Do quick sort input list.
 func quickSort[T constraints.Ordered](list GoListC[T]) GoListC[T] {
     if list.Head == nil || list.Head.Next == list.Head {
@@ -832,11 +850,11 @@ func quickSort[T constraints.Ordered](list GoListC[T]) GoListC[T] {
     for node := list.Head; ; {
         switch {
         case node.Data < pivot:
-            less.appendHead(node.Data)
+            less.append(node.Data)
         case node.Data == pivot:
-            equal.appendHead(node.Data)
+            equal.append(node.Data)
         case node.Data > pivot:
-            greater.appendHead(node.Data)
+            greater.append(node.Data)
         }
         node = node.Next
         if node == list.Head {
@@ -849,9 +867,7 @@ func quickSort[T constraints.Ordered](list GoListC[T]) GoListC[T] {
     sortedGreater := quickSort(greater)
 
     // Concatenates 3 lists: sortedLess + equal + sortedGreater
-    result := Concat(sortedLess, equal, sortedGreater)
-
-    return result
+    return *sortedLess.concat(equal, sortedGreater)
 }
 
 // Do quick sort input list and remove duplicate nodes.
@@ -871,16 +887,14 @@ func uniqueQuickSort[T constraints.Ordered](list GoListC[T]) GoListC[T] {
 
             switch {
             case node.Data < pivot:
-                less.appendHead(node.Data)
+                less.append(node.Data)
             case node.Data == pivot:
-                equal.appendHead(node.Data)
+                equal.append(node.Data)
             case node.Data > pivot:
-                greater.appendHead(node.Data)
+                greater.append(node.Data)
             }
         }
-
         node = node.Next
-
         if node == list.Head {
             break
         }
@@ -891,7 +905,5 @@ func uniqueQuickSort[T constraints.Ordered](list GoListC[T]) GoListC[T] {
     sortedGreater := uniqueQuickSort(greater)
 
     // Concatenate: sortedLess + equal + sortedGreater
-    result := Concat(sortedLess, equal, sortedGreater)
-
-    return result
+    return *sortedLess.concat(equal, sortedGreater)
 }
