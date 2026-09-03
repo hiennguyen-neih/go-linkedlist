@@ -693,6 +693,25 @@ func Partition[T any](list GoListC[T], fun func(T) bool) (GoListC[T], GoListC[T]
     return list1, list2
 }
 
+// Returns true if list1 is a prefix of list2, otherwise returns false.
+// A prefix of a list is the first part of the list, starting from the
+// beginning and stopping at any point.
+func Prefix[T any](list1, list2 GoListC[T]) bool {
+    node1 := list1.Head
+    node2 := list2.Head
+    for ; node1 != nil; {
+        if node2 == nil || !cmp.Equal(node1.Data, node2.Data) {
+            return false
+        }
+        node1 = node1.Next
+        node2 = node2.Next
+        if node1 == list1.Head {
+            break
+        }
+    }
+    return true
+}
+
 // Returns a list containing the nodes of input list in reverse order.
 func Reverse[T any](list GoListC[T]) GoListC[T] {
     var result GoListC[T]
@@ -714,6 +733,33 @@ func Reverse[T any](list GoListC[T]) GoListC[T] {
 // only works with constraint Ordered list.
 func Sort[T constraints.Ordered](list GoListC[T]) GoListC[T] {
     return quickSort(list)
+}
+
+// Returns true if list1 is a suffix of list2, otherwise returns false.
+// A suffix of a list if the last part of the list, starting from any position
+// and going all the way to the end.
+func Suffix[T any](list1, list2 GoListC[T]) bool {
+    len1 := Len(list1)
+    len2 := Len(list2)
+    if len1 > len2 {
+        return false
+    } else if len1 == 0 {
+        return true
+    }
+
+    node1 := list1.Head
+    node2 := Nth(list2, len2-len1)
+    for {
+        if !cmp.Equal(node1.Data, node2.Data) {
+            return false
+        }
+        node1 = node1.Next
+        node2 = node2.Next
+        if node1 == list1.Head {
+            break
+        }
+    }
+    return true
 }
 
 // Takes nodes data in list while fun returns true, returning the longest

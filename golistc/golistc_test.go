@@ -1092,6 +1092,64 @@ func TestPartition_EmptyList(t *testing.T) {
     assertCircular(t, list2)
 }
 
+// Test Prefix and Suffix
+func TestPrefix_Suffix_NormalCase(t *testing.T) {
+    list1 := New("a", "b")
+    list2 := New("e", "f")
+    list3 := New("a", "b", "c", "d", "e", "f")
+
+    if result := Prefix(list1, list3); !result {
+        t.Errorf("Prefix\nresult: %v\nexpected: true", result)
+    }
+    if result := Prefix(list2, list3); result {
+        t.Errorf("Prefix\nresult: %v\nexpected: false", result)
+    }
+
+    if result := Suffix(list2, list3); !result {
+        t.Errorf("Suffix\nresult: %v\nexpected: true", result)
+    }
+    if result := Suffix(list1, list3); result {
+        t.Errorf("Suffix\nresult: %v\nexpected: false", result)
+    }
+}
+
+func TestPrefix_Suffix_LongerList(t *testing.T) {
+    list1 := New(1, 2, 3, 4, 5)
+    list2 := New(1, 2, 3)
+
+    if result := Prefix(list1, list2); result {
+        t.Errorf("Prefix\nresult: %v\nexpected: false", result)
+    }
+    if result := Suffix(list1, list2); result {
+        t.Errorf("Suffix\nresult: %v\nexpected: false", result)
+    }
+}
+
+func TestPrefix_Suffix_SameList(t *testing.T) {
+    list1 := New(4, 5, 6)
+    list2 := New(4, 5, 6)
+
+    if result := Prefix(list1, list2); !result {
+        t.Errorf("Prefix\nresult: %v\nexpected: true", result)
+    }
+    if result := Suffix(list1, list2); !result {
+        t.Errorf("Suffix\nresult: %v\nexpected: true", result)
+    }
+}
+
+func TestPrefix_Suffix_EmptyList(t *testing.T) {
+    list1 := New[string]()
+    list2 := New[string]()
+    list3 := New("a", "b", "c", "d", "e", "f")
+
+    if result := Prefix(list1, list3); !result {
+        t.Errorf("Prefix\nresult: %v\nexpected: true", result)
+    }
+    if result := Suffix(list2, list3); !result {
+        t.Errorf("Suffix\nresult: %v\nexpected: true", result)
+    }
+}
+
 // Test Reverse
 func TestReverse_NormalCase(t *testing.T) {
     list := New(1,2,3,4)
