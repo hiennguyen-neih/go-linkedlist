@@ -712,6 +712,37 @@ func Prefix[T any](list1, list2 GoListC[T]) bool {
     return true
 }
 
+// Returns a list that node at specific index is replaced with val. If index
+// is out of bound, the original list is returned. Negative index indicate an
+// offset from the end of list.
+func ReplaceAt[T any](list GoListC[T], index int, val T) GoListC[T] {
+    len := Len(list)
+    if index < 0 {
+        index = len + index // same as len - abs(index)
+    }
+
+    if index < 0 || index >= len {
+        panic("ReplaceAt, index is out of bound!")
+    }
+
+    var result GoListC[T]
+    i := 0
+    for node := list.Head; ; {
+        if i == index {
+            result.append(val)
+        } else {
+            result.append(node.Data)
+        }
+        i++
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+
+    return result
+}
+
 // Returns a list containing the nodes of input list in reverse order.
 func Reverse[T any](list GoListC[T]) GoListC[T] {
     var result GoListC[T]
@@ -796,6 +827,37 @@ func UMerge[T constraints.Ordered](lists ...GoListC[T]) GoListC[T] {
 // function only works with constraint Ordered list.
 func USort[T constraints.Ordered](list GoListC[T]) GoListC[T] {
     return uniqueQuickSort(list)
+}
+
+// Returns a list that node at specific index is updated with returns value of
+// fun. If index is out of bound, the original list is returned. Negative index
+// indicate an offset from the end of list.
+func UpdateAt[T any](list GoListC[T], index int, fun func(T) T) GoListC[T] {
+    len := Len(list)
+    if index < 0 {
+        index = len + index // same as len - abs(index)
+    }
+
+    if index < 0 || index >= len {
+        panic("UpdateAt, index is out of bound!")
+    }
+
+    var result GoListC[T]
+    i := 0
+    for node := list.Head; ; {
+        if i == index {
+            result.append(fun(node.Data))
+        } else {
+            result.append(node.Data)
+        }
+        i++
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+
+    return result
 }
 
 /*

@@ -1150,6 +1150,71 @@ func TestPrefix_Suffix_EmptyList(t *testing.T) {
     }
 }
 
+// Test ReplaceAt and UpdateAt
+func TestReplaceAt_UpdateAt_PositiveNormalCase(t *testing.T) {
+    list := New(1, 2, 3, 4)
+
+    replaced := ReplaceAt(list, 2, 0)
+    expected1 := []int{1, 2, 0, 4}
+    if result := ToSlice(replaced); !reflect.DeepEqual(result, expected1) {
+        t.Errorf("ReplaceAt\nresult: %v\nexpected: %v", result, expected1)
+    }
+    assertCircular(t, replaced)
+
+    updated := UpdateAt(list, 3, func(n int) int { return n * n })
+    expected2 := []int{1, 2, 3, 16}
+    if result := ToSlice(updated); !reflect.DeepEqual(result, expected2) {
+        t.Errorf("UpdateAt\nresult: %v\nexpected: %v", result, expected2)
+    }
+    assertCircular(t, updated)
+}
+
+func TestReplaceAt_UpdateAt_NegativeNormalCase(t *testing.T) {
+    list := New(1, 2, 3, 4)
+
+    replaced := ReplaceAt(list, -2, 0)
+    expected1 := []int{1, 2, 0, 4}
+    if result := ToSlice(replaced); !reflect.DeepEqual(result, expected1) {
+        t.Errorf("ReplaceAt\nresult: %v\nexpected: %v", result, expected1)
+    }
+    assertCircular(t, replaced)
+
+    updated := UpdateAt(list, -3, func(n int) int { return n * n })
+    expected2 := []int{1, 4, 3, 4}
+    if result := ToSlice(updated); !reflect.DeepEqual(result, expected2) {
+        t.Errorf("UpdateAt\nresult: %v\nexpected: %v", result, expected2)
+    }
+    assertCircular(t, updated)
+}
+
+func TestReplaceAt_UpdateAt_PositiveIndexOutOfBound(t *testing.T) {
+    list := New(1, 2, 3, 4)
+    assertPanic(
+        t,
+        "ReplaceAt, index is out of bound!",
+        func() { ReplaceAt(list, 4, 0) },
+    )
+    assertPanic(
+        t,
+        "UpdateAt, index is out of bound!",
+        func() { UpdateAt(list, 4, func(n int) int { return n * n }) },
+    )
+}
+
+func TestReplaceAt_UpdateAt_NegativeIndexOutOfBound(t *testing.T) {
+    list := New(1, 2, 3, 4)
+    assertPanic(
+        t,
+        "ReplaceAt, index is out of bound!",
+        func() { ReplaceAt(list, -5, 0) },
+    )
+    assertPanic(
+        t,
+        "UpdateAt, index is out of bound!",
+        func() { UpdateAt(list, -5, func(n int) int { return n * n }) },
+    )
+}
+
 // Test Reverse
 func TestReverse_NormalCase(t *testing.T) {
     list := New(1,2,3,4)
