@@ -1246,6 +1246,28 @@ func TestReverse_EmptyList(t *testing.T) {
     assertCircular(t, reversed)
 }
 
+// Test Search
+func TestSearch_NormalCase(t *testing.T) {
+    list := New(1, 2, 3, 4)
+    index1, node1 := Search(list, func(n int) bool { return n % 2 == 0 })
+    index2, node2 := Search(list, func(n int) bool { return n > 4 })
+
+    if index1 != 1 || node1.Data != 2 {
+        t.Errorf("Search\nresult: %v - %v\nexpected: 1 - 2", index1, node1)
+    }
+    if index2 != -1 || node2 != nil {
+        t.Errorf("Search\nresult: %v - %v\nexpected: -1 - nil", index2, node2)
+    }
+}
+
+func TestSearch_EmptyList(t *testing.T) {
+    list := New[string]()
+    index, node := Search(list, func(n string) bool { return n == "a" })
+    if index != -1 || node != nil {
+        t.Errorf("Search\nresult: %v - %v\nexpected: -1 - nil", index, node)
+    }
+}
+
 // Test Sort
 func TestSort_NormalCase(t *testing.T) {
     list := New(2, 5, 1, 2, 7, 3, 9, 4, 8, 6, 4)

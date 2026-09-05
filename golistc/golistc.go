@@ -760,6 +760,25 @@ func Reverse[T any](list GoListC[T]) GoListC[T] {
     return result
 }
 
+// Returns position and first node in list that fun returns true. If list is
+// empty or every fun execution returns false, returns position is -1.
+func Search[T any](list GoListC[T], fun func(T) bool) (int, *node.Node[T]) {
+    node := list.Head
+    if node == nil {
+        return -1, nil
+    }
+    for i := 0; ; i++ {
+        if fun(node.Data) {
+            return i, node
+        }
+        node = node.Next
+        if node == list.Head {
+            break
+        }
+    }
+    return -1, nil
+}
+
 // Returns a list containing the sorted nodes data of input list. This function
 // only works with constraint Ordered list.
 func Sort[T constraints.Ordered](list GoListC[T]) GoListC[T] {
